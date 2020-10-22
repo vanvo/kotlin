@@ -10,6 +10,7 @@ import com.intellij.psi.PsiFile
 import org.jetbrains.kotlin.backend.common.CodegenUtil
 import org.jetbrains.kotlin.backend.common.ir.ir2string
 import org.jetbrains.kotlin.backend.jvm.ir.getKtFile
+import org.jetbrains.kotlin.backend.jvm.ir.inlineScopeVisibility
 import org.jetbrains.kotlin.codegen.BaseExpressionCodegen
 import org.jetbrains.kotlin.codegen.OwnerKind
 import org.jetbrains.kotlin.codegen.inline.*
@@ -21,7 +22,10 @@ import org.jetbrains.kotlin.incremental.components.LocationInfo
 import org.jetbrains.kotlin.incremental.components.LookupLocation
 import org.jetbrains.kotlin.incremental.components.Position
 import org.jetbrains.kotlin.ir.ObsoleteDescriptorBasedAPI
-import org.jetbrains.kotlin.ir.declarations.*
+import org.jetbrains.kotlin.ir.declarations.IrClass
+import org.jetbrains.kotlin.ir.declarations.IrDeclaration
+import org.jetbrains.kotlin.ir.declarations.IrFunction
+import org.jetbrains.kotlin.ir.declarations.IrPackageFragment
 import org.jetbrains.kotlin.ir.descriptors.toIrBasedDescriptor
 import org.jetbrains.kotlin.ir.expressions.IrFunctionAccessExpression
 import org.jetbrains.kotlin.ir.expressions.IrLoop
@@ -86,7 +90,7 @@ class IrSourceCompilerForInline(
                 root.classCodegen.type.internalName,
                 root.signature.asmMethod.name,
                 root.signature.asmMethod.descriptor,
-                root.irFunction.isInlineOrInsideInline(),
+                root.irFunction.inlineScopeVisibility,
                 root.irFunction.isSuspend,
                 findElement()?.let { CodegenUtil.getLineNumberForElement(it, false) } ?: 0
             )
@@ -158,14 +162,6 @@ class IrSourceCompilerForInline(
     }
 
     private fun findElement() = callElement.psiElement as? KtElement
-}
-
-private tailrec fun IrDeclaration.isInlineOrInsideInline(): Boolean {
-    val original = (this as? IrAttributeContainer)?.attributeOwnerId as? IrDeclaration ?: this
-    if (original is IrSimpleFunction && original.isInline) return true
-    val parent = original.parent
-    if (parent !is IrDeclaration) return false
-    return parent.isInlineOrInsideInline()
 }
 
 internal fun IrLoop.nonLocalReturnLabel(forBreak: Boolean): String = "${label!!}\$${if (forBreak) "break" else "continue"}"
