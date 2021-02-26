@@ -88,6 +88,10 @@ class PublicIdSignatureComputer(val mangler: KotlinMangler.IrMangler) : IdSignat
         override fun visitEnumEntry(declaration: IrEnumEntry) {
             collectFqNames(declaration)
         }
+
+        override fun visitField(declaration: IrField) {
+            collectFqNames(declaration)
+        }
     }
 }
 
