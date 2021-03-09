@@ -18,6 +18,7 @@ import org.jetbrains.kotlin.idea.frontend.api.fir.symbols.annotations.toAnnotati
 import org.jetbrains.kotlin.idea.frontend.api.fir.utils.cached
 import org.jetbrains.kotlin.idea.frontend.api.fir.utils.firRef
 import org.jetbrains.kotlin.idea.frontend.api.fir.utils.weakRef
+import org.jetbrains.kotlin.idea.frontend.api.symbols.KtFunctionParameterSymbol
 import org.jetbrains.kotlin.idea.frontend.api.symbols.KtPropertySetterSymbol
 import org.jetbrains.kotlin.idea.frontend.api.symbols.KtSetterParameterSymbol
 import org.jetbrains.kotlin.idea.frontend.api.symbols.markers.*
@@ -52,8 +53,8 @@ internal class KtFirPropertySetterSymbol(
     override fun containsAnnotation(classId: ClassId): Boolean = firRef.containsAnnotation(classId)
     override val annotationClassIds: Collection<ClassId> by cached { firRef.getAnnotationClassIds() }
 
-    override val parameter: KtSetterParameterSymbol by firRef.withFirAndCache { fir ->
-        builder.buildFirSetterParameter(fir.valueParameters.single())
+    override val parameter: KtFunctionParameterSymbol by firRef.withFirAndCache { fir ->
+        builder.buildFunctionParameterSymbol(fir.valueParameters.single())
     }
 
     override val annotatedType: KtTypeAndAnnotations by cached {

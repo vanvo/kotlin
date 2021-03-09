@@ -139,9 +139,6 @@ internal class KtSymbolByFirBuilder private constructor(
         return symbolsCache.cache(fir) { KtFirFunctionParameterSymbol(fir, resolveState, token, this) }
     }
 
-    fun buildFirSetterParameter(fir: FirValueParameter): KtFirSetterParameterSymbol =
-        symbolsCache.cache(fir) { KtFirSetterParameterSymbol(fir, resolveState, token, this) }
-
     fun buildFunctionSymbol(fir: FirSimpleFunction) = symbolsCache.cache(fir) {
         KtFirFunctionSymbol(fir, resolveState, token, this)
     }
