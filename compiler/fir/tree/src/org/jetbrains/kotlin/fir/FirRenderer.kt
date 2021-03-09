@@ -24,6 +24,7 @@ import org.jetbrains.kotlin.fir.symbols.impl.FirClassLikeSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirNamedFunctionSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirPropertySymbol
 import org.jetbrains.kotlin.fir.types.*
+import org.jetbrains.kotlin.fir.utils.isNotEmpty
 import org.jetbrains.kotlin.fir.visitors.FirVisitorVoid
 import org.jetbrains.kotlin.name.SpecialNames
 import org.jetbrains.kotlin.types.Variance
@@ -56,6 +57,7 @@ class FirRenderer(builder: StringBuilder, private val mode: RenderMode = RenderM
         val renderAnnotation: Boolean,
         val renderBodies: Boolean = true,
         val renderPropertyAccessors: Boolean = true,
+        val renderDeclarationAttributes: Boolean = false,
     ) {
         object Normal : RenderMode(
             renderLambdaBodies = true,
@@ -97,6 +99,15 @@ class FirRenderer(builder: StringBuilder, private val mode: RenderMode = RenderM
             renderAnnotation = false,
             renderBodies = false,
             renderPropertyAccessors = false,
+        )
+
+        object WithDeclarationAttributes : RenderMode(
+            renderLambdaBodies = true,
+            renderCallArguments = true,
+            renderCallableFqNames = false,
+            renderDeclarationResolvePhase = false,
+            renderAnnotation = true,
+            renderDeclarationAttributes = true,
         )
     }
 
@@ -366,6 +377,7 @@ class FirRenderer(builder: StringBuilder, private val mode: RenderMode = RenderM
     }
 
     override fun visitDeclaration(declaration: FirDeclaration) {
+        declaration.renderDeclarationAttributesIfNeeded()
         declaration.renderPhaseIfNeeded()
         print(
             when (declaration) {
@@ -388,6 +400,17 @@ class FirRenderer(builder: StringBuilder, private val mode: RenderMode = RenderM
             print("[${resolvePhase}] ")
         }
     }
+
+    private fun FirDeclaration.renderDeclarationAttributesIfNeeded() {
+        if (mode.renderDeclarationAttributes && attributes.arrayMap.isNotEmpty()) {
+            val attributes = FirDeclarationDataRegistry.allValuesThreadUnsafeForRendering().mapNotNull { (klass, index) ->
+                val value = attributes.arrayMap[index]
+                value?.let { klass.simpleName to value }
+            }.joinToString { (name, value) -> "$name=$value" }
+            print("[$attributes] ")
+        }
+    }
+
 
     private fun List<FirDeclaration>.renderDeclarations() {
         renderInBraces {
@@ -490,6 +513,7 @@ class FirRenderer(builder: StringBuilder, private val mode: RenderMode = RenderM
             print("actual ")
         }
         constructor.renderPhaseIfNeeded()
+        constructor.renderDeclarationAttributesIfNeeded()
         print("constructor")
         constructor.typeParameters.renderTypeParameters()
         constructor.valueParameters.renderParameters()
@@ -511,6 +535,7 @@ class FirRenderer(builder: StringBuilder, private val mode: RenderMode = RenderM
     }
 
     override fun visitPropertyAccessor(propertyAccessor: FirPropertyAccessor) {
+        propertyAccessor.renderDeclarationAttributesIfNeeded()
         propertyAccessor.annotations.renderAnnotations()
         print(propertyAccessor.visibility.asString() + " ")
         print(if (propertyAccessor.isGetter) "get" else "set")
@@ -522,6 +547,7 @@ class FirRenderer(builder: StringBuilder, private val mode: RenderMode = RenderM
     }
 
     override fun visitAnonymousFunction(anonymousFunction: FirAnonymousFunction) {
+        anonymousFunction.renderDeclarationAttributesIfNeeded()
         anonymousFunction.annotations.renderAnnotations()
         val label = anonymousFunction.label
         if (label != null) {
@@ -620,6 +646,7 @@ class FirRenderer(builder: StringBuilder, private val mode: RenderMode = RenderM
     }
 
     override fun visitValueParameter(valueParameter: FirValueParameter) {
+        valueParameter.renderDeclarationAttributesIfNeeded()
         valueParameter.annotations.renderAnnotations()
         if (valueParameter.isCrossinline) {
             print("crossinline ")

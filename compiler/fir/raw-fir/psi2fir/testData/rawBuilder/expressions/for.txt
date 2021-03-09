@@ -23,7 +23,7 @@ FILE: for.kt
 
         println#(String(!!!))
     }
-    public? final? fun bar(list: List<String>): R|kotlin/Unit| {
+    public? final? fun bar([IsConstructorParameter=false] list: List<String>): R|kotlin/Unit| {
         lval <iterator>: <implicit> = list#.subList#(IntegerLiteral(0), IntegerLiteral(10)).iterator#()
         while(R|<local>/<iterator>|.hasNext#()) {
             lval element: <implicit> = R|<local>/<iterator>|.next#()
@@ -38,14 +38,14 @@ FILE: for.kt
 
     }
     public? final? data class Some : R|kotlin/Any| {
-        public? constructor(x: Int, y: Int): R|Some| {
+        public? [ContainingClassKey=Some] constructor([IsConstructorParameter=true] x: Int, [IsConstructorParameter=true] y: Int): R|Some| {
             super<R|kotlin/Any|>()
         }
 
-        public? final? val x: Int = R|<local>/x|
+        public? final? [IsFromVarargKey=false] val x: Int = R|<local>/x|
             public? get(): Int
 
-        public? final? val y: Int = R|<local>/y|
+        public? final? [IsFromVarargKey=false] val y: Int = R|<local>/y|
             public? get(): Int
 
         public final operator fun component1(): Int
@@ -55,7 +55,7 @@ FILE: for.kt
         public final fun copy(x: Int = this@R|/Some|.R|/Some.x|, y: Int = this@R|/Some|.R|/Some.y|): R|Some|
 
     }
-    public? final? fun baz(set: Set<Some>): R|kotlin/Unit| {
+    public? final? fun baz([IsConstructorParameter=false] set: Set<Some>): R|kotlin/Unit| {
         lval <iterator>: <implicit> = set#.iterator#()
         while(R|<local>/<iterator>|.hasNext#()) {
             lval <destruct>: <implicit> = R|<local>/<iterator>|.next#()
@@ -65,7 +65,7 @@ FILE: for.kt
         }
 
     }
-    public? final? fun withParameter(list: List<Some>): R|kotlin/Unit| {
+    public? final? fun withParameter([IsConstructorParameter=false] list: List<Some>): R|kotlin/Unit| {
         lval <iterator>: <implicit> = list#.iterator#()
         while(R|<local>/<iterator>|.hasNext#()) {
             lval s: Some = R|<local>/<iterator>|.next#()

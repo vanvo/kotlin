@@ -1,7 +1,7 @@
 FILE: nullability.kt
-    public? final? fun orFourtyTwo(arg: Int?): <implicit> {
+    public? final? fun orFourtyTwo([IsConstructorParameter=false] arg: Int?): <implicit> {
         ^orFourtyTwo arg# ?: IntegerLiteral(42)
     }
-    public? final? fun bang(arg: Int?): <implicit> {
+    public? final? fun bang([IsConstructorParameter=false] arg: Int?): <implicit> {
         ^bang arg#!!
     }

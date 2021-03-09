@@ -1,5 +1,5 @@
 FILE: lambdaAndAnonymousFunction.kt
-    public? final? fun <T> run(block: ( () -> T )): T {
+    public? final? fun <T> run([IsConstructorParameter=false] block: ( () -> T )): T {
         ^run block#()
     }
     public? final? fun test_1(): R|kotlin/Unit| {

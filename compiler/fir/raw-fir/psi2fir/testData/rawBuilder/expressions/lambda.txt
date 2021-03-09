@@ -1,13 +1,13 @@
 FILE: lambda.kt
     public? final? data class Tuple : R|kotlin/Any| {
-        public? constructor(x: Int, y: Int): R|Tuple| {
+        public? [ContainingClassKey=Tuple] constructor([IsConstructorParameter=true] x: Int, [IsConstructorParameter=true] y: Int): R|Tuple| {
             super<R|kotlin/Any|>()
         }
 
-        public? final? val x: Int = R|<local>/x|
+        public? final? [IsFromVarargKey=false] val x: Int = R|<local>/x|
             public? get(): Int
 
-        public? final? val y: Int = R|<local>/y|
+        public? final? [IsFromVarargKey=false] val y: Int = R|<local>/y|
             public? get(): Int
 
         public final operator fun component1(): Int
@@ -17,11 +17,11 @@ FILE: lambda.kt
         public final fun copy(x: Int = this@R|/Tuple|.R|/Tuple.x|, y: Int = this@R|/Tuple|.R|/Tuple.y|): R|Tuple|
 
     }
-    public? final? inline fun use(f: ( (Tuple) -> Int )): <implicit> {
+    public? final? inline fun use([IsConstructorParameter=false] f: ( ([IsConstructorParameter=false] Tuple) -> Int )): <implicit> {
         ^use f#(Tuple#(IntegerLiteral(1), IntegerLiteral(2)))
     }
     public? final? fun foo(): Int {
-        lval l1: <implicit> = fun <implicit>.<anonymous>(t: Tuple): <implicit> {
+        lval l1: <implicit> = fun <implicit>.<anonymous>([IsConstructorParameter=false] t: Tuple): <implicit> {
             lval x: <implicit> = t#.x#
             lval y: <implicit> = t#.y#
             x#.plus#(y#)
@@ -56,7 +56,7 @@ FILE: lambda.kt
         }
         )
     }
-    public? final? fun test(list: List<Int>): R|kotlin/Unit| {
+    public? final? fun test([IsConstructorParameter=false] list: List<Int>): R|kotlin/Unit| {
         lval map: <implicit> = mutableMapOf#<Int, String>()
         list#.forEach#(<L> = forEach@fun <implicit>.<anonymous>(): <implicit> {
             +=(map#.getOrPut#(it#, getOrPut@fun <implicit>.<anonymous>(): <implicit> {

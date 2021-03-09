@@ -1,11 +1,11 @@
 FILE: locals.kt
-    public? final? fun withLocals(p: Int): Int {
+    public? final? fun withLocals([IsConstructorParameter=false] p: Int): Int {
         local final? class Local : R|kotlin/Any| {
-            public? constructor(pp: Int): R|Local| {
+            public? [ContainingClassKey=Local] constructor([IsConstructorParameter=true] pp: Int): R|Local| {
                 super<R|kotlin/Any|>()
             }
 
-            public? final? val pp: Int = R|<local>/pp|
+            public? final? [IsFromVarargKey=false] val pp: Int = R|<local>/pp|
                 public? get(): Int
 
             public? final? fun diff(): <implicit> {
@@ -15,12 +15,12 @@ FILE: locals.kt
         }
 
         lval x: <implicit> = Local#(IntegerLiteral(42)).diff#()
-        local final? fun sum(y: Int, z: Int, f: ( (Int, Int) -> Int )): Int {
+        local final? fun sum([IsConstructorParameter=false] y: Int, [IsConstructorParameter=false] z: Int, [IsConstructorParameter=false] f: ( ([IsConstructorParameter=false] Int, [IsConstructorParameter=false] Int) -> Int )): Int {
             ^sum x#.plus#(f#(y#.plus#(z#)))
         }
 
         lval code: <implicit> = object : Any {
-            private constructor(): R|<anonymous>| {
+            private [ContainingClassKey=<anonymous>] constructor(): R|<anonymous>| {
                 super<Any>()
             }
 
@@ -30,7 +30,7 @@ FILE: locals.kt
 
         }
         .foo#()
-        ^withLocals sum#(code#, Local#(IntegerLiteral(1)).diff#(), fun <anonymous>(x: Int, y: Int): <implicit> {
+        ^withLocals sum#(code#, Local#(IntegerLiteral(1)).diff#(), fun <anonymous>([IsConstructorParameter=false] x: Int, [IsConstructorParameter=false] y: Int): <implicit> {
             ^ x#.plus#(y#)
         }
         )

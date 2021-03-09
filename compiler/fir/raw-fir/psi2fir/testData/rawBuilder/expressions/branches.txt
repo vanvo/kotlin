@@ -1,5 +1,5 @@
 FILE: branches.kt
-    public? final? fun foo(a: Int, b: Int): <implicit> {
+    public? final? fun foo([IsConstructorParameter=false] a: Int, [IsConstructorParameter=false] b: Int): <implicit> {
         ^foo when () {
             CMP(>, a#.compareTo#(b#)) ->  {
                 a#
@@ -10,7 +10,7 @@ FILE: branches.kt
         }
 
     }
-    public? final? fun bar(a: Double, b: Double): Double {
+    public? final? fun bar([IsConstructorParameter=false] a: Double, [IsConstructorParameter=false] b: Double): Double {
         when () {
             CMP(>, a#.compareTo#(b#)) ->  {
                 println#(a#)
@@ -23,7 +23,7 @@ FILE: branches.kt
         }
 
     }
-    public? final? fun baz(a: Long, b: Long): Long {
+    public? final? fun baz([IsConstructorParameter=false] a: Long, [IsConstructorParameter=false] b: Long): Long {
         when () {
             CMP(>, a#.compareTo#(b#)) ->  {
                 println#(a#)
@@ -35,7 +35,7 @@ FILE: branches.kt
         }
 
     }
-    public? final? fun grade(g: Int): String {
+    public? final? fun grade([IsConstructorParameter=false] g: Int): String {
         ^grade when (g#) {
             ==($subj$, IntegerLiteral(6)) || ==($subj$, IntegerLiteral(7)) ->  {
                 String(Outstanding)

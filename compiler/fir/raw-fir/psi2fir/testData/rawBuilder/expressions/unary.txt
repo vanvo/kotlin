@@ -31,15 +31,15 @@ FILE: unary.kt
 
     }
     public? final? class X : R|kotlin/Any| {
-        public? constructor(i: Int): R|X| {
+        public? [ContainingClassKey=X] constructor([IsConstructorParameter=true] i: Int): R|X| {
             super<R|kotlin/Any|>()
         }
 
-        public? final? val i: Int = R|<local>/i|
+        public? final? [IsFromVarargKey=false] val i: Int = R|<local>/i|
             public? get(): Int
 
     }
-    public? final? fun test2(x: X): R|kotlin/Unit| {
+    public? final? fun test2([IsConstructorParameter=false] x: X): R|kotlin/Unit| {
         lval x1: <implicit> =  {
             lval <receiver>: <implicit> = x#
             lval <unary>: <implicit> = R|<local>/<receiver>|.i#
@@ -55,7 +55,7 @@ FILE: unary.kt
         }
 
     }
-    public? final? fun test3(arr: Array<Int>): R|kotlin/Unit| {
+    public? final? fun test3([IsConstructorParameter=false] arr: Array<Int>): R|kotlin/Unit| {
         lval x1: <implicit> =  {
             lval <array>: <implicit> = arr#
             lval <index0>: <implicit> = IntegerLiteral(0)
@@ -74,15 +74,15 @@ FILE: unary.kt
 
     }
     public? final? class Y : R|kotlin/Any| {
-        public? constructor(arr: Array<Int>): R|Y| {
+        public? [ContainingClassKey=Y] constructor([IsConstructorParameter=true] arr: Array<Int>): R|Y| {
             super<R|kotlin/Any|>()
         }
 
-        public? final? val arr: Array<Int> = R|<local>/arr|
+        public? final? [IsFromVarargKey=false] val arr: Array<Int> = R|<local>/arr|
             public? get(): Array<Int>
 
     }
-    public? final? fun test4(y: Y): R|kotlin/Unit| {
+    public? final? fun test4([IsConstructorParameter=false] y: Y): R|kotlin/Unit| {
         lval x1: <implicit> =  {
             lval <array>: <implicit> = y#.arr#
             lval <index0>: <implicit> = IntegerLiteral(0)

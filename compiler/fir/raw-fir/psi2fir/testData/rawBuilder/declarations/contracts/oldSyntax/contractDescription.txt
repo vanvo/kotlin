@@ -34,7 +34,7 @@ FILE: contractDescription.kt
             [StubStatement]
             ^ IntegerLiteral(1)
         }
-        public? set(value: Int): R|kotlin/Unit|
+        public? set([IsConstructorParameter=false] value: Int): R|kotlin/Unit|
             [Contract description] <
                 kotlin#.contracts#.contract#(<L> = contract@fun <implicit>.<anonymous>(): <implicit> {
                     callsInPlace#()

@@ -1,37 +1,37 @@
 FILE: simpleClass.kt
     public? final? interface SomeInterface : R|kotlin/Any| {
-        public? final? fun foo(x: Int, y: String): String
+        public? final? fun foo([IsConstructorParameter=false] x: Int, [IsConstructorParameter=false] y: String): String
 
         public? final? val bar: Boolean
-            public? get(): Boolean
+            [ContainingClassKey=SomeInterface] public? get(): Boolean
 
     }
     public? final? class SomeClass : SomeInterface {
-        public? constructor(): R|SomeClass| {
+        public? [ContainingClassKey=SomeClass] constructor(): R|SomeClass| {
             super<<implicit>>()
         }
 
         private final? val baz: <implicit> = IntegerLiteral(42)
-            private get(): <implicit>
+            [ContainingClassKey=SomeClass] private get(): <implicit>
 
-        public? open? override fun foo(x: Int, y: String): String {
+        public? open? override fun foo([IsConstructorParameter=false] x: Int, [IsConstructorParameter=false] y: String): String {
             ^foo y#.plus#(x#).plus#(baz#)
         }
 
         public? open? override var bar: Boolean
-            public? get(): Boolean {
+            [ContainingClassKey=SomeClass] public? get(): Boolean {
                 ^ Boolean(true)
             }
-            public? set(value: Boolean): R|kotlin/Unit| {
+            [ContainingClassKey=SomeClass] public? set([IsConstructorParameter=false] value: Boolean): R|kotlin/Unit| {
             }
 
         public? final? lateinit var fau: Double
-            public? get(): Double
-            public? set(value: Double): R|kotlin/Unit|
+            [ContainingClassKey=SomeClass] public? get(): Double
+            [ContainingClassKey=SomeClass] public? set(value: Double): R|kotlin/Unit|
 
     }
     public? final? inline class InlineClass : R|kotlin/Any| {
-        public? constructor(): R|InlineClass| {
+        public? [ContainingClassKey=InlineClass] constructor(): R|InlineClass| {
             super<R|kotlin/Any|>()
         }
 

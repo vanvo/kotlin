@@ -7,15 +7,15 @@ FILE: delegates.kt
             ^ D|/x|.getValue#(Null(null), ::R|/x|)
         }
     public? final? val delegate: <implicit> = object : ReadWriteProperty<Any?, Int> {
-        private constructor(): R|<anonymous>| {
+        private [ContainingClassKey=<anonymous>] constructor(): R|<anonymous>| {
             super<<implicit>>()
         }
 
-        public? open? override fun getValue(thisRef: Any?, property: KProperty<*>): Int {
+        public? open? override fun getValue([IsConstructorParameter=false] thisRef: Any?, [IsConstructorParameter=false] property: KProperty<*>): Int {
             ^getValue IntegerLiteral(1)
         }
 
-        public? open? override fun setValue(thisRef: Any?, property: KProperty<*>, value: Int): R|kotlin/Unit| {
+        public? open? override fun setValue([IsConstructorParameter=false] thisRef: Any?, [IsConstructorParameter=false] property: KProperty<*>, [IsConstructorParameter=false] value: Int): R|kotlin/Unit| {
         }
 
     }

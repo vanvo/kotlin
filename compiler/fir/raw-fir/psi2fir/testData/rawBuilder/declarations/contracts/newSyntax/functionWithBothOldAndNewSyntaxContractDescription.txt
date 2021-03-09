@@ -1,5 +1,5 @@
 FILE: functionWithBothOldAndNewSyntaxContractDescription.kt
-    public? final? fun test1(s: String?): R|kotlin/Unit|
+    public? final? fun test1([IsConstructorParameter=false] s: String?): R|kotlin/Unit|
         [Contract description] <
             returnsNotNull#()
         >
