@@ -14,6 +14,7 @@ import org.jetbrains.kotlin.fir.declarations.impl.*
 import org.jetbrains.kotlin.fir.expressions.FirAnnotationCall
 import org.jetbrains.kotlin.fir.expressions.FirExpression
 import org.jetbrains.kotlin.fir.expressions.builder.buildExpressionStub
+import org.jetbrains.kotlin.fir.isConstructorParameter
 import org.jetbrains.kotlin.fir.resolve.defaultType
 import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.fir.symbols.StandardClassIds
@@ -445,7 +446,8 @@ class FirMemberDeserializer(private val c: FirDeserializationContext) {
                 proto,
                 AbstractAnnotationDeserializer.CallableKind.OTHERS,
                 classProto,
-                addDefaultValue = classBuilder.symbol.classId == StandardClassIds.Enum
+                addDefaultValue = classBuilder.symbol.classId == StandardClassIds.Enum,
+                isConstructorValueParameter = true,
             )
             annotations +=
                 c.annotationDeserializer.loadConstructorAnnotations(c.containerSource, proto, local.nameResolver, local.typeTable)
@@ -468,7 +470,8 @@ class FirMemberDeserializer(private val c: FirDeserializationContext) {
         callableProto: MessageLite,
         callableKind: AbstractAnnotationDeserializer.CallableKind,
         classProto: ProtoBuf.Class?,
-        addDefaultValue: Boolean = false
+        addDefaultValue: Boolean = false,
+        isConstructorValueParameter: Boolean = false,
     ): List<FirValueParameter> {
         return valueParameters.mapIndexed { index, proto ->
             val flags = if (proto.hasFlags()) proto.flags else 0
@@ -499,6 +502,7 @@ class FirMemberDeserializer(private val c: FirDeserializationContext) {
                 )
             }.apply {
                 versionRequirementsTable = c.versionRequirementTable
+                isConstructorParameter = isConstructorValueParameter
             }
         }.toList()
     }

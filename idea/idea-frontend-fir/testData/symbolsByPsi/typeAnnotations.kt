@@ -112,7 +112,7 @@ KtFirClassOrObjectSymbol:
   typeParameters: []
   visibility: PUBLIC
 
-KtFirFunctionValueParameterSymbol:
+KtFirFunctionParameterSymbol:
   annotatedType: [Anno2()] I
   annotationClassIds: []
   annotations: []
@@ -140,7 +140,7 @@ KtFirFunctionSymbol:
   receiverType: null
   symbolKind: MEMBER
   typeParameters: []
-  valueParameters: [KtFirFunctionValueParameterSymbol(arg)]
+  valueParameters: [KtFirFunctionParameterSymbol(arg)]
   visibility: PUBLIC
 
 KtFirKotlinPropertySymbol:

@@ -12,9 +12,10 @@ import org.jetbrains.kotlin.fir.FirElement
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.declarations.*
 import org.jetbrains.kotlin.fir.declarations.synthetic.FirSyntheticProperty
-import org.jetbrains.kotlin.fir.resolve.symbolProvider
+import org.jetbrains.kotlin.fir.isConstructorParameter
 import org.jetbrains.kotlin.fir.resolve.getSymbolByLookupTag
 import org.jetbrains.kotlin.fir.resolve.inference.isFunctionalType
+import org.jetbrains.kotlin.fir.resolve.symbolProvider
 import org.jetbrains.kotlin.fir.symbols.ConeClassLikeLookupTag
 import org.jetbrains.kotlin.fir.symbols.ConeTypeParameterLookupTag
 import org.jetbrains.kotlin.fir.symbols.impl.FirClassifierSymbol
@@ -122,13 +123,21 @@ internal class KtSymbolByFirBuilder private constructor(
     fun buildAnonymousObjectSymbol(fir: FirAnonymousObject) =
         symbolsCache.cache(fir) { KtFirAnonymousObjectSymbol(fir, resolveState, token, this) }
 
-    // TODO it can be a constructor parameter, which may be split into parameter & property
-    // we should handle them both
-    fun buildParameterSymbol(fir: FirValueParameter) =
-        symbolsCache.cache(fir) { KtFirFunctionValueParameterSymbol(fir, resolveState, token, this) }
+    fun buildParameterSymbol(fir: FirValueParameter): KtParameterSymbol =
+        symbolsCache.cache(fir) {
+            if (fir.isConstructorParameter == true) KtFirConstructorValueParameterSymbol(fir, resolveState, token, this)
+            else KtFirFunctionParameterSymbol(fir, resolveState, token, this)
+        }
 
-    fun buildFirConstructorParameter(fir: FirValueParameter) =
-        symbolsCache.cache(fir) { KtFirConstructorValueParameterSymbol(fir, resolveState, token, this) }
+    fun buildConstructorParameterSymbol(fir: FirValueParameter): KtFirConstructorValueParameterSymbol {
+        require(fir.isConstructorParameter == true)
+        return symbolsCache.cache(fir) { KtFirConstructorValueParameterSymbol(fir, resolveState, token, this) }
+    }
+
+    fun buildFunctionParameterSymbol(fir: FirValueParameter): KtFirFunctionParameterSymbol {
+        require(fir.isConstructorParameter != true)
+        return symbolsCache.cache(fir) { KtFirFunctionParameterSymbol(fir, resolveState, token, this) }
+    }
 
     fun buildFirSetterParameter(fir: FirValueParameter): KtFirSetterParameterSymbol =
         symbolsCache.cache(fir) { KtFirSetterParameterSymbol(fir, resolveState, token, this) }
@@ -137,7 +146,9 @@ internal class KtSymbolByFirBuilder private constructor(
         KtFirFunctionSymbol(fir, resolveState, token, this)
     }
 
-    fun buildConstructorSymbol(fir: FirConstructor) = symbolsCache.cache(fir) { KtFirConstructorSymbol(fir, resolveState, token, this) }
+    fun buildConstructorSymbol(fir: FirConstructor) =
+        symbolsCache.cache(fir) { KtFirConstructorSymbol(fir, resolveState, token, this) }
+
     fun buildTypeParameterSymbol(fir: FirTypeParameter) =
         symbolsCache.cache(fir) { KtFirTypeParameterSymbol(fir, resolveState, token, this) }
 
@@ -223,7 +234,7 @@ internal class KtSymbolByFirBuilder private constructor(
     }
 }
 
-private class BuilderCache<From, To: Any> private constructor(
+private class BuilderCache<From, To : Any> private constructor(
     private val cache: ConcurrentMap<From, To>,
     private val isReadOnly: Boolean
 ) {

@@ -528,7 +528,9 @@ class RawFirBuilder(
             defaultTypeRef: FirTypeRef? = null,
         ) {
             for (valueParameter in valueParameters) {
-                container.valueParameters += valueParameter.toFirValueParameter(defaultTypeRef)
+                val firValueParameter = valueParameter.toFirValueParameter(defaultTypeRef)
+                firValueParameter.isConstructorParameter = container is FirAbstractConstructorBuilder
+                container.valueParameters += firValueParameter
             }
         }
 

@@ -43,9 +43,9 @@ internal class KtFirFunctionSymbol(
     override val annotatedType: KtTypeAndAnnotations by cached {
         firRef.returnTypeAndAnnotations(FirResolvePhase.IMPLICIT_TYPES_BODY_RESOLVE, builder)
     }
-    override val valueParameters: List<KtFirFunctionValueParameterSymbol> by firRef.withFirAndCache { fir ->
+    override val valueParameters: List<KtFirFunctionParameterSymbol> by firRef.withFirAndCache { fir ->
         fir.valueParameters.map { valueParameter ->
-            builder.buildParameterSymbol(valueParameter)
+            builder.buildFunctionParameterSymbol(valueParameter)
         }
     }
     override val typeParameters by firRef.withFirAndCache { fir ->

@@ -79,3 +79,7 @@ var <D : FirCallableDeclaration<*>>
 
 private object InitialSignatureKey : FirDeclarationDataKey()
 var FirCallableDeclaration<*>.initialSignatureAttr: FirCallableDeclaration<*>? by FirDeclarationDataRegistry.data(InitialSignatureKey)
+
+private object IsConstructorParameter : FirDeclarationDataKey()
+var FirValueParameter.isConstructorParameter: Boolean? by FirDeclarationDataRegistry.data(IsConstructorParameter)
+

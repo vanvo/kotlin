@@ -2,7 +2,7 @@ fun foo(x: Int) {}
 
 // SYMBOLS:
 /*
-KtFirFunctionValueParameterSymbol:
+KtFirFunctionParameterSymbol:
   annotatedType: [] kotlin/Int
   annotationClassIds: []
   annotations: []
@@ -30,6 +30,6 @@ KtFirFunctionSymbol:
   receiverType: null
   symbolKind: TOP_LEVEL
   typeParameters: []
-  valueParameters: [KtFirFunctionValueParameterSymbol(x)]
+  valueParameters: [KtFirFunctionParameterSymbol(x)]
   visibility: PUBLIC
 */

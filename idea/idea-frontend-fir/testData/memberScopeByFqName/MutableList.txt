@@ -19,7 +19,7 @@ KtFirFunctionSymbol:
   receiverType: null
   symbolKind: MEMBER
   typeParameters: []
-  valueParameters: [KtFirFunctionValueParameterSymbol(element)]
+  valueParameters: [KtFirFunctionParameterSymbol(element)]
   visibility: PUBLIC
 
 KtFirFunctionSymbol:
@@ -40,7 +40,7 @@ KtFirFunctionSymbol:
   receiverType: null
   symbolKind: MEMBER
   typeParameters: []
-  valueParameters: [KtFirFunctionValueParameterSymbol(index), KtFirFunctionValueParameterSymbol(element)]
+  valueParameters: [KtFirFunctionParameterSymbol(index), KtFirFunctionParameterSymbol(element)]
   visibility: PUBLIC
 
 KtFirFunctionSymbol:
@@ -61,7 +61,7 @@ KtFirFunctionSymbol:
   receiverType: null
   symbolKind: MEMBER
   typeParameters: []
-  valueParameters: [KtFirFunctionValueParameterSymbol(index), KtFirFunctionValueParameterSymbol(elements)]
+  valueParameters: [KtFirFunctionParameterSymbol(index), KtFirFunctionParameterSymbol(elements)]
   visibility: PUBLIC
 
 KtFirFunctionSymbol:
@@ -82,7 +82,7 @@ KtFirFunctionSymbol:
   receiverType: null
   symbolKind: MEMBER
   typeParameters: []
-  valueParameters: [KtFirFunctionValueParameterSymbol(elements)]
+  valueParameters: [KtFirFunctionParameterSymbol(elements)]
   visibility: PUBLIC
 
 KtFirFunctionSymbol:
@@ -145,7 +145,7 @@ KtFirFunctionSymbol:
   receiverType: null
   symbolKind: MEMBER
   typeParameters: []
-  valueParameters: [KtFirFunctionValueParameterSymbol(index)]
+  valueParameters: [KtFirFunctionParameterSymbol(index)]
   visibility: PUBLIC
 
 KtFirFunctionSymbol:
@@ -166,7 +166,7 @@ KtFirFunctionSymbol:
   receiverType: null
   symbolKind: MEMBER
   typeParameters: []
-  valueParameters: [KtFirFunctionValueParameterSymbol(element)]
+  valueParameters: [KtFirFunctionParameterSymbol(element)]
   visibility: PUBLIC
 
 KtFirFunctionSymbol:
@@ -187,7 +187,7 @@ KtFirFunctionSymbol:
   receiverType: null
   symbolKind: MEMBER
   typeParameters: []
-  valueParameters: [KtFirFunctionValueParameterSymbol(elements)]
+  valueParameters: [KtFirFunctionParameterSymbol(elements)]
   visibility: PUBLIC
 
 KtFirFunctionSymbol:
@@ -208,7 +208,7 @@ KtFirFunctionSymbol:
   receiverType: null
   symbolKind: MEMBER
   typeParameters: []
-  valueParameters: [KtFirFunctionValueParameterSymbol(index)]
+  valueParameters: [KtFirFunctionParameterSymbol(index)]
   visibility: PUBLIC
 
 KtFirFunctionSymbol:
@@ -229,7 +229,7 @@ KtFirFunctionSymbol:
   receiverType: null
   symbolKind: MEMBER
   typeParameters: []
-  valueParameters: [KtFirFunctionValueParameterSymbol(elements)]
+  valueParameters: [KtFirFunctionParameterSymbol(elements)]
   visibility: PUBLIC
 
 KtFirFunctionSymbol:
@@ -250,7 +250,7 @@ KtFirFunctionSymbol:
   receiverType: null
   symbolKind: MEMBER
   typeParameters: []
-  valueParameters: [KtFirFunctionValueParameterSymbol(index), KtFirFunctionValueParameterSymbol(element)]
+  valueParameters: [KtFirFunctionParameterSymbol(index), KtFirFunctionParameterSymbol(element)]
   visibility: PUBLIC
 
 KtFirFunctionSymbol:
@@ -271,7 +271,7 @@ KtFirFunctionSymbol:
   receiverType: null
   symbolKind: MEMBER
   typeParameters: []
-  valueParameters: [KtFirFunctionValueParameterSymbol(fromIndex), KtFirFunctionValueParameterSymbol(toIndex)]
+  valueParameters: [KtFirFunctionParameterSymbol(fromIndex), KtFirFunctionParameterSymbol(toIndex)]
   visibility: PUBLIC
 
 KtFirFunctionSymbol:
@@ -292,7 +292,7 @@ KtFirFunctionSymbol:
   receiverType: null
   symbolKind: MEMBER
   typeParameters: []
-  valueParameters: [KtFirFunctionValueParameterSymbol(element)]
+  valueParameters: [KtFirFunctionParameterSymbol(element)]
   visibility: PUBLIC
 
 KtFirFunctionSymbol:
@@ -313,7 +313,7 @@ KtFirFunctionSymbol:
   receiverType: null
   symbolKind: MEMBER
   typeParameters: []
-  valueParameters: [KtFirFunctionValueParameterSymbol(elements)]
+  valueParameters: [KtFirFunctionParameterSymbol(elements)]
   visibility: PUBLIC
 
 KtFirFunctionSymbol:
@@ -334,7 +334,7 @@ KtFirFunctionSymbol:
   receiverType: null
   symbolKind: MEMBER
   typeParameters: []
-  valueParameters: [KtFirFunctionValueParameterSymbol(index)]
+  valueParameters: [KtFirFunctionParameterSymbol(index)]
   visibility: PUBLIC
 
 KtFirFunctionSymbol:
@@ -355,7 +355,7 @@ KtFirFunctionSymbol:
   receiverType: null
   symbolKind: MEMBER
   typeParameters: []
-  valueParameters: [KtFirFunctionValueParameterSymbol(element)]
+  valueParameters: [KtFirFunctionParameterSymbol(element)]
   visibility: PUBLIC
 
 KtFirFunctionSymbol:
@@ -418,7 +418,7 @@ KtFirFunctionSymbol:
   receiverType: null
   symbolKind: MEMBER
   typeParameters: []
-  valueParameters: [KtFirFunctionValueParameterSymbol(element)]
+  valueParameters: [KtFirFunctionParameterSymbol(element)]
   visibility: PUBLIC
 
 KtFirKotlinPropertySymbol:
@@ -463,7 +463,7 @@ KtFirFunctionSymbol:
   receiverType: null
   symbolKind: MEMBER
   typeParameters: []
-  valueParameters: [KtFirFunctionValueParameterSymbol(other)]
+  valueParameters: [KtFirFunctionParameterSymbol(other)]
   visibility: PUBLIC
 
 KtFirFunctionSymbol:

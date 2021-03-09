@@ -17,15 +17,16 @@ KtFirConstructorSymbol:
   valueParameters: []
   visibility: PUBLIC
 
-KtFirFunctionValueParameterSymbol:
+KtFirConstructorValueParameterSymbol:
   annotatedType: [] kotlin/Int
   annotationClassIds: []
   annotations: []
+  constructorParameterKind: VAL_PROPERTY
   hasDefaultValue: false
   isVararg: false
   name: x
   origin: SOURCE
-  symbolKind: NON_PROPERTY_PARAMETER
+  symbolKind: MEMBER
 
 KtFirConstructorSymbol:
   annotatedType: [] A
@@ -37,28 +38,30 @@ KtFirConstructorSymbol:
   origin: SOURCE
   symbolKind: MEMBER
   typeParameters: []
-  valueParameters: Could not render due to java.lang.ClassCastException: org.jetbrains.kotlin.idea.frontend.api.fir.symbols.KtFirFunctionValueParameterSymbol cannot be cast to org.jetbrains.kotlin.idea.frontend.api.fir.symbols.KtFirConstructorValueParameterSymbol
+  valueParameters: [KtFirConstructorValueParameterSymbol(x)]
   visibility: PUBLIC
 
-KtFirFunctionValueParameterSymbol:
+KtFirConstructorValueParameterSymbol:
   annotatedType: [] kotlin/Int
   annotationClassIds: []
   annotations: []
+  constructorParameterKind: VAL_PROPERTY
   hasDefaultValue: false
   isVararg: false
   name: y
   origin: SOURCE
-  symbolKind: NON_PROPERTY_PARAMETER
+  symbolKind: MEMBER
 
-KtFirFunctionValueParameterSymbol:
+KtFirConstructorValueParameterSymbol:
   annotatedType: [] kotlin/String
   annotationClassIds: []
   annotations: []
+  constructorParameterKind: VAL_PROPERTY
   hasDefaultValue: false
   isVararg: false
   name: z
   origin: SOURCE
-  symbolKind: NON_PROPERTY_PARAMETER
+  symbolKind: MEMBER
 
 KtFirConstructorSymbol:
   annotatedType: [] A
@@ -70,7 +73,7 @@ KtFirConstructorSymbol:
   origin: SOURCE
   symbolKind: MEMBER
   typeParameters: []
-  valueParameters: Could not render due to java.lang.ClassCastException: org.jetbrains.kotlin.idea.frontend.api.fir.symbols.KtFirFunctionValueParameterSymbol cannot be cast to org.jetbrains.kotlin.idea.frontend.api.fir.symbols.KtFirConstructorValueParameterSymbol
+  valueParameters: [KtFirConstructorValueParameterSymbol(y), KtFirConstructorValueParameterSymbol(z)]
   visibility: PUBLIC
 
 KtFirClassOrObjectSymbol:

@@ -9,7 +9,7 @@ KtFirTypeParameterSymbol:
   upperBounds: [kotlin/Any?]
   variance: INVARIANT
 
-KtFirFunctionValueParameterSymbol:
+KtFirFunctionParameterSymbol:
   annotatedType: [] X
   annotationClassIds: []
   annotations: []
@@ -37,6 +37,6 @@ KtFirFunctionSymbol:
   receiverType: null
   symbolKind: TOP_LEVEL
   typeParameters: [KtFirTypeParameterSymbol(X)]
-  valueParameters: [KtFirFunctionValueParameterSymbol(x)]
+  valueParameters: [KtFirFunctionParameterSymbol(x)]
   visibility: PUBLIC
 */

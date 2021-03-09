@@ -26,7 +26,7 @@ import org.jetbrains.kotlin.idea.frontend.api.symbols.pointers.KtSymbolPointer
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.Name
 
-internal class KtFirFunctionValueParameterSymbol(
+internal class KtFirFunctionParameterSymbol(
     fir: FirValueParameter,
     resolveState: FirModuleResolveState,
     override val token: ValidityToken,
@@ -48,7 +48,7 @@ internal class KtFirFunctionValueParameterSymbol(
     override fun containsAnnotation(classId: ClassId): Boolean = firRef.containsAnnotation(classId)
     override val annotationClassIds: Collection<ClassId> by cached { firRef.getAnnotationClassIds() }
 
-    override fun createPointer(): KtSymbolPointer<KtFunctionParameterSymbol> {
+    override fun createPointer(): KtSymbolPointer<KtFirFunctionParameterSymbol> {
         KtPsiBasedSymbolPointer.createForSymbolFromSource(this)?.let { return it }
         TODO("Creating pointers for functions parameters from library is not supported yet")
     }

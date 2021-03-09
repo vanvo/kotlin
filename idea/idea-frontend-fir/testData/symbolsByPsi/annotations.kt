@@ -11,25 +11,27 @@ class X {
 
 // SYMBOLS:
 /*
-KtFirFunctionValueParameterSymbol:
+KtFirConstructorValueParameterSymbol:
   annotatedType: [] kotlin/String
   annotationClassIds: []
   annotations: []
+  constructorParameterKind: VAL_PROPERTY
   hasDefaultValue: false
   isVararg: false
   name: param1
   origin: SOURCE
-  symbolKind: NON_PROPERTY_PARAMETER
+  symbolKind: MEMBER
 
-KtFirFunctionValueParameterSymbol:
+KtFirConstructorValueParameterSymbol:
   annotatedType: [] kotlin/Int
   annotationClassIds: []
   annotations: []
+  constructorParameterKind: VAL_PROPERTY
   hasDefaultValue: false
   isVararg: false
   name: param2
   origin: SOURCE
-  symbolKind: NON_PROPERTY_PARAMETER
+  symbolKind: MEMBER
 
 KtFirConstructorSymbol:
   annotatedType: [] Anno
@@ -41,7 +43,7 @@ KtFirConstructorSymbol:
   origin: SOURCE
   symbolKind: MEMBER
   typeParameters: []
-  valueParameters: Could not render due to java.lang.ClassCastException: org.jetbrains.kotlin.idea.frontend.api.fir.symbols.KtFirFunctionValueParameterSymbol cannot be cast to org.jetbrains.kotlin.idea.frontend.api.fir.symbols.KtFirConstructorValueParameterSymbol
+  valueParameters: [KtFirConstructorValueParameterSymbol(param1), KtFirConstructorValueParameterSymbol(param2)]
   visibility: PUBLIC
 
 KtFirClassOrObjectSymbol:
