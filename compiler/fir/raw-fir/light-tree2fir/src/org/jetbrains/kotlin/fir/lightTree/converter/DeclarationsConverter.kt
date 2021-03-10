@@ -728,7 +728,7 @@ class DeclarationsConverter(
         primaryConstructor?.forEachChildren {
             when (it.tokenType) {
                 MODIFIER_LIST -> modifiers = convertModifierList(it)
-                VALUE_PARAMETER_LIST -> valueParameters += convertValueParameters(it)
+                VALUE_PARAMETER_LIST -> valueParameters += convertValueParameters(it, isConstructorParameters = true)
             }
         }
 
@@ -803,7 +803,7 @@ class DeclarationsConverter(
         secondaryConstructor.forEachChildren {
             when (it.tokenType) {
                 MODIFIER_LIST -> modifiers = convertModifierList(it)
-                VALUE_PARAMETER_LIST -> firValueParameters += convertValueParameters(it)
+                VALUE_PARAMETER_LIST -> firValueParameters += convertValueParameters(it, isConstructorParameters = true)
                 CONSTRUCTOR_DELEGATION_CALL -> constructorDelegationCall = convertConstructorDelegationCall(it, classWrapper)
                 BLOCK -> block = it
             }
@@ -1128,6 +1128,8 @@ class DeclarationsConverter(
             origin = FirDeclarationOrigin.Source
             returnTypeRef = propertyTypeRef
             symbol = FirVariableSymbol(NAME_FOR_DEFAULT_VALUE_PARAMETER)
+        }.also {
+            it.isConstructorParameter = false
         }
         var block: LighterASTNode? = null
         var expression: LighterASTNode? = null
@@ -1256,6 +1258,8 @@ class DeclarationsConverter(
             isNoinline = modifiers.hasNoinline() || firValueParameter.isNoinline
             isVararg = modifiers.hasVararg() || firValueParameter.isVararg
             annotations += modifiers.annotations + firValueParameter.annotations
+        }.also {
+            it.isConstructorParameter = false
         }
     }
 
@@ -1760,10 +1764,10 @@ class DeclarationsConverter(
     /**
      * @see org.jetbrains.kotlin.parsing.KotlinParsing.parseValueParameterList
      */
-    fun convertValueParameters(valueParameters: LighterASTNode): List<ValueParameter> {
+    fun convertValueParameters(valueParameters: LighterASTNode, isConstructorParameters: Boolean = false): List<ValueParameter> {
         return valueParameters.forEachChildrenReturnList { node, container ->
             when (node.tokenType) {
-                VALUE_PARAMETER -> container += convertValueParameter(node)
+                VALUE_PARAMETER -> container += convertValueParameter(node, isConstructorParameters)
             }
         }
     }
@@ -1771,7 +1775,7 @@ class DeclarationsConverter(
     /**
      * @see org.jetbrains.kotlin.parsing.KotlinParsing.parseValueParameter
      */
-    fun convertValueParameter(valueParameter: LighterASTNode): ValueParameter {
+    fun convertValueParameter(valueParameter: LighterASTNode, isConstructorParameter: Boolean = false): ValueParameter {
         var modifiers = Modifier()
         var isVal = false
         var isVar = false
@@ -1804,6 +1808,8 @@ class DeclarationsConverter(
             isNoinline = modifiers.hasNoinline()
             isVararg = modifiers.hasVararg()
             annotations += modifiers.annotations
+        }.also {
+            it.isConstructorParameter = isConstructorParameter
         }
         return ValueParameter(isVal, isVar, modifiers, firValueParameter, destructuringDeclaration)
     }
