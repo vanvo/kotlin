@@ -372,6 +372,8 @@ class RawFirBuilder(
                                 origin = FirDeclarationOrigin.Source
                                 returnTypeRef = propertyTypeRef
                                 symbol = FirVariableSymbol(NAME_FOR_DEFAULT_VALUE_PARAMETER)
+                            }.also {
+                                it.isConstructorParameter = false
                             }
                         }
                         symbol = FirPropertyAccessorSymbol()
@@ -420,7 +422,10 @@ class RawFirBuilder(
             }
         }
 
-        private fun KtParameter.toFirValueParameter(defaultTypeRef: FirTypeRef? = null): FirValueParameter {
+        private fun KtParameter.toFirValueParameter(
+            defaultTypeRef: FirTypeRef? = null,
+            isConstructorParameter: Boolean = false
+        ): FirValueParameter {
             val name = nameAsSafeName
             return buildValueParameter {
                 source = toFirSourceElement()
@@ -440,6 +445,8 @@ class RawFirBuilder(
                 isNoinline = hasModifier(NOINLINE_KEYWORD)
                 isVararg = isVarArg
                 extractAnnotationsTo(this)
+            }.also {
+                it.isConstructorParameter = isConstructorParameter
             }
         }
 
@@ -528,9 +535,10 @@ class RawFirBuilder(
             defaultTypeRef: FirTypeRef? = null,
         ) {
             for (valueParameter in valueParameters) {
-                val firValueParameter = valueParameter.toFirValueParameter(defaultTypeRef)
-                firValueParameter.isConstructorParameter = container is FirAbstractConstructorBuilder
-                container.valueParameters += firValueParameter
+                container.valueParameters += valueParameter.toFirValueParameter(
+                    defaultTypeRef,
+                    isConstructorParameter = container is FirAbstractConstructorBuilder
+                )
             }
         }
 
