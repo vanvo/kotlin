@@ -1016,6 +1016,11 @@ fun main(args: Array<String>) {
                 model("symbolsByFqName", extension = "txt")
             }
 
+
+            testClass<AbstractSymbolByReferenceTest> {
+                model("symbolByReference")
+            }
+
             testClass<AbstractMemberScopeByFqNameTest> {
                 model("memberScopeByFqName", extension = "txt")
             }
