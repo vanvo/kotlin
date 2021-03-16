@@ -589,7 +589,7 @@ internal fun MutableList<FirAnnotationCall>.addAnnotationsFrom(
 }
 
 internal fun JavaValueParameter.toFirValueParameter(
-    session: FirSession, index: Int, javaTypeParameterStack: JavaTypeParameterStack
+    session: FirSession, index: Int, javaTypeParameterStack: JavaTypeParameterStack, isConstructorParameter: Boolean,
 ): FirValueParameter {
     return buildJavaValueParameter {
         source = (this@toFirValueParameter as? JavaElementImpl<*>)?.psi?.toFirPsiSourceElement()
@@ -598,6 +598,8 @@ internal fun JavaValueParameter.toFirValueParameter(
         returnTypeRef = type.toFirJavaTypeRef(session, javaTypeParameterStack)
         isVararg = this@toFirValueParameter.isVararg
         annotationBuilder = { annotations.map { it.toFirAnnotationCall(session, javaTypeParameterStack) }}
+    }.also {
+        it.isConstructorParameter = isConstructorParameter
     }
 }
 

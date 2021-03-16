@@ -419,6 +419,7 @@ class JavaSymbolProvider(
             for ((index, valueParameter) in javaMethod.valueParameters.withIndex()) {
                 valueParameters += valueParameter.toFirValueParameter(
                     this@JavaSymbolProvider.session, index, javaTypeParameterStack,
+                    isConstructorParameter = false
                 )
             }
             annotationBuilder = { javaMethod.annotations.map { it.toFirAnnotationCall(session, javaTypeParameterStack) } }
@@ -507,6 +508,7 @@ class JavaSymbolProvider(
                 for ((index, valueParameter) in javaConstructor.valueParameters.withIndex()) {
                     valueParameters += valueParameter.toFirValueParameter(
                         this@JavaSymbolProvider.session, index, javaTypeParameterStack,
+                        isConstructorParameter = true
                     )
                 }
             } else {
