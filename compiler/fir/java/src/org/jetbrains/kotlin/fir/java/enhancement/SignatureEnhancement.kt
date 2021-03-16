@@ -10,10 +10,7 @@ import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.fir.FirAnnotationContainer
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.declarations.*
-import org.jetbrains.kotlin.fir.declarations.builder.FirConstructorBuilder
-import org.jetbrains.kotlin.fir.declarations.builder.FirPrimaryConstructorBuilder
-import org.jetbrains.kotlin.fir.declarations.builder.FirSimpleFunctionBuilder
-import org.jetbrains.kotlin.fir.declarations.builder.buildValueParameter
+import org.jetbrains.kotlin.fir.declarations.builder.*
 import org.jetbrains.kotlin.fir.declarations.impl.FirDeclarationStatusImpl
 import org.jetbrains.kotlin.fir.declarations.impl.FirResolvedDeclarationStatusImpl
 import org.jetbrains.kotlin.fir.declarations.synthetic.FirSyntheticProperty
@@ -205,19 +202,12 @@ class FirSignatureEnhancement(
         val newValueParameters = firMethod.valueParameters.zip(enhancedValueParameterTypes) { valueParameter, enhancedReturnType ->
             valueParameter.defaultValue?.replaceTypeRef(enhancedReturnType)
 
-            buildValueParameter {
-                source = valueParameter.source
+            buildValueParameterCopy(valueParameter) {
                 session = this@FirSignatureEnhancement.session
                 origin = FirDeclarationOrigin.Enhancement
                 returnTypeRef = enhancedReturnType
-                this.name = valueParameter.name
                 symbol = FirVariableSymbol(this.name)
-                defaultValue = valueParameter.defaultValue
-                isCrossinline = valueParameter.isCrossinline
-                isNoinline = valueParameter.isNoinline
-                isVararg = valueParameter.isVararg
                 resolvePhase = FirResolvePhase.ANALYZED_DEPENDENCIES
-                annotations += valueParameter.annotations
             }
         }
         val function = when (firMethod) {
