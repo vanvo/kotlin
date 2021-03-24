@@ -16,7 +16,7 @@ import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import org.jetbrains.kotlin.idea.core.withRootPrefixIfNeeded
+import org.jetbrains.kotlin.idea.core.asFqNameWithRootPrefixIfNeeded
 import org.jetbrains.kotlin.idea.frontend.api.HackToForceAllowRunningAnalyzeOnEDT
 import org.jetbrains.kotlin.idea.frontend.api.KtAnalysisSession
 import org.jetbrains.kotlin.idea.frontend.api.analyse
@@ -304,7 +304,7 @@ private object FunctionInsertionHandler : QuotedNamesAwareInsertionHandler() {
             context.document.replaceString(
                 context.startOffset,
                 context.tailOffset,
-                importStrategy.callableId.withRootPrefixIfNeeded().render()
+                importStrategy.callableId.asFqNameWithRootPrefixIfNeeded().render()
             )
             context.commitDocument()
 
@@ -337,7 +337,7 @@ private object VariableInsertionHandler : InsertHandler<LookupElement> {
                 context.document.replaceString(
                     context.startOffset,
                     context.tailOffset,
-                    importStrategy.callableId.withRootPrefixIfNeeded().render()
+                    importStrategy.callableId.asFqNameWithRootPrefixIfNeeded().render()
                 )
 
                 context.commitDocument()
