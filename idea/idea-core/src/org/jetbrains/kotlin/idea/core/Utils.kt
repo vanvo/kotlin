@@ -172,7 +172,7 @@ fun FqName.quoteSegmentsIfNeeded(): String {
 fun FqName.quoteIfNeeded() = FqName(quoteSegmentsIfNeeded())
 
 fun CallableId.withRootPrefixIfNeeded() =
-    asFqNameForDebugInfo().withRootPrefixIfNeeded()
+    asSingleFqName().withRootPrefixIfNeeded()
 
 fun FqName.withRootPrefixIfNeeded(targetElement: KtElement? = null) =
     if (canAddRootPrefix() && targetElement?.canAddRootPrefix() != false)
