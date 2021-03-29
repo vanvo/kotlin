@@ -31,17 +31,17 @@ abstract class C {
 
     final const val final = 11
 
-    const val withoutInitializer: Int
+    <!CONST_VAL_WITHOUT_INITIALIZER!>const<!> val withoutInitializer: Int
 
     init {
         withoutInitializer = 12
     }
 }
 
-const val delegated: Int by <!CONST_VAL_WITH_DELEGATE!>Delegate()<!>
+<!CONST_VAL_WITHOUT_INITIALIZER!>const<!> val delegated: Int by <!CONST_VAL_WITH_DELEGATE!>Delegate()<!>
 
 
-const val withGetter: Int
+<!CONST_VAL_WITHOUT_INITIALIZER!>const<!> val withGetter: Int
     <!CONST_VAL_WITH_GETTER!>get() = 13<!>
 
 const val withExplicitDefaultGetter: Int = 1
@@ -70,7 +70,7 @@ class Outer {
 const val defaultGetter = 19
     <!CONST_VAL_WITH_GETTER!>get<!>
 
-const val nonConstInitializer1 = foo()
+const val nonConstInitializer1 = <!CONST_VAL_WITH_NON_CONST_INITIALIZER!>foo()<!>
 const val nonConstInitializer2 = 1 as String
 const val nonConstInitializer3 = 1.0 as String
 const val nonConstInitializer4 = 1 as Double

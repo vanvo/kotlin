@@ -7,9 +7,9 @@ const val stringConst = "empty"
 
 enum class MyEnum { A }
 
-const val enumConst: MyEnum = MyEnum.A
-const val arrayConst: Array<String> = arrayOf("1")
-const val intArrayConst: IntArray = intArrayOf()
+<!TYPE_CANT_BE_USED_FOR_CONST_VAL!>const<!> val enumConst: MyEnum = MyEnum.A
+<!TYPE_CANT_BE_USED_FOR_CONST_VAL!>const<!> val arrayConst: Array<String> = arrayOf("1")
+<!TYPE_CANT_BE_USED_FOR_CONST_VAL!>const<!> val intArrayConst: IntArray = intArrayOf()
 
 const val unresolvedConst1 = <!UNRESOLVED_REFERENCE!>Unresolved<!>
 <!WRONG_MODIFIER_TARGET!>const<!> var unresolvedConst2 = <!UNRESOLVED_REFERENCE!>Unresolved<!>
