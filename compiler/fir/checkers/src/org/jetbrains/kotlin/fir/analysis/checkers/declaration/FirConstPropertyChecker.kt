@@ -7,9 +7,9 @@ package org.jetbrains.kotlin.fir.analysis.checkers.declaration
 
 import org.jetbrains.kotlin.descriptors.ClassKind
 import org.jetbrains.kotlin.fir.FirFakeSourceElementKind
-import org.jetbrains.kotlin.fir.analysis.checkers.ConstAndAnnotationErrorTypes
+import org.jetbrains.kotlin.fir.analysis.checkers.ConstantArgumentKind
 import org.jetbrains.kotlin.fir.analysis.checkers.canBeUsedForConstVal
-import org.jetbrains.kotlin.fir.analysis.checkers.checkConstInitializerAndAnnotationArguments
+import org.jetbrains.kotlin.fir.analysis.checkers.checkConstantArguments
 import org.jetbrains.kotlin.fir.analysis.checkers.context.CheckerContext
 import org.jetbrains.kotlin.fir.analysis.diagnostics.DiagnosticReporter
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirErrors
@@ -56,7 +56,7 @@ object FirConstPropertyChecker : FirPropertyChecker() {
             return
         }
 
-        if (checkConstInitializerAndAnnotationArguments(initializer, context.session) == ConstAndAnnotationErrorTypes.NOT_CONST) {
+        if (checkConstantArguments(initializer, context.session) == ConstantArgumentKind.REGULAR_NOT_CONST) {
             reporter.reportOn(initializer.source, FirErrors.CONST_VAL_WITH_NON_CONST_INITIALIZER, context)
         }
     }

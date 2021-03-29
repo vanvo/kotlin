@@ -8,8 +8,8 @@ package org.jetbrains.kotlin.fir.analysis.checkers.declaration
 import org.jetbrains.kotlin.fir.FirAnnotationContainer
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.FirSourceElement
-import org.jetbrains.kotlin.fir.analysis.checkers.ConstAndAnnotationErrorTypes
-import org.jetbrains.kotlin.fir.analysis.checkers.checkConstInitializerAndAnnotationArguments
+import org.jetbrains.kotlin.fir.analysis.checkers.ConstantArgumentKind
+import org.jetbrains.kotlin.fir.analysis.checkers.checkConstantArguments
 import org.jetbrains.kotlin.fir.analysis.checkers.context.CheckerContext
 import org.jetbrains.kotlin.fir.analysis.diagnostics.DiagnosticReporter
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirDiagnosticFactory0
@@ -64,13 +64,13 @@ object FirAnnotationArgumentChecker : FirBasicDeclarationChecker() {
                         ?.let { reporter.reportOn(arg.source, it, context) }
             }
             else ->
-                return when (checkConstInitializerAndAnnotationArguments(expression, session)) {
-                    ConstAndAnnotationErrorTypes.NOT_CONST -> FirErrors.ANNOTATION_ARGUMENT_MUST_BE_CONST
-                    ConstAndAnnotationErrorTypes.ENUM_NOT_CONST -> FirErrors.ANNOTATION_ARGUMENT_MUST_BE_ENUM_CONST
-                    ConstAndAnnotationErrorTypes.NOT_KCLASS_LITERAL -> FirErrors.ANNOTATION_ARGUMENT_MUST_BE_KCLASS_LITERAL
-                    ConstAndAnnotationErrorTypes.KCLASS_LITERAL_OF_TYPE_PARAMETER_ERROR -> FirErrors.ANNOTATION_ARGUMENT_KCLASS_LITERAL_OF_TYPE_PARAMETER_ERROR
-                    ConstAndAnnotationErrorTypes.NOT_CONST_VAL_IN_CONST_EXPRESSION -> FirErrors.NON_CONST_VAL_USED_IN_CONSTANT_EXPRESSION
-                    null -> null
+                return when (checkConstantArguments(expression, session)) {
+                    ConstantArgumentKind.REGULAR_NOT_CONST -> FirErrors.ANNOTATION_ARGUMENT_MUST_BE_CONST
+                    ConstantArgumentKind.ENUM_NOT_CONST -> FirErrors.ANNOTATION_ARGUMENT_MUST_BE_ENUM_CONST
+                    ConstantArgumentKind.NOT_KCLASS_LITERAL -> FirErrors.ANNOTATION_ARGUMENT_MUST_BE_KCLASS_LITERAL
+                    ConstantArgumentKind.KCLASS_LITERAL_OF_TYPE_PARAMETER_ERROR -> FirErrors.ANNOTATION_ARGUMENT_KCLASS_LITERAL_OF_TYPE_PARAMETER_ERROR
+                    ConstantArgumentKind.NOT_CONST_VAL_IN_CONST_EXPRESSION -> FirErrors.NON_CONST_VAL_USED_IN_CONSTANT_EXPRESSION
+                    ConstantArgumentKind.CONST -> null
                 }
         }
         return null
