@@ -59,7 +59,7 @@ object FirConstPropertyChecker : FirPropertyChecker() {
             return
         }
 
-        if (checkConstantArguments(initializer, context.session) == ConstantArgumentKind.REGULAR_NOT_CONST) {
+        if (checkConstantArguments(initializer, context.session) != ConstantArgumentKind.CONST) {
             reporter.reportOn(initializer.source, FirErrors.CONST_VAL_WITH_NON_CONST_INITIALIZER, context)
         }
     }
