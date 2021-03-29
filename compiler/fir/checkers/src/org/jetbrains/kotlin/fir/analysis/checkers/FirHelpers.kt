@@ -402,10 +402,10 @@ internal fun checkConstantArguments(
 
             when (calleeReference.name) {
                 in OperatorNameConventions.BINARY_OPERATION_NAMES, in OperatorNameConventions.UNARY_OPERATION_NAMES -> {
-                    val receiverClassId = expression.dispatchReceiver.typeRef.coneType.classId
+                    val receiverClassId = expression.dispatchReceiver.typeRef.coneTypeSafe<ConeKotlinType>()?.classId
 
                     for (exp in (expression as FirCall).arguments.plus(expression.dispatchReceiver)) {
-                        val expClassId = exp.typeRef.coneType.classId
+                        val expClassId = exp.typeRef.coneTypeSafe<ConeKotlinType>()?.classId
 
                         if (calleeReference.name == OperatorNameConventions.PLUS
                             && expClassId != receiverClassId
