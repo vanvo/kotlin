@@ -19,6 +19,7 @@ import org.jetbrains.kotlin.fir.declarations.FirRegularClass
 import org.jetbrains.kotlin.fir.declarations.isConst
 import org.jetbrains.kotlin.fir.types.ConeKotlinErrorType
 import org.jetbrains.kotlin.fir.types.coneType
+import org.jetbrains.kotlin.fir.types.lowerBoundIfFlexible
 import org.jetbrains.kotlin.lexer.KtTokens
 
 object FirConstPropertyChecker : FirPropertyChecker() {
@@ -53,7 +54,7 @@ object FirConstPropertyChecker : FirPropertyChecker() {
         }
 
         val returnType = declaration.returnTypeRef.coneType
-        if (returnType !is ConeKotlinErrorType && !returnType.canBeUsedForConstVal()) {
+        if (returnType !is ConeKotlinErrorType && !returnType.lowerBoundIfFlexible().canBeUsedForConstVal()) {
             reporter.reportOn(declaration.source, FirErrors.TYPE_CANT_BE_USED_FOR_CONST_VAL, returnType, context)
             return
         }
