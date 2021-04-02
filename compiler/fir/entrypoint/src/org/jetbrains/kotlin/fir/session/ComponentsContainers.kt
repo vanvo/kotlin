@@ -55,7 +55,7 @@ fun FirSession.registerThreadUnsafeCaches() {
 
 @OptIn(SessionConfiguration::class)
 fun FirSession.registerSealedClassInheritorsProvider() {
-    register(SealedClassInheritorsProvider::class, SealedClassInheritorsProviderImpl())
+    register(SealedClassInheritorsProvider::class, SealedClassInheritorsProviderImpl)
 }
 
 

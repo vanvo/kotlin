@@ -25,16 +25,12 @@ import java.util.concurrent.ConcurrentHashMap
 
 class SealedClassInheritorsProviderIdeImpl : SealedClassInheritorsProvider() {
     val cache = ConcurrentHashMap<ClassId, List<ClassId>>()
+
+    @OptIn(SealedClassInheritorsProviderInternals::class)
     override fun getSealedClassInheritors(firClass: FirRegularClass): List<ClassId> {
         require(firClass.isSealed)
+        firClass.sealedInheritorsAttr?.let { return it }
         return cache.computeIfAbsent(firClass.classId) { getInheritors(firClass) }
-    }
-
-    override fun setSealedInheritors(firClass: FirRegularClass, inheritors: List<ClassId>) {
-        require(firClass.origin != FirDeclarationOrigin.Source) {
-            "Setting setSealedInheritors is only possible for non-source declarations"
-        }
-        cache[firClass.classId] = inheritors
     }
 
     private fun getInheritors(firClass: FirRegularClass): List<ClassId> {
