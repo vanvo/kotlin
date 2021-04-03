@@ -48,6 +48,40 @@ class JvmEnvironmentConfigurator(testServices: TestServices) : EnvironmentConfig
         val TEST_CONFIGURATION_KIND_KEY = CompilerConfigurationKey.create<ConfigurationKind>("ConfigurationKind")
 
         private val DEFAULT_JVM_TARGET_FROM_PROPERTY: String? = System.getProperty("kotlin.test.default.jvm.target")
+
+        fun extractConfigurationKind(registeredDirectives: RegisteredDirectives): ConfigurationKind {
+            val withRuntime = JvmEnvironmentConfigurationDirectives.WITH_RUNTIME in registeredDirectives ||
+                    JvmEnvironmentConfigurationDirectives.WITH_STDLIB in registeredDirectives
+            val withReflect = JvmEnvironmentConfigurationDirectives.WITH_REFLECT in registeredDirectives
+            val noRuntime = JvmEnvironmentConfigurationDirectives.NO_RUNTIME in registeredDirectives
+            if (noRuntime && withRuntime) {
+                error("NO_RUNTIME and WITH_RUNTIME can not be used together")
+            }
+            return when {
+                withRuntime && !withReflect -> ConfigurationKind.NO_KOTLIN_REFLECT
+                withRuntime || withReflect -> ConfigurationKind.ALL
+                noRuntime -> ConfigurationKind.JDK_NO_RUNTIME
+                else -> ConfigurationKind.JDK_ONLY
+            }
+        }
+
+        fun extractJdkKind(registeredDirectives: RegisteredDirectives): TestJdkKind {
+            val fullJdkEnabled = JvmEnvironmentConfigurationDirectives.FULL_JDK in registeredDirectives
+            val jdkKinds = registeredDirectives[JvmEnvironmentConfigurationDirectives.JDK_KIND]
+
+            if (fullJdkEnabled) {
+                if (jdkKinds.isNotEmpty()) {
+                    error("FULL_JDK and JDK_KIND can not be used together")
+                }
+                return TestJdkKind.FULL_JDK
+            }
+
+            return when (jdkKinds.size) {
+                0 -> TestJdkKind.MOCK_JDK
+                1 -> jdkKinds.single()
+                else -> error("Too many jdk kinds passed: ${jdkKinds.joinToArrayString()}")
+            }
+        }
     }
 
     override val directivesContainers: List<DirectivesContainer>
@@ -166,39 +200,6 @@ class JvmEnvironmentConfigurator(testServices: TestServices) : EnvironmentConfig
         }
     }
 
-    fun extractJdkKind(registeredDirectives: RegisteredDirectives): TestJdkKind {
-        val fullJdkEnabled = JvmEnvironmentConfigurationDirectives.FULL_JDK in registeredDirectives
-        val jdkKinds = registeredDirectives[JvmEnvironmentConfigurationDirectives.JDK_KIND]
-
-        if (fullJdkEnabled) {
-            if (jdkKinds.isNotEmpty()) {
-                error("FULL_JDK and JDK_KIND can not be used together")
-            }
-            return TestJdkKind.FULL_JDK
-        }
-
-        return when (jdkKinds.size) {
-            0 -> TestJdkKind.MOCK_JDK
-            1 -> jdkKinds.single()
-            else -> error("Too many jdk kinds passed: ${jdkKinds.joinToArrayString()}")
-        }
-    }
-
-    fun extractConfigurationKind(registeredDirectives: RegisteredDirectives): ConfigurationKind {
-        val withRuntime = JvmEnvironmentConfigurationDirectives.WITH_RUNTIME in registeredDirectives ||
-                JvmEnvironmentConfigurationDirectives.WITH_STDLIB in registeredDirectives
-        val withReflect = JvmEnvironmentConfigurationDirectives.WITH_REFLECT in registeredDirectives
-        val noRuntime = JvmEnvironmentConfigurationDirectives.NO_RUNTIME in registeredDirectives
-        if (noRuntime && withRuntime) {
-            error("NO_RUNTIME and WITH_RUNTIME can not be used together")
-        }
-        return when {
-            withRuntime && !withReflect -> ConfigurationKind.NO_KOTLIN_REFLECT
-            withRuntime || withReflect -> ConfigurationKind.ALL
-            noRuntime -> ConfigurationKind.JDK_NO_RUNTIME
-            else -> ConfigurationKind.JDK_ONLY
-        }
-    }
 
     private fun CompilerConfiguration.registerModuleDependencies(module: TestModule) {
         val dependencyProvider = testServices.dependencyProvider
