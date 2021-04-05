@@ -26,6 +26,8 @@ import com.intellij.psi.stubs.IStubElementType
 import com.intellij.psi.tree.TokenSet
 import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.name.ClassId
+import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.stubs.KotlinClassOrObjectStub
 import org.jetbrains.kotlin.psi.stubs.elements.KtStubElementTypes
 
@@ -88,6 +90,21 @@ abstract class KtClassOrObject :
     }
 
     fun isTopLevel(): Boolean = stub?.isTopLevel() ?: (parent is KtFile)
+
+    /**
+     * Return [ClassId], if the class is not local (E.e, if a class can be accessed by that [ClassId] from another context)
+     *
+     * For classes that itself local (are declared inside a function or other local scope), returns `null`.
+     * For nested classes in local classes returns `null`.
+     * For KtEnumEntry returns null as enum entry is not a class semantically. And so, for nested classes in enum entry, returns `null`.
+     * Otherwise, returns non-null [ClassId].
+     *
+     * For returned ClassId, the ClassId.isLocal is always `false`.
+     */
+    open fun classIdIfNonLocal(): ClassId? {
+        stub?.let { return it.classIdIfNonLocal() }
+        return calculateClassId()
+    }
 
     override fun isLocal(): Boolean = stub?.isLocal() ?: KtPsiUtil.isLocal(this)
 
@@ -178,6 +195,36 @@ abstract class KtClassOrObject :
         parts.reverse()
         return parts.joinToString(separator = ".")
     }
+}
+
+private fun KtClassOrObject.calculateClassId(): ClassId? {
+    var ktFile: KtFile? = null
+    var element: PsiElement? = this
+    val containingClasses = mutableListOf<KtClassOrObject>()
+    while (element != null) {
+        when (element) {
+            is KtEnumEntry -> {
+                return null
+            }
+            is KtClassOrObject -> {
+                if (element.name == null) {
+                    return null
+                }
+                containingClasses += element
+            }
+            is KtFile -> {
+                ktFile = element
+                break
+            }
+            is KtDeclaration -> {
+                return null
+            }
+        }
+        element = element.parent
+    }
+    if (ktFile == null) return null
+    val relativeClassName = FqName.fromSegments(containingClasses.reversed().map { it.name!! })
+    return ClassId(ktFile.packageFqName, relativeClassName, /*local=*/false)
 }
 
 fun KtClassOrObject.getOrCreateBody(): KtClassBody {
