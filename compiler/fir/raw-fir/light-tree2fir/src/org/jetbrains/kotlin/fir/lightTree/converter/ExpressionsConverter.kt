@@ -147,7 +147,7 @@ class ExpressionsConverter(
             }
             target = FirFunctionTarget(labelName = label?.name, isLambda = true)
             context.firFunctionTargets += target
-            var destructuringStatements = mutableListOf<FirStatement>()
+            val destructuringStatements = mutableListOf<FirStatement>()
             for (valueParameter in valueParameterList) {
                 val multiDeclaration = valueParameter.destructuringDeclaration
                 valueParameters += if (multiDeclaration != null) {

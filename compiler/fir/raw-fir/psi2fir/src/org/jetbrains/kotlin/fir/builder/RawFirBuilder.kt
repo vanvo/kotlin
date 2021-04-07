@@ -1069,7 +1069,7 @@ open class RawFirBuilder(
                 symbol = FirAnonymousFunctionSymbol()
                 isLambda = true
 
-                var destructuringStatements = mutableListOf<FirStatement>()
+                val destructuringStatements = mutableListOf<FirStatement>()
                 for (valueParameter in literal.valueParameters) {
                     val multiDeclaration = valueParameter.destructuringDeclaration
                     valueParameters += if (multiDeclaration != null) {
