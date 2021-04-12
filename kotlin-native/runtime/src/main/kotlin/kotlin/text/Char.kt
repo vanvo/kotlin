@@ -242,10 +242,13 @@ external public actual fun Char.isHighSurrogate(): Boolean
 external public actual fun Char.isLowSurrogate(): Boolean
 
 
-internal actual fun digitOf(char: Char, radix: Int): Int = digitOfChecked(char, checkRadix(radix))
-
-@GCUnsafeCall("Kotlin_Char_digitOfChecked")
-external internal fun digitOfChecked(char: Char, radix: Int): Int
+internal actual fun digitOf(char: Char, radix: Int): Int = when {
+    char >= '0' && char <= '9' -> char - '0'
+    char >= 'A' && char <= 'Z' -> char - 'A' + 10
+    char >= 'a' && char <= 'z' -> char - 'a' + 10
+    char < '\u0080' -> -1
+    else -> char.digitToIntImpl()
+}.let { if (it >= radix) -1 else it }
 
 /**
  * Returns the Unicode general category of this character.

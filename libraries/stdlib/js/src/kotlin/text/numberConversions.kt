@@ -152,5 +152,6 @@ internal actual fun digitOf(char: Char, radix: Int): Int = when {
     char >= '0' && char <= '9' -> char - '0'
     char >= 'A' && char <= 'Z' -> char - 'A' + 10
     char >= 'a' && char <= 'z' -> char - 'a' + 10
-    else -> -1
+    char < '\u0080' -> -1
+    else -> char.digitToIntImpl()
 }.let { if (it >= radix) -1 else it }
