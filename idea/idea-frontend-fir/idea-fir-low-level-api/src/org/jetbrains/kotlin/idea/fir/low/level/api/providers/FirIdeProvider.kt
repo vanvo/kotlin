@@ -26,8 +26,7 @@ import org.jetbrains.kotlin.idea.fir.low.level.api.file.builder.ModuleFileCache
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
-import org.jetbrains.kotlin.psi.KtNamedFunction
-import org.jetbrains.kotlin.psi.KtProperty
+import org.jetbrains.kotlin.psi.*
 
 @ThreadSafeMutableState
 internal class FirIdeProvider(
@@ -71,21 +70,42 @@ internal class FirIdeProvider(
             ?: error("Couldn't find container for ${symbol.classId}")
     }
 
-    override fun getFirClassifierContainerFileIfAny(symbol: FirClassLikeSymbol<*>): FirFile? =
-        cache.getContainerFirFile(symbol.fir)
+    override fun getFirClassifierContainerFileIfAny(symbol: FirClassLikeSymbol<*>): FirFile? {
+        val fir = symbol.fir
+        if (fir.isLocal) return null
+        return cache.getContainerFirFile(fir)
+    }
 
 
     override fun getFirCallableContainerFile(symbol: FirCallableSymbol<*>): FirFile? {
-        symbol.fir.originalForSubstitutionOverride?.symbol?.let {
+        val fir = symbol.fir
+        fir.originalForSubstitutionOverride?.symbol?.let {
             return getFirCallableContainerFile(it)
         }
         if (symbol is FirAccessorSymbol) {
-            val fir = symbol.fir
             if (fir is FirSyntheticProperty) {
                 return getFirCallableContainerFile(fir.getter.delegate.symbol)
             }
         }
-        return cache.getContainerFirFile(symbol.fir)
+        if (!symbol.shouldKnowAboutContainingFile()) {
+            return null
+        }
+        return cache.getContainerFirFile(fir)
+    }
+
+    private fun FirCallableSymbol<*>.shouldKnowAboutContainingFile(): Boolean {
+        val fir = fir
+        return when (fir) {
+            is FirPropertyAccessor -> {
+                val psi = fir.psi as? KtPropertyAccessor
+                psi?.property?.isFullyLocal == false
+            }
+            is FirProperty -> !fir.isLocal
+            is FirValueParameter -> false
+            is FirField -> false
+            is FirCallableMemberDeclaration<*> -> !fir.isLocal
+            else -> false
+        }
     }
 
     override fun getFirFilesByPackage(fqName: FqName): List<FirFile> = error("Should not be called in FIR IDE")
