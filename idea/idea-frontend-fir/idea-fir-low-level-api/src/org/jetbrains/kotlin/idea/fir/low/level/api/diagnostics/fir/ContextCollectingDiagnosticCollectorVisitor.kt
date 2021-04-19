@@ -20,8 +20,7 @@ private class ContextCollectingDiagnosticCollectorVisitor private constructor(
     designation: FirDeclarationDesignation,
     firFile: FirFile,
 ) : AbstractDiagnosticCollectorVisitor(
-    PersistentCheckerContextFactory.createEmptyPersistenceCheckerContext(sessionHolder),
-    components = emptyList()
+    PersistentCheckerContextFactory.createEmptyPersistenceCheckerContext(sessionHolder)
 ) {
     private val contextCollector = object : ContextByDesignationCollector<PersistentCheckerContext>(designation, firFile) {
         override fun getCurrentContext(): PersistentCheckerContext = context

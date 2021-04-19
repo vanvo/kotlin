@@ -11,8 +11,8 @@ import org.jetbrains.kotlin.fir.analysis.collectors.components.AbstractDiagnosti
 
 open class CheckerRunningDiagnosticCollectorVisitor(
     context: PersistentCheckerContext,
-    components: List<AbstractDiagnosticCollectorComponent>
-) : AbstractDiagnosticCollectorVisitor(context, components) {
+    protected val components: List<AbstractDiagnosticCollectorComponent>
+) : AbstractDiagnosticCollectorVisitor(context) {
 
     override fun visitNestedElements(element: FirElement) {
         element.acceptChildren(this, null)

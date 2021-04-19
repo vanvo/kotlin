@@ -26,7 +26,6 @@ import org.jetbrains.kotlin.name.Name
 
 abstract class AbstractDiagnosticCollectorVisitor(
     @set:PrivateForInline var context: PersistentCheckerContext,
-    protected val components: List<AbstractDiagnosticCollectorComponent>,
 ) : FirDefaultVisitor<Unit, Nothing?>() {
 
     protected open fun shouldVisitDeclaration(declaration: FirDeclaration) = true
