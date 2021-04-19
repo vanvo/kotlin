@@ -112,6 +112,10 @@ abstract class AbstractDiagnosticCollectorVisitor(
         }
     }
 
+    override fun visitField(field: FirField, data: Nothing?) {
+        visitWithDeclaration(field)
+    }
+
     override fun visitTypeAlias(typeAlias: FirTypeAlias, data: Nothing?) {
         withSuppressedDiagnostics(typeAlias) {
             visitWithDeclaration(typeAlias)

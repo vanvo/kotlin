@@ -69,6 +69,7 @@ internal class SingleNonLocalDeclarationDiagnosticRetriever(
             return when (this) {
                 is FirAnonymousInitializer -> true
                 is FirEnumEntry -> true
+                is FirField -> true
                 is FirValueParameter -> true
                 is FirConstructor -> isPrimary
                 else -> false

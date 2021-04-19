@@ -39,6 +39,11 @@ public class DiagnosticTraversalCounterTestGenerated extends AbstractDiagnosticT
         runTest("idea/idea-frontend-fir/idea-fir-low-level-api/testdata/diagnosticTraversalCounter/declarationsInPropertyInit.kt");
     }
 
+    @TestMetadata("delegatingToObject.kt")
+    public void testDelegatingToObject() throws Exception {
+        runTest("idea/idea-frontend-fir/idea-fir-low-level-api/testdata/diagnosticTraversalCounter/delegatingToObject.kt");
+    }
+
     @TestMetadata("enumClass.kt")
     public void testEnumClass() throws Exception {
         runTest("idea/idea-frontend-fir/idea-fir-low-level-api/testdata/diagnosticTraversalCounter/enumClass.kt");
