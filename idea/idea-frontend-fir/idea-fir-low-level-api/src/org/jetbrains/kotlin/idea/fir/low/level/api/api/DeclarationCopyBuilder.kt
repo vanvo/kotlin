@@ -8,10 +8,7 @@ package org.jetbrains.kotlin.idea.fir.low.level.api.api
 import org.jetbrains.kotlin.fir.FirElement
 import org.jetbrains.kotlin.fir.builder.RawFirFragmentForLazyBodiesBuilder
 import org.jetbrains.kotlin.fir.declarations.*
-import org.jetbrains.kotlin.fir.declarations.builder.FirDeclarationBuilder
-import org.jetbrains.kotlin.fir.declarations.builder.buildPropertyAccessorCopy
-import org.jetbrains.kotlin.fir.declarations.builder.buildRegularClassCopy
-import org.jetbrains.kotlin.fir.declarations.builder.buildSimpleFunctionCopy
+import org.jetbrains.kotlin.fir.declarations.builder.*
 import org.jetbrains.kotlin.fir.expressions.FirReturnExpression
 import org.jetbrains.kotlin.fir.visitors.FirVisitorVoid
 import org.jetbrains.kotlin.idea.fir.low.level.api.providers.firIdeProvider
@@ -24,22 +21,22 @@ object DeclarationCopyBuilder {
         state: FirModuleResolveState,
     ): FirDeclaration {
         return when (fakeKtDeclaration) {
-            is KtNamedFunction -> buildFunctionCopy(
+            is KtNamedFunction -> createFunctionCopy(
                 fakeKtDeclaration,
                 originalFirDeclaration as FirSimpleFunction,
                 state
             )
-            is KtProperty -> buildPropertyCopy(
+            is KtProperty -> createPropertyCopy(
                 fakeKtDeclaration,
                 originalFirDeclaration as FirProperty,
                 state
             )
-            is KtClassOrObject -> buildClassCopy(
+            is KtClassOrObject -> createClassCopy(
                 fakeKtDeclaration,
                 originalFirDeclaration as FirRegularClass,
                 state
             )
-            is KtTypeAlias -> buildTypeAliasCopy(
+            is KtTypeAlias -> createTypeAliasCopy(
                 fakeKtDeclaration,
                 originalFirDeclaration as FirTypeAlias,
                 state
@@ -48,7 +45,7 @@ object DeclarationCopyBuilder {
         }
     }
 
-    private fun buildFunctionCopy(
+    private fun createFunctionCopy(
         element: KtNamedFunction,
         originalFunction: FirSimpleFunction,
         state: FirModuleResolveState,
@@ -65,7 +62,7 @@ object DeclarationCopyBuilder {
         }.apply { reassignAllReturnTargets(builtFunction) }
     }
 
-    private fun buildClassCopy(
+    private fun createClassCopy(
         fakeKtClassOrObject: KtClassOrObject,
         originalFirClass: FirRegularClass,
         state: FirModuleResolveState,
@@ -80,21 +77,21 @@ object DeclarationCopyBuilder {
         }
     }
 
-    private fun buildTypeAliasCopy(
+    private fun createTypeAliasCopy(
         fakeKtTypeAlias: KtTypeAlias,
         originalFirTypeAlias: FirTypeAlias,
         state: FirModuleResolveState,
     ): FirTypeAlias {
         val builtTypeAlias = createCopy(fakeKtTypeAlias, originalFirTypeAlias)
 
-        return org.jetbrains.kotlin.fir.declarations.builder.buildTypeAliasCopy(originalFirTypeAlias) {
+        return buildTypeAliasCopy(originalFirTypeAlias) {
             expandedTypeRef = builtTypeAlias.expandedTypeRef
             symbol = builtTypeAlias.symbol
             initDeclaration(originalFirTypeAlias, builtTypeAlias, state)
         }
     }
 
-    private fun buildPropertyCopy(
+    private fun createPropertyCopy(
         element: KtProperty,
         originalProperty: FirProperty,
         state: FirModuleResolveState
@@ -115,7 +112,7 @@ object DeclarationCopyBuilder {
             builtSetter
         }
 
-        return org.jetbrains.kotlin.fir.declarations.builder.buildPropertyCopy(originalProperty) {
+        return buildPropertyCopy(originalProperty) {
             symbol = builtProperty.symbol
             initializer = builtProperty.initializer
 
