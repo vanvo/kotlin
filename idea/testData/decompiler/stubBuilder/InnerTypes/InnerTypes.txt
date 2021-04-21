@@ -2,19 +2,19 @@ PsiJetFileStubImpl[package=test]
   PACKAGE_DIRECTIVE
     REFERENCE_EXPRESSION[referencedName=test]
   IMPORT_LIST
-  CLASS[classId=test/InnerTypes, fqName=test.InnerTypes, isEnumEntry=false, isInterface=false, isLocal=false, isTopLevel=true, name=InnerTypes, superNames=[]]
+  CLASS[classId=test/InnerTypes, fqName=test.InnerTypes, isEnumEntry=false, isFullyLocal=false, isInterface=false, isLocal=false, isTopLevel=true, name=InnerTypes, superNames=[]]
     MODIFIER_LIST[public final]
     TYPE_PARAMETER_LIST
-      TYPE_PARAMETER[fqName=null, isInVariance=false, isOutVariance=false, name=E]
-      TYPE_PARAMETER[fqName=null, isInVariance=false, isOutVariance=false, name=F]
+      TYPE_PARAMETER[fqName=null, isFullyLocal=true, isInVariance=false, isOutVariance=false, name=E]
+      TYPE_PARAMETER[fqName=null, isFullyLocal=true, isInVariance=false, isOutVariance=false, name=F]
     PRIMARY_CONSTRUCTOR
       MODIFIER_LIST[public]
       VALUE_PARAMETER_LIST
     CLASS_BODY
-      FUN[fqName=test.InnerTypes.bar, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=false, isExtension=false, isTopLevel=false, mayHaveContract=false, name=bar]
+      FUN[fqName=test.InnerTypes.bar, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=false, isExtension=false, isFullyLocal=false, isTopLevel=false, mayHaveContract=false, name=bar]
         MODIFIER_LIST[public final]
         VALUE_PARAMETER_LIST
-          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=x]
+          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=x]
             TYPE_REFERENCE
               USER_TYPE
                 USER_TYPE
@@ -35,7 +35,7 @@ PsiJetFileStubImpl[package=test]
                             REFERENCE_EXPRESSION[referencedName=kotlin]
                           REFERENCE_EXPRESSION[referencedName=Double]
                 REFERENCE_EXPRESSION[referencedName=Inner2]
-          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=y]
+          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=y]
             TYPE_REFERENCE
               USER_TYPE
                 USER_TYPE
@@ -57,27 +57,27 @@ PsiJetFileStubImpl[package=test]
             USER_TYPE
               REFERENCE_EXPRESSION[referencedName=kotlin]
             REFERENCE_EXPRESSION[referencedName=Unit]
-      CLASS[classId=test/InnerTypes.Inner, fqName=test.InnerTypes.Inner, isEnumEntry=false, isInterface=false, isLocal=false, isTopLevel=false, name=Inner, superNames=[]]
+      CLASS[classId=test/InnerTypes.Inner, fqName=test.InnerTypes.Inner, isEnumEntry=false, isFullyLocal=false, isInterface=false, isLocal=false, isTopLevel=false, name=Inner, superNames=[]]
         MODIFIER_LIST[inner public final]
         TYPE_PARAMETER_LIST
-          TYPE_PARAMETER[fqName=null, isInVariance=false, isOutVariance=false, name=G]
-          TYPE_PARAMETER[fqName=null, isInVariance=false, isOutVariance=false, name=H]
+          TYPE_PARAMETER[fqName=null, isFullyLocal=true, isInVariance=false, isOutVariance=false, name=G]
+          TYPE_PARAMETER[fqName=null, isFullyLocal=true, isInVariance=false, isOutVariance=false, name=H]
         PRIMARY_CONSTRUCTOR
           MODIFIER_LIST[public]
           VALUE_PARAMETER_LIST
         CLASS_BODY
-          CLASS[classId=test/InnerTypes.Inner.Inner3, fqName=test.InnerTypes.Inner.Inner3, isEnumEntry=false, isInterface=false, isLocal=false, isTopLevel=false, name=Inner3, superNames=[]]
+          CLASS[classId=test/InnerTypes.Inner.Inner3, fqName=test.InnerTypes.Inner.Inner3, isEnumEntry=false, isFullyLocal=false, isInterface=false, isLocal=false, isTopLevel=false, name=Inner3, superNames=[]]
             MODIFIER_LIST[inner public final]
             TYPE_PARAMETER_LIST
-              TYPE_PARAMETER[fqName=null, isInVariance=false, isOutVariance=false, name=I]
+              TYPE_PARAMETER[fqName=null, isFullyLocal=true, isInVariance=false, isOutVariance=false, name=I]
             PRIMARY_CONSTRUCTOR
               MODIFIER_LIST[public]
               VALUE_PARAMETER_LIST
             CLASS_BODY
-              FUN[fqName=test.InnerTypes.Inner.Inner3.foo, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=false, isExtension=false, isTopLevel=false, mayHaveContract=false, name=foo]
+              FUN[fqName=test.InnerTypes.Inner.Inner3.foo, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=false, isExtension=false, isFullyLocal=false, isTopLevel=false, mayHaveContract=false, name=foo]
                 MODIFIER_LIST[public final]
                 VALUE_PARAMETER_LIST
-                  VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=x]
+                  VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=x]
                     TYPE_REFERENCE
                       USER_TYPE
                         USER_TYPE
@@ -107,7 +107,7 @@ PsiJetFileStubImpl[package=test]
                                 USER_TYPE
                                   REFERENCE_EXPRESSION[referencedName=kotlin]
                                 REFERENCE_EXPRESSION[referencedName=Int]
-                  VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=y]
+                  VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=y]
                     TYPE_REFERENCE
                       USER_TYPE
                         USER_TYPE
@@ -135,7 +135,7 @@ PsiJetFileStubImpl[package=test]
                                 USER_TYPE
                                   REFERENCE_EXPRESSION[referencedName=kotlin]
                                 REFERENCE_EXPRESSION[referencedName=Double]
-                  VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=z]
+                  VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=z]
                     TYPE_REFERENCE
                       USER_TYPE
                         USER_TYPE
@@ -174,7 +174,7 @@ PsiJetFileStubImpl[package=test]
                                 USER_TYPE
                                   REFERENCE_EXPRESSION[referencedName=kotlin]
                                 REFERENCE_EXPRESSION[referencedName=Double]
-                  VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=w]
+                  VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=w]
                     TYPE_REFERENCE
                       USER_TYPE
                         USER_TYPE
@@ -209,7 +209,7 @@ PsiJetFileStubImpl[package=test]
                     USER_TYPE
                       REFERENCE_EXPRESSION[referencedName=kotlin]
                     REFERENCE_EXPRESSION[referencedName=Unit]
-      CLASS[classId=test/InnerTypes.Inner2, fqName=test.InnerTypes.Inner2, isEnumEntry=false, isInterface=false, isLocal=false, isTopLevel=false, name=Inner2, superNames=[]]
+      CLASS[classId=test/InnerTypes.Inner2, fqName=test.InnerTypes.Inner2, isEnumEntry=false, isFullyLocal=false, isInterface=false, isLocal=false, isTopLevel=false, name=Inner2, superNames=[]]
         MODIFIER_LIST[inner public final]
         PRIMARY_CONSTRUCTOR
           MODIFIER_LIST[public]

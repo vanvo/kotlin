@@ -2,7 +2,7 @@ PsiJetFileStubImpl[package=test]
   PACKAGE_DIRECTIVE
     REFERENCE_EXPRESSION[referencedName=test]
   IMPORT_LIST
-  PROPERTY[fqName=test.annotatedConstVal, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isTopLevel=true, isVar=false, name=annotatedConstVal]
+  PROPERTY[fqName=test.annotatedConstVal, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isFullyLocal=false, isTopLevel=true, isVar=false, name=annotatedConstVal]
     MODIFIER_LIST[public const]
       ANNOTATION_ENTRY[hasValueArguments=false, shortName=Deprecated]
         CONSTRUCTOR_CALLEE
@@ -16,21 +16,21 @@ PsiJetFileStubImpl[package=test]
         USER_TYPE
           REFERENCE_EXPRESSION[referencedName=kotlin]
         REFERENCE_EXPRESSION[referencedName=Int]
-  PROPERTY[fqName=test.p1Val, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isTopLevel=true, isVar=false, name=p1Val]
+  PROPERTY[fqName=test.p1Val, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isFullyLocal=false, isTopLevel=true, isVar=false, name=p1Val]
     MODIFIER_LIST[public]
     TYPE_REFERENCE
       USER_TYPE
         USER_TYPE
           REFERENCE_EXPRESSION[referencedName=kotlin]
         REFERENCE_EXPRESSION[referencedName=Int]
-  PROPERTY[fqName=test.p1Var, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isTopLevel=true, isVar=true, name=p1Var]
+  PROPERTY[fqName=test.p1Var, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isFullyLocal=false, isTopLevel=true, isVar=true, name=p1Var]
     MODIFIER_LIST[public]
     TYPE_REFERENCE
       USER_TYPE
         USER_TYPE
           REFERENCE_EXPRESSION[referencedName=kotlin]
         REFERENCE_EXPRESSION[referencedName=Int]
-  PROPERTY[fqName=test.p1ExtVal, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=true, isTopLevel=true, isVar=false, name=p1ExtVal]
+  PROPERTY[fqName=test.p1ExtVal, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=true, isFullyLocal=false, isTopLevel=true, isVar=false, name=p1ExtVal]
     MODIFIER_LIST[public]
     TYPE_REFERENCE
       USER_TYPE
@@ -42,7 +42,7 @@ PsiJetFileStubImpl[package=test]
         USER_TYPE
           REFERENCE_EXPRESSION[referencedName=kotlin]
         REFERENCE_EXPRESSION[referencedName=Int]
-  FUN[fqName=test.p1ExprFun, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=false, isExtension=false, isTopLevel=true, mayHaveContract=false, name=p1ExprFun]
+  FUN[fqName=test.p1ExprFun, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=false, isExtension=false, isFullyLocal=false, isTopLevel=true, mayHaveContract=false, name=p1ExprFun]
     MODIFIER_LIST[public]
     VALUE_PARAMETER_LIST
     TYPE_REFERENCE
@@ -50,7 +50,7 @@ PsiJetFileStubImpl[package=test]
         USER_TYPE
           REFERENCE_EXPRESSION[referencedName=kotlin]
         REFERENCE_EXPRESSION[referencedName=Int]
-  FUN[fqName=test.p1Fun, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=false, isExtension=false, isTopLevel=true, mayHaveContract=false, name=p1Fun]
+  FUN[fqName=test.p1Fun, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=false, isExtension=false, isFullyLocal=false, isTopLevel=true, mayHaveContract=false, name=p1Fun]
     MODIFIER_LIST[public]
     VALUE_PARAMETER_LIST
     TYPE_REFERENCE
@@ -58,10 +58,10 @@ PsiJetFileStubImpl[package=test]
         USER_TYPE
           REFERENCE_EXPRESSION[referencedName=kotlin]
         REFERENCE_EXPRESSION[referencedName=Unit]
-  FUN[fqName=test.p1FunWithParams, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=false, isExtension=false, isTopLevel=true, mayHaveContract=false, name=p1FunWithParams]
+  FUN[fqName=test.p1FunWithParams, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=false, isExtension=false, isFullyLocal=false, isTopLevel=true, mayHaveContract=false, name=p1FunWithParams]
     MODIFIER_LIST[public]
     VALUE_PARAMETER_LIST
-      VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=x]
+      VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=x]
         TYPE_REFERENCE
           USER_TYPE
             USER_TYPE
@@ -72,7 +72,7 @@ PsiJetFileStubImpl[package=test]
         USER_TYPE
           REFERENCE_EXPRESSION[referencedName=kotlin]
         REFERENCE_EXPRESSION[referencedName=Int]
-  FUN[fqName=test.p1ExtFun, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=false, isExtension=true, isTopLevel=true, mayHaveContract=false, name=p1ExtFun]
+  FUN[fqName=test.p1ExtFun, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=false, isExtension=true, isFullyLocal=false, isTopLevel=true, mayHaveContract=false, name=p1ExtFun]
     MODIFIER_LIST[public]
     TYPE_REFERENCE
       USER_TYPE
@@ -85,14 +85,14 @@ PsiJetFileStubImpl[package=test]
         USER_TYPE
           REFERENCE_EXPRESSION[referencedName=kotlin]
         REFERENCE_EXPRESSION[referencedName=Unit]
-  PROPERTY[fqName=test.p2Val, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isTopLevel=true, isVar=false, name=p2Val]
+  PROPERTY[fqName=test.p2Val, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isFullyLocal=false, isTopLevel=true, isVar=false, name=p2Val]
     MODIFIER_LIST[public]
     TYPE_REFERENCE
       USER_TYPE
         USER_TYPE
           REFERENCE_EXPRESSION[referencedName=kotlin]
         REFERENCE_EXPRESSION[referencedName=Int]
-  PROPERTY[fqName=test.p2ExtVal, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=true, isTopLevel=true, isVar=false, name=p2ExtVal]
+  PROPERTY[fqName=test.p2ExtVal, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=true, isFullyLocal=false, isTopLevel=true, isVar=false, name=p2ExtVal]
     MODIFIER_LIST[public]
     TYPE_REFERENCE
       USER_TYPE
@@ -104,7 +104,7 @@ PsiJetFileStubImpl[package=test]
         USER_TYPE
           REFERENCE_EXPRESSION[referencedName=kotlin]
         REFERENCE_EXPRESSION[referencedName=Int]
-  FUN[fqName=test.p2Fun, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=false, isExtension=false, isTopLevel=true, mayHaveContract=false, name=p2Fun]
+  FUN[fqName=test.p2Fun, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=false, isExtension=false, isFullyLocal=false, isTopLevel=true, mayHaveContract=false, name=p2Fun]
     MODIFIER_LIST[public]
     VALUE_PARAMETER_LIST
     TYPE_REFERENCE
@@ -112,7 +112,7 @@ PsiJetFileStubImpl[package=test]
         USER_TYPE
           REFERENCE_EXPRESSION[referencedName=kotlin]
         REFERENCE_EXPRESSION[referencedName=Unit]
-  FUN[fqName=test.p2ExtFun, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=false, isExtension=true, isTopLevel=true, mayHaveContract=false, name=p2ExtFun]
+  FUN[fqName=test.p2ExtFun, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=false, isExtension=true, isFullyLocal=false, isTopLevel=true, mayHaveContract=false, name=p2ExtFun]
     MODIFIER_LIST[public]
     TYPE_REFERENCE
       USER_TYPE

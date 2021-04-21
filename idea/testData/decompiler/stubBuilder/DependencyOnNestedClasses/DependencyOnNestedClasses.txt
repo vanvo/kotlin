@@ -2,7 +2,7 @@ PsiJetFileStubImpl[package=test]
   PACKAGE_DIRECTIVE
     REFERENCE_EXPRESSION[referencedName=test]
   IMPORT_LIST
-  CLASS[classId=test/DependencyOnNestedClasses, fqName=test.DependencyOnNestedClasses, isEnumEntry=false, isInterface=false, isLocal=false, isTopLevel=true, name=DependencyOnNestedClasses, superNames=[Nested]]
+  CLASS[classId=test/DependencyOnNestedClasses, fqName=test.DependencyOnNestedClasses, isEnumEntry=false, isFullyLocal=false, isInterface=false, isLocal=false, isTopLevel=true, name=DependencyOnNestedClasses, superNames=[Nested]]
     MODIFIER_LIST[public final]
     PRIMARY_CONSTRUCTOR
       MODIFIER_LIST[public]
@@ -17,10 +17,10 @@ PsiJetFileStubImpl[package=test]
               REFERENCE_EXPRESSION[referencedName=D]
             REFERENCE_EXPRESSION[referencedName=Nested]
     CLASS_BODY
-      FUN[fqName=test.DependencyOnNestedClasses.f, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=false, isExtension=false, isTopLevel=false, mayHaveContract=false, name=f]
+      FUN[fqName=test.DependencyOnNestedClasses.f, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=false, isExtension=false, isFullyLocal=false, isTopLevel=false, mayHaveContract=false, name=f]
         MODIFIER_LIST[public final]
         VALUE_PARAMETER_LIST
-          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=nc]
+          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=nc]
             TYPE_REFERENCE
               USER_TYPE
                 USER_TYPE
@@ -30,7 +30,7 @@ PsiJetFileStubImpl[package=test]
                     REFERENCE_EXPRESSION[referencedName=D]
                   REFERENCE_EXPRESSION[referencedName=Companion]
                 REFERENCE_EXPRESSION[referencedName=NestedInClassObject]
-          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=i]
+          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=i]
             TYPE_REFERENCE
               USER_TYPE
                 USER_TYPE
@@ -38,7 +38,7 @@ PsiJetFileStubImpl[package=test]
                     REFERENCE_EXPRESSION[referencedName=dependency]
                   REFERENCE_EXPRESSION[referencedName=D]
                 REFERENCE_EXPRESSION[referencedName=Inner]
-          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=ii]
+          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=ii]
             TYPE_REFERENCE
               USER_TYPE
                 USER_TYPE
@@ -48,7 +48,7 @@ PsiJetFileStubImpl[package=test]
                     REFERENCE_EXPRESSION[referencedName=D]
                   REFERENCE_EXPRESSION[referencedName=Inner]
                 REFERENCE_EXPRESSION[referencedName=Inner]
-          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=nn]
+          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=nn]
             TYPE_REFERENCE
               USER_TYPE
                 USER_TYPE

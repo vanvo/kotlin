@@ -232,3 +232,6 @@ val MessageLite.annotatedCallableKind: AnnotatedCallableKind
 fun Name.ref() = StringRef.fromString(this.asString())!!
 
 fun FqName.ref() = StringRef.fromString(this.asString())!!
+
+internal fun ClsStubBuilderContext.isInLocalContainer(): Boolean =
+    protoContainer?.classId?.isLocal == true

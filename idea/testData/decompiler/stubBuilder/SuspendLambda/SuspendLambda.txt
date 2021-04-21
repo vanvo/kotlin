@@ -2,20 +2,20 @@ PsiJetFileStubImpl[package=test]
   PACKAGE_DIRECTIVE
     REFERENCE_EXPRESSION[referencedName=test]
   IMPORT_LIST
-  CLASS[classId=test/SuspendLambda, fqName=test.SuspendLambda, isEnumEntry=false, isInterface=false, isLocal=false, isTopLevel=true, name=SuspendLambda, superNames=[]]
+  CLASS[classId=test/SuspendLambda, fqName=test.SuspendLambda, isEnumEntry=false, isFullyLocal=false, isInterface=false, isLocal=false, isTopLevel=true, name=SuspendLambda, superNames=[]]
     MODIFIER_LIST[public final]
     PRIMARY_CONSTRUCTOR
       MODIFIER_LIST[public]
       VALUE_PARAMETER_LIST
     CLASS_BODY
-      PROPERTY[fqName=test.SuspendLambda.nullableSuspend, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isTopLevel=false, isVar=true, name=nullableSuspend]
+      PROPERTY[fqName=test.SuspendLambda.nullableSuspend, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isFullyLocal=false, isTopLevel=false, isVar=true, name=nullableSuspend]
         MODIFIER_LIST[public final]
         TYPE_REFERENCE
           NULLABLE_TYPE
             MODIFIER_LIST[suspend]
             FUNCTION_TYPE
               VALUE_PARAMETER_LIST
-                VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=null]
+                VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=null]
                   TYPE_REFERENCE
                     USER_TYPE
                       USER_TYPE
@@ -26,7 +26,7 @@ PsiJetFileStubImpl[package=test]
                   USER_TYPE
                     REFERENCE_EXPRESSION[referencedName=kotlin]
                   REFERENCE_EXPRESSION[referencedName=Unit]
-      PROPERTY[fqName=test.SuspendLambda.nullableSuspendWithAnnotation, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isTopLevel=false, isVar=true, name=nullableSuspendWithAnnotation]
+      PROPERTY[fqName=test.SuspendLambda.nullableSuspendWithAnnotation, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isFullyLocal=false, isTopLevel=false, isVar=true, name=nullableSuspendWithAnnotation]
         MODIFIER_LIST[public final]
         TYPE_REFERENCE
           NULLABLE_TYPE
@@ -40,7 +40,7 @@ PsiJetFileStubImpl[package=test]
                       REFERENCE_EXPRESSION[referencedName=A]
             FUNCTION_TYPE
               VALUE_PARAMETER_LIST
-                VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=null]
+                VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=null]
                   TYPE_REFERENCE
                     USER_TYPE
                       USER_TYPE
@@ -51,14 +51,14 @@ PsiJetFileStubImpl[package=test]
                   USER_TYPE
                     REFERENCE_EXPRESSION[referencedName=kotlin]
                   REFERENCE_EXPRESSION[referencedName=Unit]
-      PROPERTY[fqName=test.SuspendLambda.nullableSuspendWithNullableParameter, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isTopLevel=false, isVar=true, name=nullableSuspendWithNullableParameter]
+      PROPERTY[fqName=test.SuspendLambda.nullableSuspendWithNullableParameter, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isFullyLocal=false, isTopLevel=false, isVar=true, name=nullableSuspendWithNullableParameter]
         MODIFIER_LIST[public final]
         TYPE_REFERENCE
           NULLABLE_TYPE
             MODIFIER_LIST[suspend]
             FUNCTION_TYPE
               VALUE_PARAMETER_LIST
-                VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=null]
+                VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=null]
                   TYPE_REFERENCE
                     NULLABLE_TYPE
                       USER_TYPE
@@ -70,7 +70,7 @@ PsiJetFileStubImpl[package=test]
                   USER_TYPE
                     REFERENCE_EXPRESSION[referencedName=kotlin]
                   REFERENCE_EXPRESSION[referencedName=Unit]
-      PROPERTY[fqName=test.SuspendLambda.nullableSuspendWithNullableReceiver, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isTopLevel=false, isVar=true, name=nullableSuspendWithNullableReceiver]
+      PROPERTY[fqName=test.SuspendLambda.nullableSuspendWithNullableReceiver, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isFullyLocal=false, isTopLevel=false, isVar=true, name=nullableSuspendWithNullableReceiver]
         MODIFIER_LIST[public final]
         TYPE_REFERENCE
           NULLABLE_TYPE
@@ -84,7 +84,7 @@ PsiJetFileStubImpl[package=test]
                         REFERENCE_EXPRESSION[referencedName=test]
                       REFERENCE_EXPRESSION[referencedName=RS]
               VALUE_PARAMETER_LIST
-                VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=null]
+                VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=null]
                   TYPE_REFERENCE
                     USER_TYPE
                       USER_TYPE
@@ -95,7 +95,7 @@ PsiJetFileStubImpl[package=test]
                   USER_TYPE
                     REFERENCE_EXPRESSION[referencedName=kotlin]
                   REFERENCE_EXPRESSION[referencedName=Unit]
-      PROPERTY[fqName=test.SuspendLambda.nullableSuspendWithReceiver, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isTopLevel=false, isVar=true, name=nullableSuspendWithReceiver]
+      PROPERTY[fqName=test.SuspendLambda.nullableSuspendWithReceiver, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isFullyLocal=false, isTopLevel=false, isVar=true, name=nullableSuspendWithReceiver]
         MODIFIER_LIST[public final]
         TYPE_REFERENCE
           NULLABLE_TYPE
@@ -108,7 +108,7 @@ PsiJetFileStubImpl[package=test]
                       REFERENCE_EXPRESSION[referencedName=test]
                     REFERENCE_EXPRESSION[referencedName=RS]
               VALUE_PARAMETER_LIST
-                VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=null]
+                VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=null]
                   TYPE_REFERENCE
                     USER_TYPE
                       USER_TYPE
@@ -119,21 +119,21 @@ PsiJetFileStubImpl[package=test]
                   USER_TYPE
                     REFERENCE_EXPRESSION[referencedName=kotlin]
                   REFERENCE_EXPRESSION[referencedName=Unit]
-      FUN[fqName=test.SuspendLambda.override, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=false, isExtension=false, isTopLevel=false, mayHaveContract=false, name=override]
+      FUN[fqName=test.SuspendLambda.override, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=false, isExtension=false, isFullyLocal=false, isTopLevel=false, mayHaveContract=false, name=override]
         MODIFIER_LIST[public final]
         VALUE_PARAMETER_LIST
-          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=p]
+          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=p]
             TYPE_REFERENCE
               USER_TYPE
                 USER_TYPE
                   REFERENCE_EXPRESSION[referencedName=kotlin]
                 REFERENCE_EXPRESSION[referencedName=String]
-          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=b]
+          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=b]
             TYPE_REFERENCE
               MODIFIER_LIST[suspend]
               FUNCTION_TYPE
                 VALUE_PARAMETER_LIST
-                  VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=null]
+                  VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=null]
                     TYPE_REFERENCE
                       USER_TYPE
                         USER_TYPE
@@ -150,15 +150,15 @@ PsiJetFileStubImpl[package=test]
               USER_TYPE
                 REFERENCE_EXPRESSION[referencedName=kotlin]
               REFERENCE_EXPRESSION[referencedName=Nothing]
-      FUN[fqName=test.SuspendLambda.override, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=false, isExtension=false, isTopLevel=false, mayHaveContract=false, name=override]
+      FUN[fqName=test.SuspendLambda.override, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=false, isExtension=false, isFullyLocal=false, isTopLevel=false, mayHaveContract=false, name=override]
         MODIFIER_LIST[public final]
         VALUE_PARAMETER_LIST
-          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=b]
+          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=b]
             TYPE_REFERENCE
               MODIFIER_LIST[suspend]
               FUNCTION_TYPE
                 VALUE_PARAMETER_LIST
-                  VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=null]
+                  VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=null]
                     TYPE_REFERENCE
                       USER_TYPE
                         USER_TYPE
@@ -175,17 +175,17 @@ PsiJetFileStubImpl[package=test]
               USER_TYPE
                 REFERENCE_EXPRESSION[referencedName=kotlin]
               REFERENCE_EXPRESSION[referencedName=Nothing]
-      FUN[fqName=test.SuspendLambda.testCoroutine, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=true, isExtension=false, isTopLevel=false, mayHaveContract=false, name=testCoroutine]
+      FUN[fqName=test.SuspendLambda.testCoroutine, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=true, isExtension=false, isFullyLocal=false, isTopLevel=false, mayHaveContract=false, name=testCoroutine]
         MODIFIER_LIST[public final]
         TYPE_PARAMETER_LIST
-          TYPE_PARAMETER[fqName=null, isInVariance=false, isOutVariance=false, name=T]
+          TYPE_PARAMETER[fqName=null, isFullyLocal=true, isInVariance=false, isOutVariance=false, name=T]
         VALUE_PARAMETER_LIST
-          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=f]
+          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=f]
             TYPE_REFERENCE
               MODIFIER_LIST[suspend]
               FUNCTION_TYPE
                 VALUE_PARAMETER_LIST
-                  VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=null]
+                  VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=null]
                     TYPE_REFERENCE
                       USER_TYPE
                         USER_TYPE
@@ -200,17 +200,17 @@ PsiJetFileStubImpl[package=test]
             USER_TYPE
               REFERENCE_EXPRESSION[referencedName=kotlin]
             REFERENCE_EXPRESSION[referencedName=Unit]
-      FUN[fqName=test.SuspendLambda.testCoroutineWithAnnotation, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=true, isExtension=false, isTopLevel=false, mayHaveContract=false, name=testCoroutineWithAnnotation]
+      FUN[fqName=test.SuspendLambda.testCoroutineWithAnnotation, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=true, isExtension=false, isFullyLocal=false, isTopLevel=false, mayHaveContract=false, name=testCoroutineWithAnnotation]
         MODIFIER_LIST[public final]
         TYPE_PARAMETER_LIST
-          TYPE_PARAMETER[fqName=null, isInVariance=false, isOutVariance=false, name=T]
+          TYPE_PARAMETER[fqName=null, isFullyLocal=true, isInVariance=false, isOutVariance=false, name=T]
         VALUE_PARAMETER_LIST
-          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=f]
+          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=f]
             TYPE_REFERENCE
               MODIFIER_LIST[suspend]
               FUNCTION_TYPE
                 VALUE_PARAMETER_LIST
-                  VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=null]
+                  VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=null]
                     TYPE_REFERENCE
                       USER_TYPE
                         USER_TYPE
@@ -233,10 +233,10 @@ PsiJetFileStubImpl[package=test]
             USER_TYPE
               REFERENCE_EXPRESSION[referencedName=kotlin]
             REFERENCE_EXPRESSION[referencedName=Unit]
-      FUN[fqName=test.SuspendLambda.createCoroutine1, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=true, isExtension=true, isTopLevel=false, mayHaveContract=false, name=createCoroutine1]
+      FUN[fqName=test.SuspendLambda.createCoroutine1, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=true, isExtension=true, isFullyLocal=false, isTopLevel=false, mayHaveContract=false, name=createCoroutine1]
         MODIFIER_LIST[public final]
         TYPE_PARAMETER_LIST
-          TYPE_PARAMETER[fqName=null, isInVariance=false, isOutVariance=false, name=T]
+          TYPE_PARAMETER[fqName=null, isFullyLocal=true, isInVariance=false, isOutVariance=false, name=T]
         TYPE_REFERENCE
           MODIFIER_LIST[suspend]
           FUNCTION_TYPE
@@ -245,7 +245,7 @@ PsiJetFileStubImpl[package=test]
               USER_TYPE
                 REFERENCE_EXPRESSION[referencedName=T]
         VALUE_PARAMETER_LIST
-          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=completion]
+          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=completion]
             TYPE_REFERENCE
               USER_TYPE
                 USER_TYPE
@@ -261,11 +261,11 @@ PsiJetFileStubImpl[package=test]
             USER_TYPE
               REFERENCE_EXPRESSION[referencedName=kotlin]
             REFERENCE_EXPRESSION[referencedName=Unit]
-      FUN[fqName=test.SuspendLambda.createCoroutine2, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=true, isExtension=true, isTopLevel=false, mayHaveContract=false, name=createCoroutine2]
+      FUN[fqName=test.SuspendLambda.createCoroutine2, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=true, isExtension=true, isFullyLocal=false, isTopLevel=false, mayHaveContract=false, name=createCoroutine2]
         MODIFIER_LIST[public final]
         TYPE_PARAMETER_LIST
-          TYPE_PARAMETER[fqName=null, isInVariance=false, isOutVariance=false, name=R]
-          TYPE_PARAMETER[fqName=null, isInVariance=false, isOutVariance=false, name=T]
+          TYPE_PARAMETER[fqName=null, isFullyLocal=true, isInVariance=false, isOutVariance=false, name=R]
+          TYPE_PARAMETER[fqName=null, isFullyLocal=true, isInVariance=false, isOutVariance=false, name=T]
         TYPE_REFERENCE
           MODIFIER_LIST[suspend]
           FUNCTION_TYPE
@@ -278,11 +278,11 @@ PsiJetFileStubImpl[package=test]
               USER_TYPE
                 REFERENCE_EXPRESSION[referencedName=T]
         VALUE_PARAMETER_LIST
-          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=receiver]
+          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=receiver]
             TYPE_REFERENCE
               USER_TYPE
                 REFERENCE_EXPRESSION[referencedName=R]
-          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=completion]
+          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=completion]
             TYPE_REFERENCE
               USER_TYPE
                 USER_TYPE
@@ -298,11 +298,11 @@ PsiJetFileStubImpl[package=test]
             USER_TYPE
               REFERENCE_EXPRESSION[referencedName=kotlin]
             REFERENCE_EXPRESSION[referencedName=Unit]
-      FUN[fqName=test.SuspendLambda.createCoroutineAnother, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=true, isExtension=true, isTopLevel=false, mayHaveContract=false, name=createCoroutineAnother]
+      FUN[fqName=test.SuspendLambda.createCoroutineAnother, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=true, isExtension=true, isFullyLocal=false, isTopLevel=false, mayHaveContract=false, name=createCoroutineAnother]
         MODIFIER_LIST[public final]
         TYPE_PARAMETER_LIST
-          TYPE_PARAMETER[fqName=null, isInVariance=false, isOutVariance=false, name=R]
-          TYPE_PARAMETER[fqName=null, isInVariance=false, isOutVariance=false, name=T]
+          TYPE_PARAMETER[fqName=null, isFullyLocal=true, isInVariance=false, isOutVariance=false, name=R]
+          TYPE_PARAMETER[fqName=null, isFullyLocal=true, isInVariance=false, isOutVariance=false, name=T]
         TYPE_REFERENCE
           MODIFIER_LIST[suspend]
           FUNCTION_TYPE
