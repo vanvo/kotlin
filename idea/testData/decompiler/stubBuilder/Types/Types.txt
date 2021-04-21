@@ -2,13 +2,13 @@ PsiJetFileStubImpl[package=test]
   PACKAGE_DIRECTIVE
     REFERENCE_EXPRESSION[referencedName=test]
   IMPORT_LIST
-  CLASS[classId=test/Types, fqName=test.Types, isEnumEntry=false, isInterface=false, isLocal=false, isTopLevel=true, name=Types, superNames=[]]
+  CLASS[classId=test/Types, fqName=test.Types, isEnumEntry=false, isFullyLocal=false, isInterface=false, isLocal=false, isTopLevel=true, name=Types, superNames=[]]
     MODIFIER_LIST[abstract public]
     PRIMARY_CONSTRUCTOR
       MODIFIER_LIST[public]
       VALUE_PARAMETER_LIST
     CLASS_BODY
-      PROPERTY[fqName=test.Types.deepExtFunctionType, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isTopLevel=false, isVar=false, name=deepExtFunctionType]
+      PROPERTY[fqName=test.Types.deepExtFunctionType, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isFullyLocal=false, isTopLevel=false, isVar=false, name=deepExtFunctionType]
         MODIFIER_LIST[abstract public]
         TYPE_REFERENCE
           FUNCTION_TYPE
@@ -19,11 +19,11 @@ PsiJetFileStubImpl[package=test]
                     REFERENCE_EXPRESSION[referencedName=kotlin]
                   REFERENCE_EXPRESSION[referencedName=String]
             VALUE_PARAMETER_LIST
-              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=null]
+              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=null]
                 TYPE_REFERENCE
                   FUNCTION_TYPE
                     VALUE_PARAMETER_LIST
-                      VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=null]
+                      VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=null]
                         TYPE_REFERENCE
                           USER_TYPE
                             USER_TYPE
@@ -34,7 +34,7 @@ PsiJetFileStubImpl[package=test]
                         USER_TYPE
                           REFERENCE_EXPRESSION[referencedName=kotlin]
                         REFERENCE_EXPRESSION[referencedName=Int]
-              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=null]
+              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=null]
                 TYPE_REFERENCE
                   NULLABLE_TYPE
                     USER_TYPE
@@ -57,7 +57,7 @@ PsiJetFileStubImpl[package=test]
                             USER_TYPE
                               REFERENCE_EXPRESSION[referencedName=kotlin]
                             REFERENCE_EXPRESSION[referencedName=String]
-      PROPERTY[fqName=test.Types.extFun, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isTopLevel=false, isVar=false, name=extFun]
+      PROPERTY[fqName=test.Types.extFun, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isFullyLocal=false, isTopLevel=false, isVar=false, name=extFun]
         MODIFIER_LIST[abstract public]
         TYPE_REFERENCE
           FUNCTION_TYPE
@@ -68,7 +68,7 @@ PsiJetFileStubImpl[package=test]
                     REFERENCE_EXPRESSION[referencedName=kotlin]
                   REFERENCE_EXPRESSION[referencedName=Int]
             VALUE_PARAMETER_LIST
-              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=null]
+              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=null]
                 TYPE_REFERENCE
                   USER_TYPE
                     USER_TYPE
@@ -79,7 +79,7 @@ PsiJetFileStubImpl[package=test]
                 USER_TYPE
                   REFERENCE_EXPRESSION[referencedName=kotlin]
                 REFERENCE_EXPRESSION[referencedName=Unit]
-      PROPERTY[fqName=test.Types.extFunction, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isTopLevel=false, isVar=false, name=extFunction]
+      PROPERTY[fqName=test.Types.extFunction, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isFullyLocal=false, isTopLevel=false, isVar=false, name=extFunction]
         MODIFIER_LIST[abstract public]
         TYPE_REFERENCE
           FUNCTION_TYPE
@@ -104,7 +104,7 @@ PsiJetFileStubImpl[package=test]
                         USER_TYPE
                           REFERENCE_EXPRESSION[referencedName=kotlin]
                         REFERENCE_EXPRESSION[referencedName=String]
-      PROPERTY[fqName=test.Types.extFunctionWithNullables, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isTopLevel=false, isVar=false, name=extFunctionWithNullables]
+      PROPERTY[fqName=test.Types.extFunctionWithNullables, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isFullyLocal=false, isTopLevel=false, isVar=false, name=extFunctionWithNullables]
         MODIFIER_LIST[abstract public]
         TYPE_REFERENCE
           FUNCTION_TYPE
@@ -115,14 +115,14 @@ PsiJetFileStubImpl[package=test]
                     REFERENCE_EXPRESSION[referencedName=kotlin]
                   REFERENCE_EXPRESSION[referencedName=String]
             VALUE_PARAMETER_LIST
-              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=null]
+              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=null]
                 TYPE_REFERENCE
                   NULLABLE_TYPE
                     USER_TYPE
                       USER_TYPE
                         REFERENCE_EXPRESSION[referencedName=kotlin]
                       REFERENCE_EXPRESSION[referencedName=Int]
-              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=null]
+              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=null]
                 TYPE_REFERENCE
                   NULLABLE_TYPE
                     USER_TYPE
@@ -145,7 +145,7 @@ PsiJetFileStubImpl[package=test]
                             USER_TYPE
                               REFERENCE_EXPRESSION[referencedName=kotlin]
                             REFERENCE_EXPRESSION[referencedName=String]
-      PROPERTY[fqName=test.Types.extFunctionWithParam, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isTopLevel=false, isVar=false, name=extFunctionWithParam]
+      PROPERTY[fqName=test.Types.extFunctionWithParam, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isFullyLocal=false, isTopLevel=false, isVar=false, name=extFunctionWithParam]
         MODIFIER_LIST[abstract public]
         TYPE_REFERENCE
           FUNCTION_TYPE
@@ -156,13 +156,13 @@ PsiJetFileStubImpl[package=test]
                     REFERENCE_EXPRESSION[referencedName=kotlin]
                   REFERENCE_EXPRESSION[referencedName=String]
             VALUE_PARAMETER_LIST
-              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=null]
+              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=null]
                 TYPE_REFERENCE
                   USER_TYPE
                     USER_TYPE
                       REFERENCE_EXPRESSION[referencedName=kotlin]
                     REFERENCE_EXPRESSION[referencedName=Int]
-              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=null]
+              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=null]
                 TYPE_REFERENCE
                   USER_TYPE
                     USER_TYPE
@@ -182,7 +182,7 @@ PsiJetFileStubImpl[package=test]
                         USER_TYPE
                           REFERENCE_EXPRESSION[referencedName=kotlin]
                         REFERENCE_EXPRESSION[referencedName=String]
-      PROPERTY[fqName=test.Types.funTypeWithStarAndNonStar, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isTopLevel=false, isVar=false, name=funTypeWithStarAndNonStar]
+      PROPERTY[fqName=test.Types.funTypeWithStarAndNonStar, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isFullyLocal=false, isTopLevel=false, isVar=false, name=funTypeWithStarAndNonStar]
         MODIFIER_LIST[abstract public]
         TYPE_REFERENCE
           USER_TYPE
@@ -197,7 +197,7 @@ PsiJetFileStubImpl[package=test]
                     USER_TYPE
                       REFERENCE_EXPRESSION[referencedName=kotlin]
                     REFERENCE_EXPRESSION[referencedName=Int]
-      PROPERTY[fqName=test.Types.function, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isTopLevel=false, isVar=false, name=function]
+      PROPERTY[fqName=test.Types.function, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isFullyLocal=false, isTopLevel=false, isVar=false, name=function]
         MODIFIER_LIST[public final]
         TYPE_REFERENCE
           FUNCTION_TYPE
@@ -207,18 +207,18 @@ PsiJetFileStubImpl[package=test]
                 USER_TYPE
                   REFERENCE_EXPRESSION[referencedName=kotlin]
                 REFERENCE_EXPRESSION[referencedName=Unit]
-      PROPERTY[fqName=test.Types.functionWithParam, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isTopLevel=false, isVar=false, name=functionWithParam]
+      PROPERTY[fqName=test.Types.functionWithParam, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isFullyLocal=false, isTopLevel=false, isVar=false, name=functionWithParam]
         MODIFIER_LIST[abstract public]
         TYPE_REFERENCE
           FUNCTION_TYPE
             VALUE_PARAMETER_LIST
-              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=null]
+              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=null]
                 TYPE_REFERENCE
                   USER_TYPE
                     USER_TYPE
                       REFERENCE_EXPRESSION[referencedName=kotlin]
                     REFERENCE_EXPRESSION[referencedName=String]
-              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=null]
+              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=null]
                 TYPE_REFERENCE
                   USER_TYPE
                     USER_TYPE
@@ -238,7 +238,7 @@ PsiJetFileStubImpl[package=test]
                         USER_TYPE
                           REFERENCE_EXPRESSION[referencedName=kotlin]
                         REFERENCE_EXPRESSION[referencedName=String]
-      PROPERTY[fqName=test.Types.list, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isTopLevel=false, isVar=false, name=list]
+      PROPERTY[fqName=test.Types.list, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isFullyLocal=false, isTopLevel=false, isVar=false, name=list]
         MODIFIER_LIST[abstract public]
         TYPE_REFERENCE
           USER_TYPE
@@ -254,7 +254,7 @@ PsiJetFileStubImpl[package=test]
                     USER_TYPE
                       REFERENCE_EXPRESSION[referencedName=kotlin]
                     REFERENCE_EXPRESSION[referencedName=Int]
-      PROPERTY[fqName=test.Types.listExtStarFun, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isTopLevel=false, isVar=false, name=listExtStarFun]
+      PROPERTY[fqName=test.Types.listExtStarFun, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isFullyLocal=false, isTopLevel=false, isVar=false, name=listExtStarFun]
         MODIFIER_LIST[abstract public]
         TYPE_REFERENCE
           USER_TYPE
@@ -281,7 +281,7 @@ PsiJetFileStubImpl[package=test]
                     TYPE_ARGUMENT_LIST
                       TYPE_PROJECTION[projectionKind=STAR]
                       TYPE_PROJECTION[projectionKind=STAR]
-      PROPERTY[fqName=test.Types.map, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isTopLevel=false, isVar=false, name=map]
+      PROPERTY[fqName=test.Types.map, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isFullyLocal=false, isTopLevel=false, isVar=false, name=map]
         MODIFIER_LIST[abstract public]
         TYPE_REFERENCE
           USER_TYPE
@@ -303,7 +303,7 @@ PsiJetFileStubImpl[package=test]
                     USER_TYPE
                       REFERENCE_EXPRESSION[referencedName=kotlin]
                     REFERENCE_EXPRESSION[referencedName=Int]
-      PROPERTY[fqName=test.Types.nullable, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isTopLevel=false, isVar=false, name=nullable]
+      PROPERTY[fqName=test.Types.nullable, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isFullyLocal=false, isTopLevel=false, isVar=false, name=nullable]
         MODIFIER_LIST[public final]
         TYPE_REFERENCE
           NULLABLE_TYPE
@@ -311,7 +311,7 @@ PsiJetFileStubImpl[package=test]
               USER_TYPE
                 REFERENCE_EXPRESSION[referencedName=kotlin]
               REFERENCE_EXPRESSION[referencedName=Int]
-      PROPERTY[fqName=test.Types.nullableMap, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isTopLevel=false, isVar=false, name=nullableMap]
+      PROPERTY[fqName=test.Types.nullableMap, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isFullyLocal=false, isTopLevel=false, isVar=false, name=nullableMap]
         MODIFIER_LIST[abstract public]
         TYPE_REFERENCE
           NULLABLE_TYPE
@@ -336,7 +336,7 @@ PsiJetFileStubImpl[package=test]
                         USER_TYPE
                           REFERENCE_EXPRESSION[referencedName=kotlin]
                         REFERENCE_EXPRESSION[referencedName=Int]
-      PROPERTY[fqName=test.Types.projections, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isTopLevel=false, isVar=false, name=projections]
+      PROPERTY[fqName=test.Types.projections, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isFullyLocal=false, isTopLevel=false, isVar=false, name=projections]
         MODIFIER_LIST[abstract public]
         TYPE_REFERENCE
           USER_TYPE
@@ -360,7 +360,7 @@ PsiJetFileStubImpl[package=test]
                     USER_TYPE
                       REFERENCE_EXPRESSION[referencedName=kotlin]
                     REFERENCE_EXPRESSION[referencedName=String]
-      PROPERTY[fqName=test.Types.starFun, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isTopLevel=false, isVar=false, name=starFun]
+      PROPERTY[fqName=test.Types.starFun, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isFullyLocal=false, isTopLevel=false, isVar=false, name=starFun]
         MODIFIER_LIST[abstract public]
         TYPE_REFERENCE
           USER_TYPE
@@ -370,7 +370,7 @@ PsiJetFileStubImpl[package=test]
             TYPE_ARGUMENT_LIST
               TYPE_PROJECTION[projectionKind=STAR]
               TYPE_PROJECTION[projectionKind=STAR]
-      PROPERTY[fqName=test.Types.starList, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isTopLevel=false, isVar=false, name=starList]
+      PROPERTY[fqName=test.Types.starList, hasDelegate=false, hasDelegateExpression=false, hasInitializer=false, hasReturnTypeRef=true, isExtension=false, isFullyLocal=false, isTopLevel=false, isVar=false, name=starList]
         MODIFIER_LIST[abstract public]
         TYPE_REFERENCE
           USER_TYPE
@@ -381,20 +381,20 @@ PsiJetFileStubImpl[package=test]
             REFERENCE_EXPRESSION[referencedName=List]
             TYPE_ARGUMENT_LIST
               TYPE_PROJECTION[projectionKind=STAR]
-      FUN[fqName=test.Types.functionTypeWithNamedArgs, hasBlockBody=true, hasBody=false, hasTypeParameterListBeforeFunctionName=false, isExtension=false, isTopLevel=false, mayHaveContract=false, name=functionTypeWithNamedArgs]
+      FUN[fqName=test.Types.functionTypeWithNamedArgs, hasBlockBody=true, hasBody=false, hasTypeParameterListBeforeFunctionName=false, isExtension=false, isFullyLocal=false, isTopLevel=false, mayHaveContract=false, name=functionTypeWithNamedArgs]
         MODIFIER_LIST[abstract public]
         VALUE_PARAMETER_LIST
-          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=fType]
+          VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=fType]
             TYPE_REFERENCE
               FUNCTION_TYPE
                 VALUE_PARAMETER_LIST
-                  VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=null]
+                  VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=null]
                     TYPE_REFERENCE
                       USER_TYPE
                         USER_TYPE
                           REFERENCE_EXPRESSION[referencedName=kotlin]
                         REFERENCE_EXPRESSION[referencedName=String]
-                  VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=null]
+                  VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=null]
                     TYPE_REFERENCE
                       NULLABLE_TYPE
                         USER_TYPE
@@ -411,25 +411,25 @@ PsiJetFileStubImpl[package=test]
             USER_TYPE
               REFERENCE_EXPRESSION[referencedName=kotlin]
             REFERENCE_EXPRESSION[referencedName=Unit]
-      FUN[fqName=test.Types.extOnFunctionType, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=true, isExtension=true, isTopLevel=false, mayHaveContract=false, name=extOnFunctionType]
+      FUN[fqName=test.Types.extOnFunctionType, hasBlockBody=true, hasBody=true, hasTypeParameterListBeforeFunctionName=true, isExtension=true, isFullyLocal=false, isTopLevel=false, mayHaveContract=false, name=extOnFunctionType]
         MODIFIER_LIST[public final]
         TYPE_PARAMETER_LIST
-          TYPE_PARAMETER[fqName=null, isInVariance=false, isOutVariance=false, name=P1]
-          TYPE_PARAMETER[fqName=null, isInVariance=false, isOutVariance=false, name=P2]
-          TYPE_PARAMETER[fqName=null, isInVariance=false, isOutVariance=false, name=P3]
-          TYPE_PARAMETER[fqName=null, isInVariance=false, isOutVariance=false, name=R]
+          TYPE_PARAMETER[fqName=null, isFullyLocal=true, isInVariance=false, isOutVariance=false, name=P1]
+          TYPE_PARAMETER[fqName=null, isFullyLocal=true, isInVariance=false, isOutVariance=false, name=P2]
+          TYPE_PARAMETER[fqName=null, isFullyLocal=true, isInVariance=false, isOutVariance=false, name=P3]
+          TYPE_PARAMETER[fqName=null, isFullyLocal=true, isInVariance=false, isOutVariance=false, name=R]
         TYPE_REFERENCE
           FUNCTION_TYPE
             VALUE_PARAMETER_LIST
-              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=null]
+              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=null]
                 TYPE_REFERENCE
                   USER_TYPE
                     REFERENCE_EXPRESSION[referencedName=P1]
-              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=null]
+              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=null]
                 TYPE_REFERENCE
                   USER_TYPE
                     REFERENCE_EXPRESSION[referencedName=P2]
-              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isMutable=false, name=null]
+              VALUE_PARAMETER[fqName=null, hasDefaultValue=false, hasValOrVar=false, isFullyLocal=true, isMutable=false, name=null]
                 TYPE_REFERENCE
                   USER_TYPE
                     REFERENCE_EXPRESSION[referencedName=P3]
