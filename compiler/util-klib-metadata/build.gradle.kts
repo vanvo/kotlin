@@ -10,6 +10,7 @@ dependencies {
     compileOnly(project(":compiler:frontend"))
     compileOnly(project(":core:deserialization"))
     compileOnly(project(":compiler:serialization"))
+    implementation(project(":compiler:compiler.deserialization"))
 
     compile(kotlinStdlib())
     compile(project(":kotlin-util-io"))

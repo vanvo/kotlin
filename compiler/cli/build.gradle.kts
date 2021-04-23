@@ -33,6 +33,7 @@ dependencies {
     compile(project(":compiler:fir:checkers:checkers.jvm"))
     compile(project(":kotlin-util-klib"))
     compile(project(":kotlin-util-io"))
+    implementation(project(":compiler:compiler.deserialization"))
 
     // TODO: as soon as cli-jvm is extracted out of this module, move this dependency there
     compileOnly(project(":compiler:ir.tree.impl"))
