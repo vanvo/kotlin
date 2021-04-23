@@ -14,7 +14,6 @@ import org.jetbrains.kotlin.load.java.descriptors.JavaForKotlinOverridePropertyD
 import org.jetbrains.kotlin.load.java.lazy.descriptors.LazyJavaPackageFragment
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameUnsafe
 import org.jetbrains.kotlin.resolve.descriptorUtil.overriddenTreeAsSequence
-import org.jetbrains.kotlin.synthetic.SyntheticJavaPropertyDescriptor
 import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.typeUtil.contains
 import org.jetbrains.kotlin.utils.addToStdlib.cast
@@ -33,7 +32,7 @@ class JvmIdSignatureDescriptor(private val mangler: KotlinMangler.DescriptorMang
         override fun platformSpecificProperty(descriptor: PropertyDescriptor) {
             // See KT-31646
             setSpecialJavaProperty(descriptor is JavaForKotlinOverridePropertyDescriptor)
-            setSyntheticJavaProperty(descriptor is SyntheticJavaPropertyDescriptor)
+            setSyntheticJavaProperty(descriptor is SyntheticPropertyDescriptor)
             keepTrackOfOverridesForPossiblyClashingFakeOverride(descriptor)
         }
 
