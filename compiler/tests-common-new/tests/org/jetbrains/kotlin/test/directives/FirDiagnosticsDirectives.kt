@@ -35,6 +35,11 @@ object FirDiagnosticsDirectives : SimpleDirectivesContainer() {
         applicability = Global
     )
 
+    val FIR_IDE_IGNORE by directive(
+        description = "Test is ignored in FIR IDE",
+        applicability = Global
+    )
+
     val USE_LIGHT_TREE by directive(
         description = "Enables light tree parser instead of PSI"
     )

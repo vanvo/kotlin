@@ -1,3 +1,4 @@
+// FIR_IDE_IGNORE
 <!MUST_BE_INITIALIZED!>private var Int.readOnlyWrapper: CharSequence?<!> get() = null
 <!MUST_BE_INITIALIZED!>private var Int.mutableWrapper: CharSequence?<!> get() = null
 
