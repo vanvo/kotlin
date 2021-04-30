@@ -49,6 +49,11 @@ public class KtScript extends KtNamedDeclarationStub<KotlinScriptStub> implement
     }
 
     @Override
+    public boolean hasNonLocalFqName() {
+        return true;
+    }
+
+    @Override
     public String getName() {
         return getFqName().shortName().asString();
     }

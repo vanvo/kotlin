@@ -84,6 +84,11 @@ public class KtFunctionLiteral extends KtFunctionNotStubbed {
     }
 
     @Override
+    public boolean hasNonLocalFqName() {
+        return false;
+    }
+
+    @Override
     public boolean hasBody() {
         return getBodyExpression() != null;
     }

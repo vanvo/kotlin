@@ -141,6 +141,11 @@ public class KtDestructuringDeclarationEntry extends KtNamedDeclarationNotStubbe
         return null;
     }
 
+    @Override
+    public boolean hasNonLocalFqName() {
+        return false;
+    }
+
     @NotNull
     @Override
     public SearchScope getUseScope() {

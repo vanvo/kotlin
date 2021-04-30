@@ -57,5 +57,7 @@ class KtTypeAlias : KtTypeParameterListOwnerStub<KotlinTypeAliasStub>, KtNamedDe
         return ClassIdCalculator.calculateClassId(this)
     }
 
+    override fun hasNonLocalFqName(): Boolean = ClassIdCalculator.hasNonLocalFqName(this)
+
     override fun getPresentation() = ItemPresentationProviders.getItemPresentation(this)
 }

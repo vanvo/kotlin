@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.kotlin.name.FqName;
 import org.jetbrains.kotlin.name.Name;
+import org.jetbrains.kotlin.psi.psiUtil.ClassIdCalculator;
 
 public interface KtNamedDeclaration extends KtDeclaration, PsiNameIdentifierOwner, KtStatementExpression, KtNamed {
     @NotNull
@@ -28,4 +29,12 @@ public interface KtNamedDeclaration extends KtDeclaration, PsiNameIdentifierOwne
 
     @Nullable
     FqName getFqName();
+
+    /**
+     * @return <code>true</code> if declaration can be accessed by qualified name (i.e it has classId or callableId);
+     * otherwise return <code>false</code>.
+     */
+    default boolean hasNonLocalFqName() {
+        return ClassIdCalculator.hasNonLocalFqName(this);
+    }
 }

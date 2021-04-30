@@ -42,4 +42,29 @@ internal object ClassIdCalculator {
         )
         return ClassId(ktFile.packageFqName, relativeClassName, /*local=*/false)
     }
+
+    /**
+     * @see KtNamedDeclaration.hasNonLocalFqName for semantics
+     */
+    @JvmStatic
+    fun hasNonLocalFqName(declaration: KtNamedDeclaration): Boolean {
+        return when (declaration) {
+            is KtDestructuringDeclarationEntry, is KtFunctionLiteral, is KtTypeParameter -> false
+            is KtConstructor<*> -> false
+            is KtParameter -> {
+                if (declaration.hasValOrVar()) declaration.containingClassOrObject?.getClassId() != null
+                else false
+            }
+            is KtCallableLikeDeclaration -> {
+                when (val parent = declaration.parent) {
+                    is KtFile -> true
+                    is KtClassBody -> (parent.parent as? KtClassOrObject)?.getClassId() != null
+                    else -> false
+                }
+            }
+            is KtClassLikeDeclaration -> declaration.getClassId() != null
+            is KtScript -> true
+            else -> error("Unexpected ${declaration::class.qualifiedName}")
+        }
+    }
 }

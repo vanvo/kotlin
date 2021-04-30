@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public interface KtCallableDeclaration extends KtNamedDeclaration, KtTypeParameterListOwner {
+public interface KtCallableDeclaration extends KtCallableLikeDeclaration, KtTypeParameterListOwner {
     @Nullable
     KtParameterList getValueParameterList();
 

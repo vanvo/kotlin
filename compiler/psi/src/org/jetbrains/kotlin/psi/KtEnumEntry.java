@@ -29,7 +29,7 @@ import org.jetbrains.kotlin.psi.stubs.elements.KtStubElementTypes;
 import java.util.Collections;
 import java.util.List;
 
-public class KtEnumEntry extends KtClass {
+public class KtEnumEntry extends KtClass implements KtCallableLikeDeclaration {
     public KtEnumEntry(@NotNull ASTNode node) {
         super(node);
     }
