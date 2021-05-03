@@ -46,6 +46,7 @@ import org.jetbrains.kotlin.lexer.kotlin.AbstractKotlinLexerTest
 import org.jetbrains.kotlin.modules.xml.AbstractModuleXmlParserTest
 import org.jetbrains.kotlin.multiplatform.AbstractMultiPlatformIntegrationTest
 import org.jetbrains.kotlin.parsing.AbstractParsingTest
+import org.jetbrains.kotlin.psi.AbstractPsiInfoTest
 import org.jetbrains.kotlin.renderer.AbstractDescriptorRendererTest
 import org.jetbrains.kotlin.renderer.AbstractFunctionDescriptorInExpressionRendererTest
 import org.jetbrains.kotlin.repl.AbstractReplInterpreterTest
@@ -450,6 +451,13 @@ fun generateJUnit3CompilerTests(args: Array<String>) {
                 model("codegen/script", extension = "kts", targetBackend = TargetBackend.JVM_IR)
             }
         }
+
+        testGroup("compiler/psi/tests", "compiler/psi/testData") {
+            testClass<AbstractPsiInfoTest> {
+                model("psiInfo")
+            }
+        }
+
 
         testGroup("compiler/fir/raw-fir/psi2fir/tests-gen", "compiler/fir/raw-fir/psi2fir/testData") {
             testClass<AbstractRawFirBuilderTestCase> {

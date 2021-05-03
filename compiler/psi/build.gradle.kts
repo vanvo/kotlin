@@ -21,14 +21,23 @@ dependencies {
     compileOnly(intellijCoreDep()) { includeJars("intellij-core") }
     compileOnly(intellijDep()) { includeJars("guava", "trove4j", rootProject = rootProject) }
 
+    testCompile(projectTests(":compiler:tests-common"))
+    testCompile(intellijCoreDep()) { includeJars("intellij-core") }
+
     jflexPath(commonDep("org.jetbrains.intellij.deps.jflex", "jflex"))
 }
 
 sourceSets {
     "main" { projectDefault() }
-    "test" {}
+    "test" { projectDefault() }
 }
 
+projectTest {
+    dependsOn(":dist")
+    workingDir = rootDir
+}
+
+testsJar()
 
 
 ant.importBuild("buildLexer.xml")

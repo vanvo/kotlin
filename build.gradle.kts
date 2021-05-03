@@ -748,6 +748,7 @@ tasks {
         dependsOn("jvmCompilerTest")
         dependsOn("jsCompilerTest")
         dependsOn("miscCompilerTest")
+        dependsOn(":compiler:psi:tests")
     }
 
     register("miscCompilerTest") {
