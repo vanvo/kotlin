@@ -1938,7 +1938,7 @@ internal class SetterVisibilityInconsistentWithPropertyVisibilityImpl(
 internal class WrongSetterReturnTypeImpl(
     firDiagnostic: FirPsiDiagnostic<*>,
     override val token: ValidityToken,
-) : KtFirDiagnostic.WrongSetterReturnType(), KtAbstractFirDiagnostic<KtProperty> {
+) : KtFirDiagnostic.WrongSetterReturnType(), KtAbstractFirDiagnostic<KtTypeReference> {
     override val firDiagnostic: FirPsiDiagnostic<*> by weakRef(firDiagnostic)
 }
 
@@ -1947,7 +1947,7 @@ internal class WrongGetterReturnTypeImpl(
     override val actualType: KtType,
     firDiagnostic: FirPsiDiagnostic<*>,
     override val token: ValidityToken,
-) : KtFirDiagnostic.WrongGetterReturnType(), KtAbstractFirDiagnostic<KtProperty> {
+) : KtFirDiagnostic.WrongGetterReturnType(), KtAbstractFirDiagnostic<KtTypeReference> {
     override val firDiagnostic: FirPsiDiagnostic<*> by weakRef(firDiagnostic)
 }
 
