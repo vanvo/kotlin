@@ -246,8 +246,18 @@ internal class BridgeLowering(val context: JvmBackendContext) : FileLoweringPass
             .filter { !it.isFakeOverride && it.name == irFunction.name }
             .mapTo(HashSet()) { it.jvmMethod }
 
-        // Add the current method to the blacklist if it is concrete or final.
-        val targetMethod = (irFunction.resolveFakeOverride() ?: irFunction).jvmMethod
+        // Don't generate bridges for default argument stubs. This is necessary to match the
+        // behavior of the JVM backend and to avoid a ClassCastException in the inliner (KT-46389).
+        // On the other hand, this means that we can only give very weak binary compatibility
+        // guarantees for default arguments (e.g., clients will break if we move the default
+        // argument to a subclass).
+        // TODO: Revisit bridge generation for default argument stubs.
+        val targetFunction = irFunction.resolveFakeOverride() ?: irFunction
+        if (targetFunction.origin == IrDeclarationOrigin.FUNCTION_FOR_DEFAULT_PARAMETER) {
+            return
+        }
+        // Add the current method to the blacklist if it is concrete or final
+        val targetMethod = targetFunction.jvmMethod
         if (!irFunction.isFakeOverride || irFunction.modality == Modality.FINAL)
             blacklist += targetMethod
 
