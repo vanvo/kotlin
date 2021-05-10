@@ -6,6 +6,7 @@
 package org.jetbrains.kotlin.idea.fir.low.level.api
 
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.fir.FirElement
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirPsiDiagnostic
@@ -41,7 +42,14 @@ internal class FirModuleResolveStateDepended(
 
     override fun getOrBuildFirFor(element: KtElement): FirElement {
         val psi = originalState.elementBuilder.getPsiAsFirElementSource(element)
-        ktToFirMapping[psi]?.let { return it }
+
+        //TODO It return invalid elements for elements with invalid code, but try to return the most closest ones
+        var currentElement: PsiElement = psi
+        while (currentElement !is KtFile) {
+            ktToFirMapping[currentElement]?.let { return it }
+            currentElement = currentElement.parent
+        }
+
         return originalState.elementBuilder.getOrBuildFirFor(
             element,
             originalState.firFileBuilder,
