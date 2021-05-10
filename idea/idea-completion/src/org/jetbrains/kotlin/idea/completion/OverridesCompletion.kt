@@ -98,8 +98,8 @@ class OverridesCompletion(
                 isConstructorParameter,
                 classOrObject,
                 memberObject.descriptor.isSuspend,
-                memberObject::generateMember,
-                ShortenReferences.DEFAULT::process,
+                generateMember = { memberObject.generateMember(classOrObject, false) },
+                shortenReferences = ShortenReferences.DEFAULT::process,
             )
 
             lookupElement.assignPriority(if (isImplement) ItemPriority.IMPLEMENT else ItemPriority.OVERRIDE)
