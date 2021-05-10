@@ -1104,6 +1104,9 @@ fun main(args: Array<String>) {
             testClass<AbstractInnerDeclarationsResolvePhaseTest> {
                 model("innerDeclarationsResolve")
             }
+            testClass<AbstractPartialRawFirBuilderTestCase> {
+                model("partialRawBuilder", testMethod = "doRawFirTest")
+            }
         }
 
         testGroup(
