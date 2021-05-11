@@ -24,4 +24,4 @@ annotation class AnnAnn(vararg val i: Ann)
 @AnnAnn(*arrayOf(Ann(1)))
 @AnnAnn(*arrayOf(iAnn))
 class TestAnn
-val iAnn = Ann(1)
+val iAnn = <!ANNOTATION_CLASS_CONSTRUCTOR_CALL!>Ann(1)<!>
