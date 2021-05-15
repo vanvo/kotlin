@@ -1,3 +1,4 @@
+// FIR_COMPARASION
 enum class E {
     AAA
     BBB
