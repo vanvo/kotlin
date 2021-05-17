@@ -37,6 +37,12 @@ abstract class KtTypeAliasSymbol : KtClassLikeSymbol(), KtNamedSymbol {
 
     final override val symbolKind: KtSymbolKind get() = KtSymbolKind.TOP_LEVEL
 
+    /**
+     * Returns type from right-hand site of type alias
+     * If type alias has type parameters, then those type parameters will be present in result type
+     */
+    abstract val expendedType: KtType
+
     abstract override fun createPointer(): KtSymbolPointer<KtTypeAliasSymbol>
 }
 
