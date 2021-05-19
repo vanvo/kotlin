@@ -16,16 +16,17 @@
 
 package org.jetbrains.kotlin.gradle.internal
 
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
 import org.jetbrains.kotlin.cli.common.arguments.K2JVMCompilerArguments
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptionsImpl
+import org.jetbrains.kotlin.gradle.plugin.PropertiesProvider
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KotlinCompilationData
-import org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.*
 import org.jetbrains.kotlin.gradle.tasks.FilteringSourceRootsContainer
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.gradle.tasks.SourceRoots
 import org.jetbrains.kotlin.gradle.utils.isParentOf
 import org.jetbrains.kotlin.incremental.classpathAsList
@@ -36,8 +37,13 @@ import java.util.concurrent.Callable
 @CacheableTask
 abstract class KaptGenerateStubsTask : KotlinCompile(KotlinJvmOptionsImpl()) {
 
-    class Configurator(private val kotlinCompileTask: KotlinCompile, kotlinCompilation: KotlinCompilationData<*>) :
-        AbstractKotlinCompile.Configurator<KaptGenerateStubsTask>(kotlinCompilation) {
+    internal class Configurator(
+        private val kotlinCompileTask: KotlinCompile,
+        kotlinCompilation: KotlinCompilationData<*>,
+        private val properties: PropertiesProvider,
+        private val classpathConfiguration: Configuration?,
+        private val classpathSnapshotDir: File?
+    ) : AbstractKotlinCompile.Configurator<KaptGenerateStubsTask>(kotlinCompilation) {
 
         override fun configure(task: KaptGenerateStubsTask) {
             super.configure(task)
@@ -63,6 +69,14 @@ abstract class KaptGenerateStubsTask : KotlinCompile(KotlinJvmOptionsImpl()) {
                     }
                 }
             )
+            if (properties.useClasspathSnapshot) {
+                task.classpathSnapshot.from(
+                    classpathConfiguration!!.incoming.artifactView {
+                        it.attributes.attribute(ARTIFACT_TYPE_ATTRIBUTE, CLASSPATH_ENTRY_SNAPSHOT_ARTIFACT_TYPE)
+                    }.files
+                )
+                task.classpathSnapshotDir.fileValue(classpathSnapshotDir!!).disallowChanges()
+            }
         }
     }
 

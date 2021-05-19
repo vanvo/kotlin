@@ -7,10 +7,8 @@ package org.jetbrains.kotlin.gradle.tasks
 
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.file.ConfigurableFileCollection
-import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.file.FileCollection
-import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.artifacts.Configuration
+import org.gradle.api.file.*
 import org.gradle.api.logging.Logger
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
@@ -42,6 +40,7 @@ import org.jetbrains.kotlin.gradle.internal.*
 import org.jetbrains.kotlin.gradle.internal.tasks.TaskConfigurator
 import org.jetbrains.kotlin.gradle.internal.tasks.TaskWithLocalState
 import org.jetbrains.kotlin.gradle.internal.tasks.allOutputFiles
+import org.jetbrains.kotlin.gradle.internal.transforms.CLASSPATH_ENTRY_SNAPSHOT_FILE_NAME
 import org.jetbrains.kotlin.gradle.logging.GradleKotlinLogger
 import org.jetbrains.kotlin.gradle.logging.GradlePrintingMessageCollector
 import org.jetbrains.kotlin.gradle.logging.kotlinDebug
@@ -51,8 +50,6 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KotlinCompilationData
 import org.jetbrains.kotlin.gradle.report.ReportingSettings
 import org.jetbrains.kotlin.gradle.targets.js.ir.isProduceUnzippedKlib
 import org.jetbrains.kotlin.gradle.utils.*
-import org.jetbrains.kotlin.gradle.utils.isParentOf
-import org.jetbrains.kotlin.gradle.utils.pathsAsStringRelativeTo
 import org.jetbrains.kotlin.incremental.ChangedFiles
 import org.jetbrains.kotlin.library.impl.isKotlinLibrary
 import org.jetbrains.kotlin.utils.JsLibraryUtils
@@ -161,11 +158,13 @@ abstract class AbstractKotlinCompile<T : CommonCompilerArguments> : AbstractKotl
                     project.plugins.any { it is KotlinPlatformPluginBase || it is KotlinMultiplatformPluginWrapper || it is KotlinPm20PluginWrapper }
                 }
             ).disallowChanges()
-            task.taskBuildDirectory.value(
-                project.layout.buildDirectory.dir("$KOTLIN_BUILD_DIR_NAME/${task.name}")
-            ).disallowChanges()
+            task.taskBuildDirectory.value(task.getKotlinBuildDir()).disallowChanges()
             task.localStateDirectories.from(task.taskBuildDirectory).disallowChanges()
         }
+
+        private fun Task.getKotlinBuildDir(): Provider<Directory> = project.layout.buildDirectory.dir("$KOTLIN_BUILD_DIR_NAME/$name")
+        protected fun Task.getClasspathSnapshotDir(): Provider<Directory> =
+            project.layout.buildDirectory.dir("$KOTLIN_BUILD_DIR_NAME/classpath-snapshot/$name")
     }
 
     init {
@@ -393,7 +392,24 @@ abstract class KotlinCompile @Inject constructor(
     override val kotlinOptions: KotlinJvmOptions
 ) : AbstractKotlinCompile<K2JVMCompilerArguments>(), KotlinJvmCompile {
 
-    class Configurator(kotlinCompilation: KotlinCompilationData<*>) : AbstractKotlinCompile.Configurator<KotlinCompile>(kotlinCompilation) {
+    internal class Configurator(
+        kotlinCompilation: KotlinCompilationData<*>,
+        private val propertiesProvider: PropertiesProvider,
+        private val classpathConfiguration: Configuration?
+    ) : AbstractKotlinCompile.Configurator<KotlinCompile>(kotlinCompilation) {
+
+        override fun configure(task: KotlinCompile) {
+            super.configure(task)
+
+            if (propertiesProvider.useClasspathSnapshot) {
+                task.classpathSnapshot.from(
+                    classpathConfiguration!!.incoming.artifactView {
+                        it.attributes.attribute(ARTIFACT_TYPE_ATTRIBUTE, CLASSPATH_ENTRY_SNAPSHOT_ARTIFACT_TYPE)
+                    }.files
+                )
+                task.classpathSnapshotDir.value(task.getClasspathSnapshotDir()).disallowChanges()
+            }
+        }
     }
 
     @get:Internal
@@ -425,6 +441,14 @@ abstract class KotlinCompile @Inject constructor(
 
     @get:Input
     abstract val useClasspathSnapshot: Property<Boolean>
+
+    @get:Classpath
+    @get:Optional // Set if useClasspathSnapshot == true
+    abstract val classpathSnapshot: ConfigurableFileCollection
+
+    @get:OutputDirectory
+    @get:Optional // Set if useClasspathSnapshot == true
+    abstract val classpathSnapshotDir: DirectoryProperty
 
     init {
         incremental = true
@@ -459,6 +483,9 @@ abstract class KotlinCompile @Inject constructor(
         val outputItemCollector = OutputItemsCollectorImpl()
         val compilerRunner = compilerRunner.get()
 
+        if (useClasspathSnapshot.get()) {
+            getClasspathChanges()
+        }
         val icEnv = if (isIncrementalCompilationEnabled()) {
             logger.info(USING_JVM_INCREMENTAL_COMPILATION_MESSAGE)
             IncrementalCompilationEnvironment(
@@ -485,6 +512,10 @@ abstract class KotlinCompile @Inject constructor(
             args,
             environment
         )
+
+        if (useClasspathSnapshot.get()) {
+            copyClasspathSnapshotFilesToDir(classpathSnapshot.files.toList(), classpathSnapshotDir.get().asFile)
+        }
     }
 
     @get:Input
@@ -525,6 +556,37 @@ abstract class KotlinCompile @Inject constructor(
     override fun source(vararg sources: Any): SourceTask {
         sourceRootsContainer.add(*sources)
         return super.source(*sources)
+    }
+
+    private fun getClasspathChanges() {
+        // TODO WORK-IN-PROGRESS
+        val currentClasspathSnapshotFiles = this.classpathSnapshot.files.toList()
+        val previousClasspathSnapshotFiles = getClasspathSnapshotFilesInDir(this.classpathSnapshotDir.get().asFile)
+    }
+
+    /**
+     * Copies classpath snapshot files to the given directory.
+     *
+     * To preserve their order, we put them in subdirectories with names being their indices in the original list, as shown below:
+     *     classpathSnapshotDir/0/snapshotFileName
+     *     classpathSnapshotDir/1/snapshotFileName
+     *     ...
+     *     classpathSnapshotDir/N-1/snapshotFileName
+     */
+    private fun copyClasspathSnapshotFilesToDir(classpathSnapshotFiles: List<File>, classpathSnapshotDir: File) {
+        for ((index, file) in classpathSnapshotFiles.withIndex()) {
+            file.copyTo(File("$classpathSnapshotDir/$index/$CLASSPATH_ENTRY_SNAPSHOT_FILE_NAME"), overwrite = true)
+        }
+    }
+
+    /**
+     * Returns all classpath snapshot files in the given directory, sorted by their original indices (the subdirectories' names).
+     *
+     * See [copyClasspathSnapshotFilesToDir] for the structure of the classpath snapshot directory.
+     */
+    private fun getClasspathSnapshotFilesInDir(classpathSnapshotDir: File): List<File> {
+        val subDirs = classpathSnapshotDir.listFiles() ?: return emptyList()
+        return subDirs.toList().sortedBy { it.name.toInt() }.map { File(it, CLASSPATH_ENTRY_SNAPSHOT_FILE_NAME) }
     }
 }
 
