@@ -1201,6 +1201,12 @@ fun main(args: Array<String>) {
 
             testClass<AbstractFirKeywordCompletionTest> {
                 model("keywords", recursive = false, pattern = KT_WITHOUT_FIR_PREFIX)
+                model(
+                    "../../idea-fir/testData/completion/keywords",
+                    testClassName = "KeywordsFir",
+                    recursive = false,
+                    pattern = KT_WITHOUT_FIR_PREFIX
+                )
             }
         }
 
