@@ -34170,6 +34170,12 @@ public class FirOldFrontendDiagnosticsWithLightTreeTestGenerated extends Abstrac
             }
 
             @Test
+            @TestMetadata("interfaceUsages.kt")
+            public void testInterfaceUsages() throws Exception {
+                runTest("compiler/testData/diagnostics/testsWithStdLib/experimental/interfaceUsages.kt");
+            }
+
+            @Test
             @TestMetadata("override.kt")
             public void testOverride() throws Exception {
                 runTest("compiler/testData/diagnostics/testsWithStdLib/experimental/override.kt");
