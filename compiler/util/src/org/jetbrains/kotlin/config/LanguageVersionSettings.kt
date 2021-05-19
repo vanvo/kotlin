@@ -208,6 +208,7 @@ enum class LanguageFeature(
 
     SuspendFunctionAsSupertype(KOTLIN_1_6),
     ProperTypeInferenceConstraintsProcessing(KOTLIN_1_6, kind = BUG_FIX),
+    ExplicitBinaryRetentionForOptInAnnotations(KOTLIN_1_6, kind = BUG_FIX),
 
     // Temporarily disabled, see KT-27084/KT-22379
     SoundSmartcastFromLoopConditionForLoopAssignedVariables(sinceVersion = null, kind = BUG_FIX),

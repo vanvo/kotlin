@@ -168,6 +168,8 @@ public class DefaultErrorMessages {
         MAP.put(USE_EXPERIMENTAL_WITHOUT_ARGUMENTS, "@OptIn without any arguments has no effect");
         MAP.put(USE_EXPERIMENTAL_ARGUMENT_IS_NOT_MARKER, "Annotation ''{0}'' is not an opt-in requirement marker, therefore its usage in @OptIn is ignored", TO_STRING);
         MAP.put(EXPERIMENTAL_ANNOTATION_WITH_WRONG_TARGET, "Opt-in requirement marker annotation cannot be used on the following code elements: {0}. Please remove these targets", STRING);
+        MAP.put(EXPERIMENTAL_ANNOTATION_WITH_WRONG_RETENTION, "Opt-in requirement marker annotation cannot be used with {0} retention. Please {1}", STRING, STRING);
+        MAP.put(EXPERIMENTAL_ANNOTATION_WITH_WRONG_RETENTION_WARNING, "Opt-in requirement marker annotation cannot be used with {0} retention. Please {1}", STRING, STRING);
 
         MAP.put(EXPERIMENTAL_UNSIGNED_LITERALS, "{0}", STRING);
         MAP.put(EXPERIMENTAL_UNSIGNED_LITERALS_ERROR, "{0}", STRING);

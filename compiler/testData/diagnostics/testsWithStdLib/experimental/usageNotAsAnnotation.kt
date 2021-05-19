@@ -15,6 +15,7 @@ import kotlin.RequiresOptIn
 // Usages with FQ names should be OK
 
 @kotlin.RequiresOptIn(level = kotlin.RequiresOptIn.Level.ERROR)
+@Retention(AnnotationRetention.BINARY)
 annotation class M
 
 
@@ -45,7 +46,7 @@ fun f5() {}
 // Usages of markers as types should be errors
 
 @RequiresOptIn
-annotation class Marker {
+annotation <!EXPERIMENTAL_ANNOTATION_WITH_WRONG_RETENTION_WARNING!>class Marker<!> {
     class NestedClass
 
     companion object {
