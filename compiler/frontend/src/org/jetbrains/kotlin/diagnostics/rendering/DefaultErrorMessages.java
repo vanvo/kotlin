@@ -171,6 +171,8 @@ public class DefaultErrorMessages {
         MAP.put(EXPERIMENTAL_ANNOTATION_WITH_WRONG_RETENTION, "Opt-in requirement marker annotation cannot be used with {0} retention. Please {1}", STRING, STRING);
         MAP.put(EXPERIMENTAL_ANNOTATION_WITH_WRONG_RETENTION_WARNING, "Opt-in requirement marker annotation cannot be used with {0} retention. Please {1}", STRING, STRING);
 
+        MAP.put(EXPERIMENTAL_ANNOTATION_ON_GETTER, "Opt-in requirement marker annotation has no effect on getter. Please annotate property instead");
+
         MAP.put(EXPERIMENTAL_UNSIGNED_LITERALS, "{0}", STRING);
         MAP.put(EXPERIMENTAL_UNSIGNED_LITERALS_ERROR, "{0}", STRING);
 
