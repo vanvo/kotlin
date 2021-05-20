@@ -273,6 +273,7 @@ internal class GradleKotlinCompilerWork @Inject constructor(
             areFileChangesKnown = knownChangedFiles != null,
             modifiedFiles = knownChangedFiles?.modified,
             deletedFiles = knownChangedFiles?.removed,
+            classpathChanges = icEnv.classpathChanges,
             workingDir = icEnv.workingDir,
             reportCategories = reportCategories(isVerbose),
             reportSeverity = reportSeverity(isVerbose),

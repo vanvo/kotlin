@@ -27,6 +27,7 @@ import org.jetbrains.kotlin.utils.createStringInterner
 import org.jetbrains.kotlin.utils.keysToMap
 import java.io.File
 import java.io.IOException
+import java.io.Serializable
 import java.util.*
 
 open class LookupStorage(
@@ -227,7 +228,11 @@ class LookupTrackerImpl(private val delegate: LookupTracker) : LookupTracker {
     }
 }
 
-data class LookupSymbol(val name: String, val scope: String) : Comparable<LookupSymbol> {
+data class LookupSymbol(val name: String, val scope: String) : Comparable<LookupSymbol>, Serializable {
+    companion object {
+        private const val serialVersionUID = 0L
+    }
+
     override fun compareTo(other: LookupSymbol): Int {
         val scopeCompare = scope.compareTo(other.scope)
         if (scopeCompare != 0) return scopeCompare

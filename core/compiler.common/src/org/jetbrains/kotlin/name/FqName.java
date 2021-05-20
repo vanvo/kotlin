@@ -19,9 +19,12 @@ package org.jetbrains.kotlin.name;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.kotlin.utils.StringsKt;
 
+import java.io.Serializable;
 import java.util.List;
 
-public final class FqName {
+public final class FqName implements Serializable {
+
+    private static final long serialVersionUID = 0L;
 
     @NotNull
     public static FqName fromSegments(@NotNull List<String> names) {
