@@ -40,4 +40,4 @@ class Usage : <!EXPERIMENTAL_API_USAGE!>Bar<!> {
     override fun <!EXPERIMENTAL_OVERRIDE!>bar<!>() {}
 }
 
-class DelegatedUsage(bar: <!EXPERIMENTAL_API_USAGE!>Bar<!>): <!EXPERIMENTAL_API_USAGE!>Bar<!> by bar
+class DelegatedUsage(bar: <!EXPERIMENTAL_API_USAGE!>Bar<!>): <!EXPERIMENTAL_API_USAGE!>Bar<!> by <!EXPERIMENTAL_API_USAGE!>bar<!>

@@ -1,0 +1,41 @@
+package
+
+public fun my(/*0*/ my: My /* = Some */): kotlin.Unit
+public fun useDataClass(/*0*/ d: DataClass): kotlin.Unit
+public fun your(/*0*/ my: Some): kotlin.Unit
+
+public final data class DataClass {
+    public constructor DataClass(/*0*/ x: kotlin.Int)
+    @Marker public final val x: kotlin.Int
+    public final operator /*synthesized*/ fun component1(): kotlin.Int
+    public final /*synthesized*/ fun copy(/*0*/ x: kotlin.Int = ...): DataClass
+    public open override /*1*/ /*synthesized*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*synthesized*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*synthesized*/ fun toString(): kotlin.String
+}
+
+@kotlin.RequiresOptIn @kotlin.annotation.Retention(value = AnnotationRetention.BINARY) public final annotation class Marker : kotlin.Annotation {
+    public constructor Marker()
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+@Marker public interface Some {
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public abstract class User {
+    public constructor User()
+    public abstract fun createSome(): Some
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+    public final fun use(): kotlin.Unit
+    public final fun withSome(/*0*/ some: Some? = ...): kotlin.Unit
+    public final fun Some?.onSome(): kotlin.Unit
+}
+public typealias My = Some
+
