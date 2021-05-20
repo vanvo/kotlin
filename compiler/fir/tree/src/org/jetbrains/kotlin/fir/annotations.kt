@@ -27,6 +27,7 @@ annotation class ThreadSafeMutableState
  * should be marked with this annotation, to avoid accidental creating session without factory
  */
 @RequiresOptIn
+@Retention(AnnotationRetention.BINARY)
 annotation class PrivateSessionConstructor
 
 /**
@@ -34,6 +35,7 @@ annotation class PrivateSessionConstructor
  *   session was initialized
  */
 @RequiresOptIn
+@Retention(AnnotationRetention.BINARY)
 annotation class SessionConfiguration
 
 /**
@@ -41,4 +43,5 @@ annotation class SessionConfiguration
  *   inline function which mutates this var
  */
 @RequiresOptIn
+@Retention(AnnotationRetention.BINARY)
 annotation class PrivateForInline

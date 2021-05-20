@@ -7,4 +7,5 @@ package org.jetbrains.kotlin.gradle.targets.js.dsl
 
 @RequiresOptIn(level = RequiresOptIn.Level.WARNING)
 @Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.BINARY)
 annotation class ExperimentalDceDsl

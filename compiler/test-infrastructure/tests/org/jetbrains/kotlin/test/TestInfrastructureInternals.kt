@@ -11,4 +11,5 @@ package org.jetbrains.kotlin.test
  *   marked with this annotation
  */
 @RequiresOptIn
+@Retention(AnnotationRetention.BINARY)
 annotation class TestInfrastructureInternals

@@ -13,4 +13,5 @@ package org.jetbrains.kotlin.idea
  * Not following this rule may lead to obscure memory leaks and other potential problems.
  */
 @RequiresOptIn
+@Retention(AnnotationRetention.BINARY)
 annotation class FrontendInternals

@@ -6,4 +6,5 @@
 package org.jetbrains.kotlin
 
 @RequiresOptIn
+@Retention(AnnotationRetention.BINARY)
 annotation class ObsoleteTestInfrastructure(val replacer: String = "")

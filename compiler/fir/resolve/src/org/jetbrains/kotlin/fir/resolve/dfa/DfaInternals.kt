@@ -6,4 +6,5 @@
 package org.jetbrains.kotlin.fir.resolve.dfa
 
 @RequiresOptIn
+@Retention(AnnotationRetention.BINARY)
 annotation class DfaInternals

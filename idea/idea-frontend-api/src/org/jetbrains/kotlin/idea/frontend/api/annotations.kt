@@ -6,4 +6,5 @@
 package org.jetbrains.kotlin.idea.frontend.api
 
 @RequiresOptIn
+@Retention(AnnotationRetention.BINARY)
 annotation class KtInternalApiMarker

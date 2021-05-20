@@ -19,6 +19,7 @@ import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 
 @RequiresOptIn
+@Retention(AnnotationRetention.BINARY)
 annotation class FirSymbolProviderInternals
 
 abstract class FirSymbolProvider(val session: FirSession) : FirSessionComponent {

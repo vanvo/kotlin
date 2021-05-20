@@ -7,6 +7,7 @@ package org.jetbrains.kotlin.idea.configuration.utils
 
 // TODO: Replace heuristic with proper import!
 @RequiresOptIn(level = RequiresOptIn.Level.ERROR)
+@Retention(AnnotationRetention.BINARY)
 annotation class UnsafeTestSourceSetHeuristicApi
 
 

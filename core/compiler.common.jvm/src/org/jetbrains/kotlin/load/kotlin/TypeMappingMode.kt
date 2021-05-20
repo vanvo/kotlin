@@ -8,6 +8,7 @@ package org.jetbrains.kotlin.load.kotlin
 import org.jetbrains.kotlin.types.Variance
 
 @RequiresOptIn
+@Retention(AnnotationRetention.BINARY)
 annotation class TypeMappingModeInternals
 
 @OptIn(TypeMappingModeInternals::class)

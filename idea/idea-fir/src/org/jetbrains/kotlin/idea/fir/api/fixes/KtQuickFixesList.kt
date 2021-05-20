@@ -120,4 +120,5 @@ private fun <K, V> List<Map<K, List<V>>>.merge(): Map<K, List<V>> {
 }
 
 @RequiresOptIn
+@Retention(AnnotationRetention.BINARY)
 annotation class ForKtQuickFixesListBuilder

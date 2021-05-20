@@ -22,6 +22,7 @@ import org.jetbrains.kotlin.utils.addToStdlib.runIf
 import kotlin.random.Random
 
 @RequiresOptIn
+@Retention(AnnotationRetention.BINARY)
 private annotation class CfgBuilderInternals
 
 class ControlFlowGraphBuilder {

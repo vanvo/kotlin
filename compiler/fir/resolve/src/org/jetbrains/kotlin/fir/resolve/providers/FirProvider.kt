@@ -14,6 +14,7 @@ import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 
 @RequiresOptIn
+@Retention(AnnotationRetention.BINARY)
 annotation class FirProviderInternals
 
 abstract class FirProvider : FirSessionComponent {

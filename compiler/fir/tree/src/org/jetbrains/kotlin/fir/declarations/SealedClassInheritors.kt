@@ -11,6 +11,7 @@ import org.jetbrains.kotlin.name.ClassId
 
 
 @RequiresOptIn("For getting/setting sealed class inheritors, consider using getSealedClassInheritors/setSealedClassInheritors")
+@Retention(AnnotationRetention.BINARY)
 annotation class SealedClassInheritorsProviderInternals
 
 abstract class SealedClassInheritorsProvider : FirSessionComponent {

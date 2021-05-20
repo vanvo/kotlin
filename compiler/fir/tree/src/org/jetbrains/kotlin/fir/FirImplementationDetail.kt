@@ -6,4 +6,5 @@
 package org.jetbrains.kotlin.fir
 
 @RequiresOptIn(level = RequiresOptIn.Level.ERROR)
+@Retention(AnnotationRetention.BINARY)
 annotation class FirImplementationDetail

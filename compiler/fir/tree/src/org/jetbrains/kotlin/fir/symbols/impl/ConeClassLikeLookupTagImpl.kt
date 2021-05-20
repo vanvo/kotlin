@@ -11,6 +11,7 @@ import org.jetbrains.kotlin.fir.utils.WeakPair
 import org.jetbrains.kotlin.name.ClassId
 
 @RequiresOptIn
+@Retention(AnnotationRetention.BINARY)
 annotation class LookupTagInternals
 
 class ConeClassLikeLookupTagImpl(override val classId: ClassId) : ConeClassLikeLookupTag() {

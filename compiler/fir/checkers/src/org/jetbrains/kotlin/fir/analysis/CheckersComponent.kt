@@ -18,6 +18,7 @@ import org.jetbrains.kotlin.fir.analysis.checkers.type.TypeCheckers
 import org.jetbrains.kotlin.fir.analysis.extensions.FirAdditionalCheckersExtension
 
 @RequiresOptIn
+@Retention(AnnotationRetention.BINARY)
 annotation class CheckersComponentInternal
 
 @NoMutableState

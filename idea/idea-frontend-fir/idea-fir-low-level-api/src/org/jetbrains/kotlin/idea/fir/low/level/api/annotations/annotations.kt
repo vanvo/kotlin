@@ -6,7 +6,9 @@
 package org.jetbrains.kotlin.idea.fir.low.level.api.annotations
 
 @RequiresOptIn
+@Retention(AnnotationRetention.BINARY)
 annotation class PrivateForInline
 
 @RequiresOptIn
+@Retention(AnnotationRetention.BINARY)
 annotation class InternalForInline

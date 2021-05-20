@@ -73,6 +73,7 @@ object ReadActionConfinementValidityTokenFactory : ValidityTokenFactory() {
 }
 
 @RequiresOptIn("All frontend related work should not be allowed to be ran from EDT thread. Only use it as a temporary solution")
+@Retention(AnnotationRetention.BINARY)
 annotation class HackToForceAllowRunningAnalyzeOnEDT
 
 /**

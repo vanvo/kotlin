@@ -6,4 +6,5 @@
 package org.jetbrains.kotlin.gradle
 
 @RequiresOptIn(level = RequiresOptIn.Level.WARNING, message = "This API might change in the future")
+@Retention(AnnotationRetention.BINARY)
 annotation class ExperimentalGradleToolingApi

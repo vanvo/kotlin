@@ -15,6 +15,7 @@ import org.jetbrains.kotlin.fir.utils.TypeRegistry
 import kotlin.reflect.KClass
 
 @RequiresOptIn
+@Retention(AnnotationRetention.BINARY)
 annotation class PluginServicesInitialization
 
 @NoMutableState

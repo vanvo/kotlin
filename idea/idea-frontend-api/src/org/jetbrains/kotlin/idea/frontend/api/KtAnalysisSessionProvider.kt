@@ -17,9 +17,11 @@ import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.psi.KtFile
 
 @RequiresOptIn("To use analysis session, consider using analyze/analyzeWithReadAction/analyseInModalWindow methods")
+@Retention(AnnotationRetention.BINARY)
 annotation class InvalidWayOfUsingAnalysisSession
 
 @RequiresOptIn
+@Retention(AnnotationRetention.BINARY)
 annotation class KtAnalysisSessionProviderInternals
 
 /**

@@ -14,4 +14,5 @@ package org.jetbrains.kotlin.ir
  * and do not use descriptors as some intermediate storage. It's planned to remove all descriptor usages from IR in future.
  */
 @RequiresOptIn(message = "Please use IR declaration properties and not its descriptor properties", level = RequiresOptIn.Level.ERROR)
+@Retention(AnnotationRetention.BINARY)
 annotation class ObsoleteDescriptorBasedAPI

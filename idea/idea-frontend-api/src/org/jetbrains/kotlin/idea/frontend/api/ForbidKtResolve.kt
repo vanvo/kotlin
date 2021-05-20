@@ -5,9 +5,8 @@
 
 package org.jetbrains.kotlin.idea.frontend.api
 
-import kotlin.reflect.KProperty1
-
 @RequiresOptIn
+@Retention(AnnotationRetention.BINARY)
 annotation class ForbidKtResolveInternals
 
 object ForbidKtResolve {

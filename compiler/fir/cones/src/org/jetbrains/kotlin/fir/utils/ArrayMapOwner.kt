@@ -5,7 +5,6 @@
 
 package org.jetbrains.kotlin.fir.utils
 
-import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.properties.ReadOnlyProperty
@@ -13,6 +12,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
 @RequiresOptIn
+@Retention(AnnotationRetention.BINARY)
 annotation class Protected
 
 @OptIn(Protected::class)

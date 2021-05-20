@@ -11,6 +11,7 @@ import org.jetbrains.kotlin.fir.resolve.ScopeSession
 import org.jetbrains.kotlin.fir.visitors.FirTransformer
 
 @RequiresOptIn(message = "Should be used just only in resolve processor")
+@Retention(AnnotationRetention.BINARY)
 annotation class AdapterForResolveProcessor
 
 sealed class FirResolveProcessor(val session: FirSession, val scopeSession: ScopeSession)

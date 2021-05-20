@@ -10,4 +10,5 @@ package org.jetbrains.kotlin.miniStdLib.annotations
  * but cannot be marked as such because it should be used in some inline function
  */
 @RequiresOptIn
+@Retention(AnnotationRetention.BINARY)
 annotation class PrivateForInline
