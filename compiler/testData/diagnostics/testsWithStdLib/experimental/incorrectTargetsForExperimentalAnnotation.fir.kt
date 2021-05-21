@@ -30,8 +30,38 @@ annotation class E4
 @Retention(AnnotationRetention.BINARY)
 annotation class E5
 
+@RequiresOptIn(level = RequiresOptIn.Level.WARNING)
+@Target(PROPERTY, FUNCTION, PROPERTY_SETTER)
+@Retention(AnnotationRetention.BINARY)
+annotation class E6
+
 var some: Int
     @E4
     get() = 42
     @E5
     set(value) {}
+
+class My {
+    @E6
+    override fun hashCode() = 0
+}
+
+interface Base {
+    val bar: Int
+
+    val baz: Int
+
+    @E6
+    fun foo()
+}
+
+class Derived : Base {
+    @E6
+    override val bar: Int = 42
+
+    @set:E6
+    override var baz: Int = 13
+
+    @E6
+    override fun foo() {}
+}

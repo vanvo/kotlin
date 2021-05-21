@@ -8,13 +8,16 @@ package org.jetbrains.kotlin.resolve.checkers
 import org.jetbrains.kotlin.builtins.StandardNames
 import org.jetbrains.kotlin.config.LanguageFeature
 import org.jetbrains.kotlin.config.LanguageVersionSettings
+import org.jetbrains.kotlin.descriptors.CallableMemberDescriptor
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor
+import org.jetbrains.kotlin.descriptors.annotations.AnnotationUseSiteTarget
 import org.jetbrains.kotlin.descriptors.annotations.KotlinRetention
 import org.jetbrains.kotlin.descriptors.annotations.KotlinTarget
 import org.jetbrains.kotlin.diagnostics.Errors
-import org.jetbrains.kotlin.psi.KtAnnotationEntry
-import org.jetbrains.kotlin.psi.KtClass
+import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
 import org.jetbrains.kotlin.psi.psiUtil.parents
 import org.jetbrains.kotlin.resolve.AdditionalAnnotationChecker
 import org.jetbrains.kotlin.resolve.AnnotationChecker
@@ -55,9 +58,27 @@ class ExperimentalMarkerDeclarationAnnotationChecker(private val module: ModuleD
                     isAnnotatedWithExperimental = true
                 }
             }
-            if (annotation.annotationClass?.annotations?.any { it.fqName in ExperimentalUsageChecker.EXPERIMENTAL_FQ_NAMES } == true) {
+            val annotationClass = annotation.annotationClass ?: continue
+            if (annotationClass.annotations.any { it.fqName in ExperimentalUsageChecker.EXPERIMENTAL_FQ_NAMES }) {
                 if (KotlinTarget.PROPERTY_GETTER in actualTargets) {
                     trace.report(Errors.EXPERIMENTAL_ANNOTATION_ON_GETTER.on(entry))
+                }
+                val annotated = entry.getStrictParentOfType<KtAnnotated>() ?: continue
+                val useSiteTarget = entry.useSiteTarget?.getAnnotationUseSiteTarget()
+                if (annotated is KtCallableDeclaration &&
+                    annotated !is KtPropertyAccessor &&
+                    useSiteTarget != AnnotationUseSiteTarget.PROPERTY_GETTER &&
+                    useSiteTarget != AnnotationUseSiteTarget.PROPERTY_SETTER &&
+                    annotated.hasModifier(KtTokens.OVERRIDE_KEYWORD)
+                ) {
+                    val descriptor = trace.get(BindingContext.DECLARATION_TO_DESCRIPTOR, annotated)
+                    if (descriptor is CallableMemberDescriptor &&
+                        descriptor.overriddenDescriptors.none { overriddenDescriptor ->
+                            overriddenDescriptor.annotations.any { it.fqName == annotationClass.fqNameSafe }
+                        }
+                    ) {
+                        trace.report(Errors.EXPERIMENTAL_ANNOTATION_ON_OVERRIDE.on(entry))
+                    }
                 }
             }
         }
