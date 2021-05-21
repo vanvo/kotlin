@@ -11,6 +11,8 @@ import org.jetbrains.kotlin.fir.types.ConeTypeApproximator
 import org.jetbrains.kotlin.resolve.calls.inference.components.*
 import org.jetbrains.kotlin.resolve.calls.inference.model.NewConstraintSystemImpl
 
+val xyz = 123
+
 @NoMutableState
 class InferenceComponents(val session: FirSession) : FirSessionComponent {
     val ctx: ConeInferenceContext = object : ConeInferenceContext {
