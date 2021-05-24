@@ -193,15 +193,15 @@ public class IdeErrorMessages {
         MAP.put(EXPERIMENTAL_FEATURE_ERROR, "<html>{0}</html>",
                 new LanguageFeatureMessageRenderer(LanguageFeatureMessageRenderer.Type.ERROR, true));
 
-        MAP.put(NO_ACTUAL_FOR_EXPECT, KotlinIdeaAnalysisBundle.htmlMessage("html.expected.0.has.no.actual.declaration.in.module.1.2.html"), DECLARATION_NAME_WITH_KIND,
-                MODULE_WITH_PLATFORM, new PlatformIncompatibilityDiagnosticRenderer(IdeMultiplatformDiagnosticRenderingMode.INSTANCE));
-        MAP.put(ACTUAL_WITHOUT_EXPECT, KotlinIdeaAnalysisBundle.htmlMessage("html.0.has.no.corresponding.expected.declaration.1.html"),
-                CAPITALIZED_DECLARATION_NAME_WITH_KIND_AND_PLATFORM,
-                new PlatformIncompatibilityDiagnosticRenderer(IdeMultiplatformDiagnosticRenderingMode.INSTANCE));
-
-        MAP.put(NO_ACTUAL_CLASS_MEMBER_FOR_EXPECTED_CLASS,
-                KotlinIdeaAnalysisBundle.htmlMessage("html.actual.class.0.has.no.corresponding.members.for.expected.class.members.1.html"),
-                NAME, new IncompatibleExpectedActualClassScopesRenderer(IdeMultiplatformDiagnosticRenderingMode.INSTANCE));
+        //MAP.put(NO_ACTUAL_FOR_EXPECT, KotlinIdeaAnalysisBundle.htmlMessage("html.expected.0.has.no.actual.declaration.in.module.1.2.html"), DECLARATION_NAME_WITH_KIND,
+        //        MODULE_WITH_PLATFORM, new PlatformIncompatibilityDiagnosticRenderer(IdeMultiplatformDiagnosticRenderingMode.INSTANCE));
+        //MAP.put(ACTUAL_WITHOUT_EXPECT, KotlinIdeaAnalysisBundle.htmlMessage("html.0.has.no.corresponding.expected.declaration.1.html"),
+        //        CAPITALIZED_DECLARATION_NAME_WITH_KIND_AND_PLATFORM,
+        //        new PlatformIncompatibilityDiagnosticRenderer(IdeMultiplatformDiagnosticRenderingMode.INSTANCE));
+        //
+        //MAP.put(NO_ACTUAL_CLASS_MEMBER_FOR_EXPECTED_CLASS,
+        //        KotlinIdeaAnalysisBundle.htmlMessage("html.actual.class.0.has.no.corresponding.members.for.expected.class.members.1.html"),
+        //        NAME, new IncompatibleExpectedActualClassScopesRenderer(IdeMultiplatformDiagnosticRenderingMode.INSTANCE));
 
         String MESSAGE_FOR_CONCURRENT_HASH_MAP_CONTAINS =
                 KotlinIdeaAnalysisBundle.htmlMessage(

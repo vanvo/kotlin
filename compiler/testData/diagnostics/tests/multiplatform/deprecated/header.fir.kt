@@ -17,14 +17,14 @@ header enum class E {
 // MODULE: m2-jvm()()(m1-common)
 // FILE: jvm.kt
 
-impl class My
+<!ACTUAL_MISSING!>impl class My<!>
 
-impl fun foo() = 42
+<!ACTUAL_MISSING!>impl fun foo() = 42<!>
 
-impl val x get() = "Hello"
+<!ACTUAL_MISSING!>impl val x get() = "Hello"<!>
 
-impl object O
+impl <!ACTUAL_MISSING!>object O<!>
 
-impl enum class E {
+<!ACTUAL_MISSING!>impl enum class E {
     FIRST
-}
+}<!>

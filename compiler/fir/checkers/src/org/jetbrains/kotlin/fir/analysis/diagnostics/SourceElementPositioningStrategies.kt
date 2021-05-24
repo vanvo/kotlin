@@ -252,4 +252,8 @@ object SourceElementPositioningStrategies {
         LightTreePositioningStrategies.ASSIGNMENT_LHS,
         PositioningStrategies.ASSIGNMENT_LHS
     )
+
+    // TODO
+    val ACTUAL_DECLARATION_NAME = DEFAULT
+    val INCOMPATIBLE_DECLARATION = DEFAULT
 }
