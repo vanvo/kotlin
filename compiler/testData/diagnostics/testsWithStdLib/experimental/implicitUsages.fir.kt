@@ -33,3 +33,19 @@ typealias My = Some
 fun my(my: My) {}
 
 fun your(my: Some) {}
+
+@Marker
+interface ExperimentalType {
+    fun foo() {}
+    fun bar() {}
+}
+
+@OptIn(Marker::class)
+interface NotExperimentalExtension : ExperimentalType {
+    override fun foo() {}
+}
+
+fun use(arg: NotExperimentalExtension) {
+    arg.foo()
+    arg.bar()
+}

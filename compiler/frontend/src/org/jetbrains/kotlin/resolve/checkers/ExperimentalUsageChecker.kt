@@ -183,6 +183,12 @@ class ExperimentalUsageChecker(project: Project) : CallChecker {
                 visitedClassifiers += this
             }
             val result = SmartSet.create<Experimentality>()
+            if (this is CallableMemberDescriptor && kind == CallableMemberDescriptor.Kind.FAKE_OVERRIDE) {
+                for (overridden in overriddenDescriptors) {
+                    result.addAll(overridden.loadExperimentalities(moduleAnnotationsResolver, languageVersionSettings, visitedClassifiers))
+                }
+                return result
+            }
 
             for (annotation in annotations) {
                 result.addIfNotNull(annotation.annotationClass?.loadExperimentalityForMarkerAnnotation())

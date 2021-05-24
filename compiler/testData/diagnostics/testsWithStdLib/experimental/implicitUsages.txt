@@ -1,6 +1,7 @@
 package
 
 public fun my(/*0*/ my: My /* = Some */): kotlin.Unit
+public fun use(/*0*/ arg: NotExperimentalExtension): kotlin.Unit
 public fun useDataClass(/*0*/ d: DataClass): kotlin.Unit
 public fun your(/*0*/ my: Some): kotlin.Unit
 
@@ -14,9 +15,25 @@ public final data class DataClass {
     public open override /*1*/ /*synthesized*/ fun toString(): kotlin.String
 }
 
+@Marker public interface ExperimentalType {
+    public open fun bar(): kotlin.Unit
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open fun foo(): kotlin.Unit
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
 @kotlin.RequiresOptIn @kotlin.annotation.Retention(value = AnnotationRetention.BINARY) public final annotation class Marker : kotlin.Annotation {
     public constructor Marker()
     public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+@kotlin.OptIn(markerClass = {Marker::class}) public interface NotExperimentalExtension : ExperimentalType {
+    public open override /*1*/ /*fake_override*/ fun bar(): kotlin.Unit
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ fun foo(): kotlin.Unit
     public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
     public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
 }

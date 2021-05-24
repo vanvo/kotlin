@@ -33,3 +33,19 @@ typealias My = <!EXPERIMENTAL_API_USAGE_ERROR!>Some<!>
 fun my(my: <!EXPERIMENTAL_API_USAGE_ERROR!>My<!>) {}
 
 fun your(my: <!EXPERIMENTAL_API_USAGE_ERROR!>Some<!>) {}
+
+@Marker
+interface ExperimentalType {
+    fun foo() {}
+    fun bar() {}
+}
+
+@OptIn(Marker::class)
+interface NotExperimentalExtension : ExperimentalType {
+    override fun foo() {}
+}
+
+fun use(arg: NotExperimentalExtension) {
+    arg.foo()
+    arg.<!EXPERIMENTAL_API_USAGE_ERROR!>bar<!>()
+}
