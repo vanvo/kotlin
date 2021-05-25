@@ -24,7 +24,7 @@ internal class OtherLowercaseRangesGenerator(
         if (target != KotlinTarget.Native && line.rangeStart.hexToInt() > 0xFFFF) return
 
         if (line.property == "Other_Lowercase") {
-            otherLowerRanges.add(line.rangeStart.hexToInt()..line.rangeEnd.hexToInt())
+            otherLowerRanges.add(line.intRange())
         }
     }
 

@@ -172,6 +172,7 @@ fun main(args: Array<String>) {
 
     categoryTestGenerator.let {
         bmpUnicodeDataLines.forEach { line -> it.appendLine(line) }
+        propListLines.forEach { line -> it.appendPropertyLine(line) }
         it.generate()
     }
 

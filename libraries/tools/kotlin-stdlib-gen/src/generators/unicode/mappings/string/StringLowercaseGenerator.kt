@@ -48,7 +48,7 @@ internal class StringLowercaseGenerator(
         when (line.property) {
             "MidLetter",
             "MidNumLet",
-            "Single_Quote" -> caseIgnorableRanges.add(line.rangeStart.hexToInt()..line.rangeEnd.hexToInt())
+            "Single_Quote" -> caseIgnorableRanges.add(line.intRange())
         }
     }
 

@@ -24,7 +24,7 @@ internal class OtherUppercaseRangesGenerator(
         if (target != KotlinTarget.Native && line.rangeStart.hexToInt() > 0xFFFF) return
 
         if (line.property == "Other_Uppercase") {
-            otherUpperRanges.add(line.rangeStart.hexToInt()..line.rangeEnd.hexToInt())
+            otherUpperRanges.add(line.intRange())
         }
     }
 
