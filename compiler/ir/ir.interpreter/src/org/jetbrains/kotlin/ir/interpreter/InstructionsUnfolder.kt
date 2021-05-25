@@ -133,7 +133,7 @@ private fun unfoldValueParameters(expression: IrFunctionAccessExpression, callSt
             return defaultValue
                 ?: (this.parent as? IrSimpleFunction)?.overriddenSymbols
                     ?.map { it.owner.valueParameters[this.index].getDefault() }
-                    ?.firstNotNullResult { it }
+                    ?.firstNotNullOfOrNull { it }
         }
 
         return irFunction.valueParameters[index].getDefault()?.expression

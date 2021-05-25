@@ -65,7 +65,7 @@ internal class Frame(subFrame: SubFrame, val irFile: IrFile? = null) {
     }
 
     fun getState(symbol: IrSymbol): State {
-        return (innerStack.lastIndex downTo 0).firstNotNullResult { innerStack[it].getState(symbol) }
+        return (innerStack.lastIndex downTo 0).firstNotNullOfOrNull { innerStack[it].getState(symbol) }
             ?: throw InterpreterError("$symbol not found") // TODO better message
     }
 
