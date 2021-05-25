@@ -54,14 +54,14 @@ internal fun Char.isLetterImpl(): Boolean {
  * Returns `true` if this character is a lower case letter.
  */
 internal fun Char.isLowerCaseImpl(): Boolean {
-    return getLetterType() == 1
+    return getLetterType() == 1 || code.isOtherLowercase()
 }
 
 /**
  * Returns `true` if this character is an upper case letter.
  */
 internal fun Char.isUpperCaseImpl(): Boolean {
-    return getLetterType() == 2
+    return getLetterType() == 2 || code.isOtherUppercase()
 }
 
 /**

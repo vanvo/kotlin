@@ -98,3 +98,16 @@ internal fun String.hexToInt(): Int {
 internal fun List<String>.hexCharsToStringLiteral(): String {
     return "\"${joinToString(separator = "") { "\\u$it" }}\""
 }
+
+internal fun IntRange.rangeCheck(ch: String, indent: String): String {
+    val firstHex = first.toHexIntLiteral()
+    val lastHex = last.toHexIntLiteral()
+    return when (first) {
+        last ->
+            "$ch == $firstHex"
+        last - 1 ->
+            "$ch == $firstHex\n$indent|| $ch == $lastHex"
+        else ->
+            "$ch in $firstHex..$lastHex"
+    }
+}
