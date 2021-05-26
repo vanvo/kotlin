@@ -763,11 +763,6 @@ public class FirReferenceResolveTestGenerated extends AbstractFirReferenceResolv
             runTest("idea/testData/resolve/references/inImport/kotlinTopLevelFunction.kt");
         }
 
-        @TestMetadata("kotlinTopLevelProperty.kt")
-        public void testKotlinTopLevelProperty() throws Exception {
-            runTest("idea/testData/resolve/references/inImport/kotlinTopLevelProperty.kt");
-        }
-
         @TestMetadata("staticMethodFromJavaClass.kt")
         public void testStaticMethodFromJavaClass() throws Exception {
             runTest("idea/testData/resolve/references/inImport/staticMethodFromJavaClass.kt");
