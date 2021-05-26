@@ -117,6 +117,9 @@ abstract class SingleAbstractMethodLowering(val context: CommonBackendContext) :
             if (invokable.isNullConst())
                 return invokable
 
+            if (superType.isFunctionTypeOrSubtype())
+                return invokable
+
             val cache = if (inInlineFunctionScope) inlineCachedImplementations else cachedImplementations
             val implementation = cache.getOrPut(erasedSuperType) {
                 createObjectProxy(erasedSuperType, getWrapperVisibility(expression, allScopes), expression)
