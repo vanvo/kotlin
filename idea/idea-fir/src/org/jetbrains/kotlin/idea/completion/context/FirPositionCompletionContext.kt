@@ -33,6 +33,15 @@ internal class FirImportDirectivePositionContext(
     val importDirective: KtImportDirective,
 ) : FirNameReferencePositionContext()
 
+internal class FirPackageDirectivePositionContext(
+    override val position: PsiElement,
+    override val reference: KtSimpleNameReference,
+    override val nameExpression: KtSimpleNameExpression,
+    override val explicitReceiver: KtExpression?,
+    val packageDirective: KtPackageDirective,
+) : FirNameReferencePositionContext()
+
+
 
 internal class FirTypeNameReferencePositionContext(
     override val position: PsiElement,
@@ -93,6 +102,16 @@ internal object FirPositionCompletionContextDetector {
                     parent.parentOfType(withSelf = true)!!
                 )
             }
+
+            nameExpression.isImportExpressionInsidePackageDirective() -> {
+                FirPackageDirectivePositionContext(
+                    position,
+                    reference,
+                    nameExpression,
+                    explicitReceiver,
+                    parent.parentOfType(withSelf = true)!!
+                )
+            }
             else -> {
                 FirExpressionNameReferencePositionContext(position, reference, nameExpression, explicitReceiver)
             }
@@ -104,6 +123,15 @@ internal object FirPositionCompletionContextDetector {
         is KtDotQualifiedExpression -> {
             val importDirective = parent.parent as? KtImportDirective
             importDirective?.importedReference == parent
+        }
+        else -> false
+    }
+
+    private fun KtExpression.isImportExpressionInsidePackageDirective() = when (val parent = parent) {
+        is KtPackageDirective -> parent.packageNameExpression == this
+        is KtDotQualifiedExpression -> {
+            val packageDirective = parent.parent as? KtPackageDirective
+            packageDirective?.packageNameExpression == parent
         }
         else -> false
     }
@@ -145,7 +173,7 @@ internal object FirPositionCompletionContextDetector {
                 positionContext.nameExpression,
                 action
             )
-            is FirUnknownPositionContext, is FirImportDirectivePositionContext -> {
+            is FirUnknownPositionContext, is FirImportDirectivePositionContext, is FirPackageDirectivePositionContext -> {
                 analyse(basicContext.originalKtFile, action)
             }
         }
