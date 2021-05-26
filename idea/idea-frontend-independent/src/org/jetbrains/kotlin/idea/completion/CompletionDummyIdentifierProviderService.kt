@@ -39,12 +39,19 @@ abstract class CompletionDummyIdentifierProviderService {
 
             isInSimpleStringTemplate(tokenBefore) -> CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED
 
+            isInTypeParametersList(tokenBefore) -> CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED
+
             else -> specialLambdaSignatureDummyIdentifier(tokenBefore)
                 ?: specialExtensionReceiverDummyIdentifier(tokenBefore)
                 ?: specialInTypeArgsDummyIdentifier(tokenBefore)
                 ?: specialInArgumentListDummyIdentifier(tokenBefore)
                 ?: DEFAULT_DUMMY_IDENTIFIER
         }
+    }
+
+    private fun isInTypeParametersList(tokenBefore: PsiElement?): Boolean {
+        if (tokenBefore == null) return false
+        return tokenBefore.parents.any { it is KtTypeParameterList }
     }
 
     private fun specialLambdaSignatureDummyIdentifier(tokenBefore: PsiElement?): String? {
