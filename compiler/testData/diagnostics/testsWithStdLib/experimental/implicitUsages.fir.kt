@@ -8,31 +8,31 @@ annotation class Marker
 interface Some
 
 abstract class User {
-    abstract fun createSome(): Some
-    fun Some?.onSome() {}
-    fun withSome(some: Some? = null) {}
+    abstract fun createSome(): <!EXPERIMENTAL_API_USAGE_ERROR!>Some<!>
+    fun <!EXPERIMENTAL_API_USAGE_ERROR!>Some?<!>.onSome() {}
+    fun withSome(some: <!EXPERIMENTAL_API_USAGE_ERROR!>Some?<!> = null) {}
 
     fun use() {
-        val something = createSome()
-        val somethingOther: Some = createSome()
-        null.onSome()
-        withSome()
+        val something = <!EXPERIMENTAL_API_USAGE_ERROR!>createSome<!>()
+        val somethingOther: <!EXPERIMENTAL_API_USAGE_ERROR!>Some<!> = <!EXPERIMENTAL_API_USAGE_ERROR!>createSome<!>()
+        null.<!EXPERIMENTAL_API_USAGE_ERROR!>onSome<!>()
+        <!EXPERIMENTAL_API_USAGE_ERROR!>withSome<!>()
     }
 }
 
-data class DataClass(@property:Marker val x: Int)
+data class DataClass(<!EXPERIMENTAL_API_USAGE_ERROR!>@property:Marker val x: Int<!>)
 
 fun useDataClass(d: DataClass) {
     // Should have error in both
-    d.x
+    d.<!EXPERIMENTAL_API_USAGE_ERROR!>x<!>
     val (x) = d
 }
 
-typealias My = Some
+typealias My = <!EXPERIMENTAL_API_USAGE_ERROR!>Some<!>
 
-fun my(my: My) {}
+fun my(my: <!EXPERIMENTAL_API_USAGE_ERROR!>My<!>) {}
 
-fun your(my: Some) {}
+fun your(my: <!EXPERIMENTAL_API_USAGE_ERROR!>Some<!>) {}
 
 @Marker
 interface ExperimentalType {
@@ -47,5 +47,5 @@ interface NotExperimentalExtension : ExperimentalType {
 
 fun use(arg: NotExperimentalExtension) {
     arg.foo()
-    arg.bar()
+    arg.<!EXPERIMENTAL_API_USAGE_ERROR!>bar<!>()
 }
