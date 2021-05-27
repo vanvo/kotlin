@@ -8,7 +8,8 @@
  * DESCRIPTION: Use a contract function before the declaration it.
  */
 
-import kotlin.contracts.*
+import kot// FIR_IDE_IGNORE
+lin.contracts.*
 
 // TESTCASE NUMBER: 1
 fun case_1_1(x: Any?) {
