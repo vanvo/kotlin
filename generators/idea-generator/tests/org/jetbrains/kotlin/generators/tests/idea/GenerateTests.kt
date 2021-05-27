@@ -73,6 +73,7 @@ import org.jetbrains.kotlin.idea.fir.AbstractKtDeclarationAndFirDeclarationEqual
 import org.jetbrains.kotlin.idea.fir.low.level.api.*
 import org.jetbrains.kotlin.idea.fir.low.level.api.diagnostic.AbstractDiagnosticTraversalCounterTest
 import org.jetbrains.kotlin.idea.fir.low.level.api.diagnostic.AbstractFirContextCollectionTest
+import org.jetbrains.kotlin.idea.fir.low.level.api.diagnostic.compiler.based.AbstractDiagnosisCompilerTestDataSpecTest
 import org.jetbrains.kotlin.idea.fir.low.level.api.diagnostic.compiler.based.AbstractDiagnosisCompilerTestDataTest
 import org.jetbrains.kotlin.idea.fir.low.level.api.file.structure.AbstractFileStructureAndOutOfBlockModificationTrackerConsistencyTest
 import org.jetbrains.kotlin.idea.fir.low.level.api.file.structure.AbstractFileStructureTest
@@ -151,7 +152,9 @@ import org.jetbrains.kotlin.search.AbstractAnnotatedMembersSearchTest
 import org.jetbrains.kotlin.search.AbstractInheritorsSearchTest
 import org.jetbrains.kotlin.shortenRefs.AbstractFirShortenRefsTest
 import org.jetbrains.kotlin.shortenRefs.AbstractShortenRefsTest
+import org.jetbrains.kotlin.spec.utils.GeneralConfiguration
 import org.jetbrains.kotlin.test.TargetBackend
+import org.jetbrains.kotlin.test.runners.AbstractFirDiagnosticTestSpec
 import org.jetbrains.kotlin.tools.projectWizard.cli.AbstractProjectTemplateBuildFileGenerationTest
 import org.jetbrains.kotlin.tools.projectWizard.cli.AbstractYamlBuildFileGenerationTest
 import org.jetbrains.kotlin.tools.projectWizard.wizard.AbstractProjectTemplateNewWizardProjectImportTest
@@ -162,6 +165,7 @@ import org.jetbrains.uast.test.kotlin.AbstractFE1LegacyUastDeclarationTest
 import org.jetbrains.uast.test.kotlin.AbstractFE1UastDeclarationTest
 import org.jetbrains.uast.test.kotlin.AbstractFirLegacyUastDeclarationTest
 import org.jetbrains.uast.test.kotlin.AbstractFirUastDeclarationTest
+import org.jetbrains.kotlin.spec.utils.tasks.detectDirsWithTestsMapFileOnly
 
 fun main(args: Array<String>) {
     System.setProperty("java.awt.headless", "true")
@@ -1090,6 +1094,17 @@ fun main(args: Array<String>) {
                     "diagnostics/testsWithStdLib",
                     excludedPattern = excludedFirTestdataPattern,
                     excludeDirs = listOf("native")
+                )
+            }
+        }
+
+        testGroup("idea/idea-frontend-fir/idea-fir-low-level-api/tests", testDataRoot = GeneralConfiguration.SPEC_TESTDATA_PATH
+        ) {
+            testClass<AbstractDiagnosisCompilerTestDataSpecTest> {
+                model(
+                    "diagnostics",
+                    excludeDirs = listOf("helpers") + detectDirsWithTestsMapFileOnly("diagnostics"),
+                    excludedPattern = excludedFirTestdataPattern
                 )
             }
         }
