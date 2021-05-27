@@ -90,6 +90,14 @@ internal class FirExpressionNameReferencePositionContext(
 ) : FirNameReferencePositionContext()
 
 
+internal class FirWithSubjectEntryPositionContext(
+    override val position: PsiElement,
+    override val reference: KtSimpleNameReference,
+    override val nameExpression: KtSimpleNameExpression,
+    override val explicitReceiver: KtExpression?,
+    val whenCondition: KtWhenCondition,
+) : FirNameReferencePositionContext()
+
 internal class FirUnknownPositionContext(
     override val position: PsiElement
 ) : FirRawPositionCompletionContext()
@@ -124,6 +132,14 @@ internal object FirPositionCompletionContextDetector {
             parent is KtUserType -> {
                 detectForTypeContext(parent, position, reference, nameExpression, explicitReceiver)
             }
+            parent is KtWhenCondition && parent.isConditionOwnWhenWithSubject() -> {
+                FirWithSubjectEntryPositionContext(
+                    position,
+                    reference,
+                    nameExpression,
+                    explicitReceiver, parent
+                )
+            }
             nameExpression.isImportExpressionInsideImportDirective() -> {
                 FirImportDirectivePositionContext(
                     position,
@@ -151,6 +167,12 @@ internal object FirPositionCompletionContextDetector {
                 FirExpressionNameReferencePositionContext(position, reference, nameExpression, explicitReceiver)
             }
         }
+    }
+
+    private fun KtWhenCondition.isConditionOwnWhenWithSubject(): Boolean {
+        val whenEntry = (parent as? KtWhenEntry) ?: return false
+        val whenExpression = whenEntry.parent as? KtWhenExpression ?: return false
+        return whenExpression.subjectExpression != null
     }
 
     private fun KtExpression.isImportExpressionInsideImportDirective() = when (val parent = parent) {
