@@ -16,5 +16,4 @@ internal fun Int.isOtherUppercase(): Boolean {
             || this in 0x1f130..0x1f149
             || this in 0x1f150..0x1f169
             || this in 0x1f170..0x1f189
-
 }

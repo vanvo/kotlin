@@ -42,9 +42,9 @@ internal class OtherUppercaseRangesGenerator(
 
         for (i in otherUpperRanges.indices) {
             if (i != 0) {
-                builder.append(indent).append("|| ")
+                builder.appendLine().append(indent).append("|| ")
             }
-            builder.appendLine(otherUpperRanges[i].rangeCheck("this", indent))
+            builder.append(otherUpperRanges[i].rangeCheck("this", indent))
         }
 
         return """
