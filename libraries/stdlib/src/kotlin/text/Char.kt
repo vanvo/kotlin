@@ -292,9 +292,10 @@ public expect fun Char.isLetterOrDigit(): Boolean
 public expect fun Char.isDigit(): Boolean
 
 /**
- * Returns `true` if this character is an upper case letter.
+ * Returns `true` if this character is upper case.
  *
- * A character is considered to be an upper case letter if its [category] is [CharCategory.UPPERCASE_LETTER].
+ * A character is considered to be an upper case character if its [category] is [CharCategory.UPPERCASE_LETTER],
+ * or it has contributory property Other_Uppercase as defined by the Unicode Standard.
  *
  * @sample samples.text.Chars.isUpperCase
  */
@@ -302,9 +303,10 @@ public expect fun Char.isDigit(): Boolean
 public expect fun Char.isUpperCase(): Boolean
 
 /**
- * Returns `true` if this character is a lower case letter.
+ * Returns `true` if this character is lower case.
  *
- * A character is considered to be a lower case letter if its [category] is [CharCategory.LOWERCASE_LETTER].
+ * A character is considered to be a lower case character if its [category] is [CharCategory.LOWERCASE_LETTER],
+ * or it has contributory property Other_Lowercase as defined by the Unicode Standard.
  *
  * @sample samples.text.Chars.isLowerCase
  */
