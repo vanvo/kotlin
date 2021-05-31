@@ -14,12 +14,12 @@ private object OtherLowercase {
     internal val otherLowerStart = intArrayOf(
         0x00aa, 0x00ba, 0x02b0, 0x02c0, 0x02e0, 0x0345, 0x037a, 0x1d2c, 0x1d78, 0x1d9b, 0x2071, 0x207f, 0x2090, 0x2170, 0x24d0, 0x2c7c, 0xa69c, 0xa770, 0xa7f8, 0xab5c, 
     )
-    internal val otherLowerEnd = intArrayOf(
-        0x00aa, 0x00ba, 0x02b8, 0x02c1, 0x02e4, 0x0345, 0x037a, 0x1d6a, 0x1d78, 0x1dbf, 0x2071, 0x207f, 0x209c, 0x217f, 0x24e9, 0x2c7d, 0xa69d, 0xa770, 0xa7f9, 0xab5f, 
+    internal val otherLowerLength = intArrayOf(
+        1, 1, 9, 2, 5, 1, 1, 63, 1, 37, 1, 1, 13, 16, 26, 2, 2, 1, 2, 4, 
     )
 }
 
 internal fun Int.isOtherLowercase(): Boolean {
     val index = binarySearchRange(OtherLowercase.otherLowerStart, this)
-    return index >= 0 && this <= OtherLowercase.otherLowerEnd[index]
+    return index >= 0 && this < OtherLowercase.otherLowerStart[index] + OtherLowercase.otherLowerLength[index]
 }

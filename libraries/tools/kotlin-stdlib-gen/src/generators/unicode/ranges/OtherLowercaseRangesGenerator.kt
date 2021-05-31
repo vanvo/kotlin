@@ -36,7 +36,7 @@ internal class OtherLowercaseRangesGenerator(
             writer.appendLine()
             strategy.beforeWritingRanges(writer)
             writer.writeIntArray("otherLowerStart", otherLowerRanges.map { it.first }, strategy)
-            writer.writeIntArray("otherLowerEnd", otherLowerRanges.map { it.last }, strategy)
+            writer.writeIntArray("otherLowerLength", otherLowerRanges.map { it.last - it.first + 1 }, strategy, useHex = false)
             strategy.afterWritingRanges(writer)
             writer.appendLine()
             writer.appendLine(isOtherLowercaseImpl(strategy))
@@ -46,7 +46,7 @@ internal class OtherLowercaseRangesGenerator(
     fun isOtherLowercaseImpl(strategy: RangesWritingStrategy) = """
         internal fun Int.isOtherLowercase(): Boolean {
             val index = binarySearchRange(${strategy.rangeRef("otherLowerStart")}, this)
-            return index >= 0 && this <= ${strategy.rangeRef("otherLowerEnd")}[index]
+            return index >= 0 && this < ${strategy.rangeRef("otherLowerStart")}[index] + ${strategy.rangeRef("otherLowerLength")}[index]
         }
     """.trimIndent()
 }
