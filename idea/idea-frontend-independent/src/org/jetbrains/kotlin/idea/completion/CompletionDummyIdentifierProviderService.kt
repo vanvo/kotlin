@@ -66,9 +66,12 @@ abstract class CompletionDummyIdentifierProviderService {
                 ?: specialExtensionReceiverDummyIdentifier(tokenBefore)
                 ?: specialInTypeArgsDummyIdentifier(tokenBefore)
                 ?: specialInArgumentListDummyIdentifier(tokenBefore)
+                ?: handleDefaultCase(context)
                 ?: DEFAULT_DUMMY_IDENTIFIER
         }
     }
+
+    protected open fun handleDefaultCase(context: CompletionInitializationContext): String? = null
 
     private fun isInTypeParametersList(tokenBefore: PsiElement?): Boolean {
         if (tokenBefore == null) return false
