@@ -49,7 +49,6 @@ import org.jetbrains.kotlin.fir.types.impl.FirTypeArgumentListImpl
 import org.jetbrains.kotlin.lexer.KtModifierKeywordToken
 import org.jetbrains.kotlin.lexer.KtTokens.*
 import org.jetbrains.kotlin.name.*
-import org.jetbrains.kotlin.psi.psiUtil.hasExpectModifier
 import org.jetbrains.kotlin.utils.addToStdlib.runIf
 
 class DeclarationsConverter(
@@ -396,14 +395,15 @@ class DeclarationsConverter(
 
         val className = identifier.nameAsSafeName(if (modifiers.isCompanion()) "Companion" else "")
         val isLocal = isClassLocal(classNode) { getParent() }
+        val classIsExpect = modifiers.hasExpect() || context.containerIsExpect
 
-        return withChildClassName(className, isLocal) {
+        return withChildClassName(className, isExpect = classIsExpect, isLocal) {
             withCapturedTypeParameters {
                 val status = FirDeclarationStatusImpl(
                     if (isLocal) Visibilities.Local else modifiers.getVisibility(),
                     modifiers.getModality(isClassOrObject = true)
                 ).apply {
-                    isExpect = modifiers.hasExpect()
+                    isExpect = classIsExpect
                     isActual = modifiers.hasActual()
                     isInner = modifiers.isInner()
                     isCompanion = modifiers.isCompanion() && classKind == ClassKind.OBJECT
@@ -478,7 +478,11 @@ class DeclarationsConverter(
                     )
                     //parse primary constructor
                     val primaryConstructorWrapper = convertPrimaryConstructor(
-                        primaryConstructor, selfType.source, classWrapper, delegatedConstructorSource
+                        primaryConstructor,
+                        selfType.source,
+                        classWrapper,
+                        delegatedConstructorSource,
+                        containingClassIsExpectClass = status.isExpect
                     )
                     val firPrimaryConstructor = primaryConstructorWrapper?.firConstructor
                     firPrimaryConstructor?.let { declarations += it }
@@ -546,7 +550,7 @@ class DeclarationsConverter(
      * @see org.jetbrains.kotlin.fir.builder.RawFirBuilder.Visitor.visitObjectLiteralExpression
      */
     fun convertObjectLiteral(objectLiteral: LighterASTNode): FirElement {
-        return withChildClassName(ANONYMOUS_OBJECT_NAME) {
+        return withChildClassName(ANONYMOUS_OBJECT_NAME, isExpect = false) {
             buildAnonymousObject {
                 val objectDeclaration = objectLiteral.getChildNodesByType(OBJECT_DECLARATION).first()
                 source = objectDeclaration.toFirSourceElement()
@@ -604,7 +608,7 @@ class DeclarationsConverter(
                 )
                 //parse primary constructor
                 convertPrimaryConstructor(
-                    primaryConstructor, typeRef.source, classWrapper, delegatedConstructorSource
+                    primaryConstructor, typeRef.source, classWrapper, delegatedConstructorSource, containingClassIsExpectClass = false
                 )?.let { this.declarations += it.firConstructor }
                 delegateFields?.let { this.declarations += it }
 
@@ -649,7 +653,7 @@ class DeclarationsConverter(
             symbol = FirVariableSymbol(CallableId(context.currentClassId, enumEntryName))
             status = FirDeclarationStatusImpl(Visibilities.Public, Modality.FINAL).apply {
                 isStatic = true
-                isExpect = classWrapper.hasExpect()
+                isExpect = classWrapper.hasExpect() || context.containerIsExpect
             }
             if (classWrapper.hasDefaultConstructor && enumEntry.getChildNodeByType(INITIALIZER_LIST) == null &&
                 modifiers.annotations.isEmpty() && classBodyNode == null
@@ -657,7 +661,7 @@ class DeclarationsConverter(
                 return@buildEnumEntry
             }
             annotations += modifiers.annotations
-            initializer = withChildClassName(enumEntryName) {
+            initializer = withChildClassName(enumEntryName, isExpect = false) {
                 buildAnonymousObject {
                     source = enumEntry.toFirSourceElement(FirFakeSourceElementKind.EnumInitializer)
                     moduleData = baseModuleData
@@ -687,11 +691,12 @@ class DeclarationsConverter(
                         enumEntry.toFirSourceElement(),
                         enumClassWrapper,
                         superTypeCallEntry?.toFirSourceElement(),
-                        isEnumEntry = true
+                        isEnumEntry = true,
+                        containingClassIsExpectClass = false
                     )?.let { declarations += it.firConstructor }
                     classBodyNode?.also {
                         // Use ANONYMOUS_OBJECT_NAME for the owner class id of enum entry declarations
-                        withChildClassName(ANONYMOUS_OBJECT_NAME, isLocal = true) {
+                        withChildClassName(ANONYMOUS_OBJECT_NAME, isLocal = true, isExpect = false) {
                             declarations += convertClassBody(it, enumClassWrapper)
                         }
                     }
@@ -746,11 +751,12 @@ class DeclarationsConverter(
         selfTypeSource: FirSourceElement?,
         classWrapper: ClassWrapper,
         delegatedConstructorSource: FirLightSourceElement?,
-        isEnumEntry: Boolean = false
+        isEnumEntry: Boolean = false,
+        containingClassIsExpectClass: Boolean
     ): PrimaryConstructor? {
         if (primaryConstructor == null && !classWrapper.isEnumEntry() && classWrapper.hasSecondaryConstructor) return null
         val classKind = classWrapper.classBuilder.classKind
-        if (primaryConstructor == null && (classWrapper.hasExpect() && classKind == ClassKind.ENUM_CLASS)) return null
+        if (primaryConstructor == null && (containingClassIsExpectClass && classKind != ClassKind.ENUM_CLASS)) return null
         if (classWrapper.isInterface()) return null
 
         var modifiers = Modifier()
@@ -789,7 +795,7 @@ class DeclarationsConverter(
             modifiers.getVisibility().takeUnless { it == Visibilities.Unknown }
         }
         val status = FirDeclarationStatusImpl(explicitVisibility ?: defaultVisibility, Modality.FINAL).apply {
-            isExpect = modifiers.hasExpect() || classWrapper.hasExpect()
+            isExpect = modifiers.hasExpect() || context.containerIsExpect
             isActual = modifiers.hasActual()
             isInner = classWrapper.isInner()
             isFromSealedClass = classWrapper.isSealed() && explicitVisibility !== Visibilities.Private
@@ -858,7 +864,7 @@ class DeclarationsConverter(
 
         val explicitVisibility = modifiers.getVisibility()
         val status = FirDeclarationStatusImpl(explicitVisibility, Modality.FINAL).apply {
-            isExpect = modifiers.hasExpect() || classWrapper.hasExpect()
+            isExpect = modifiers.hasExpect() || context.containerIsExpect
             isActual = modifiers.hasActual()
             isInner = classWrapper.isInner()
             isFromSealedClass = classWrapper.isSealed() && explicitVisibility !== Visibilities.Private
@@ -958,14 +964,15 @@ class DeclarationsConverter(
         }
 
         val typeAliasName = identifier.nameAsSafeName()
-        return withChildClassName(typeAliasName) {
+        val typeAliasIsExpect = modifiers.hasExpect() || context.containerIsExpect
+        return withChildClassName(typeAliasName, isExpect = typeAliasIsExpect) {
             return@withChildClassName buildTypeAlias {
                 source = typeAlias.toFirSourceElement()
                 moduleData = baseModuleData
                 origin = FirDeclarationOrigin.Source
                 name = typeAliasName
                 status = FirDeclarationStatusImpl(modifiers.getVisibility(), Modality.FINAL).apply {
-                    isExpect = modifiers.hasExpect()
+                    isExpect = typeAliasIsExpect
                     isActual = modifiers.hasActual()
                 }
                 symbol = FirTypeAliasSymbol(context.currentClassId)
@@ -1105,7 +1112,7 @@ class DeclarationsConverter(
                     // Note that, depending on `var` or `val`, checking setter's modifiers should be careful: for `val`, setter doesn't
                     // exist (null); for `var`, the retrieval of the specific modifier is supposed to be `true`
                     status = FirDeclarationStatusImpl(propertyVisibility, modifiers.getModality(isClassOrObject = false)).apply {
-                        isExpect = modifiers.hasExpect() || classWrapper?.hasExpect() == true
+                        isExpect = modifiers.hasExpect() || context.containerIsExpect
                         isActual = modifiers.hasActual()
                         isOverride = modifiers.hasOverride()
                         isConst = modifiers.isConst()
@@ -1398,7 +1405,7 @@ class DeclarationsConverter(
                     if (isLocal) Visibilities.Local else modifiers.getVisibility(),
                     modifiers.getModality(isClassOrObject = false)
                 ).apply {
-                    isExpect = modifiers.hasExpect() || classWrapper?.hasExpect() == true
+                    isExpect = modifiers.hasExpect() || context.containerIsExpect
                     isActual = modifiers.hasActual()
                     isOverride = modifiers.hasOverride()
                     isOperator = modifiers.hasOperator()

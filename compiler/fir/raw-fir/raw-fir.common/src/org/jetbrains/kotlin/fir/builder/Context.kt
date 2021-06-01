@@ -33,4 +33,5 @@ class Context<T> {
 
     var forcedElementSourceKind: FirSourceElementKind? = null
     val dispatchReceiverTypesStack = mutableListOf<ConeClassLikeType>()
+    var containerIsExpect: Boolean = false
 }

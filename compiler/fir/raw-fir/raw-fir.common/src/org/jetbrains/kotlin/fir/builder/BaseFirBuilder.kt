@@ -65,11 +65,14 @@ abstract class BaseFirBuilder<T>(val baseSession: FirSession, val context: Conte
     /**** Class name utils ****/
     inline fun <T> withChildClassName(
         name: Name,
+        isExpect: Boolean,
         isLocal: Boolean = context.firFunctionTargets.isNotEmpty(),
         l: () -> T
     ): T {
         context.className = context.className.child(name)
         context.localBits.add(isLocal)
+        val previousIsExpect = context.containerIsExpect
+        context.containerIsExpect = previousIsExpect || isExpect
         val dispatchReceiversNumber = context.dispatchReceiverTypesStack.size
         return try {
             l()
@@ -84,6 +87,7 @@ abstract class BaseFirBuilder<T>(val baseSession: FirSession, val context: Conte
 
             context.className = context.className.parent()
             context.localBits.removeLast()
+            context.containerIsExpect = previousIsExpect
         }
     }
 

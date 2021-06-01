@@ -16,6 +16,7 @@ import org.jetbrains.kotlin.fir.types.FirResolvedTypeRef
 import org.jetbrains.kotlin.fir.types.FirTypeRef
 import org.jetbrains.kotlin.idea.fir.low.level.api.api.FirDeclarationUntypedDesignation
 import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.psi.psiUtil.hasExpectModifier
 
 internal class RawFirNonLocalDeclarationBuilder private constructor(
     session: FirSession,
@@ -88,7 +89,7 @@ internal class RawFirNonLocalDeclarationBuilder private constructor(
         val classOrObject = parent.psi
         check(classOrObject is KtClassOrObject)
 
-        withChildClassName(classOrObject.nameAsSafeName, false) {
+        withChildClassName(classOrObject.nameAsSafeName, isExpect = classOrObject.hasExpectModifier() || context.containerIsExpect) {
             withCapturedTypeParameters {
                 if (!parent.isInner) context.capturedTypeParameters = context.capturedTypeParameters.clear()
                 addCapturedTypeParameters(parent.typeParameters.take(classOrObject.typeParameters.size))
