@@ -455,7 +455,8 @@ abstract class AbstractFirStatusResolveTransformer(
         data: FirResolvedDeclarationStatus?
     ): FirDeclaration {
         simpleFunction.replaceResolvePhase(transformerPhase)
-        simpleFunction.transformStatus(this, statusResolver.resolveStatus(simpleFunction, containingClass, isLocal = false))
+        val resolvedStatus = statusResolver.resolveStatus(simpleFunction, containingClass, isLocal = false)
+        simpleFunction.transformStatus(this, resolvedStatus)
         return transformDeclaration(simpleFunction, data)
     }
 
