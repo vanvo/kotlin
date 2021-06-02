@@ -97,12 +97,26 @@ private object FirToKtConversionCreator {
         return null
     }
 
+    private fun KType.toParameterName(): String {
+        return kClass.simpleName!!.replaceFirstChar(Char::lowercaseChar)
+    }
+
     private fun tryMapPlatformType(type: KType, kClass: KClass<*>): HLParameterConversion? {
         if (kClass.isSubclassOf(Collection::class)) {
             val elementType = type.arguments.single().type ?: return HLIdParameterConversion
-            return HLMapParameterConversion(
-                parameterName = elementType.kClass.simpleName!!.replaceFirstChar(Char::lowercaseChar),
+            return HLCollectionParameterConversion(
+                parameterName = elementType.toParameterName(),
                 mappingConversion = createConversion(elementType)
+            )
+        }
+        if (kClass.isSubclassOf(Map::class)) {
+            val keyType = type.arguments.getOrNull(0)?.type ?: return HLIdParameterConversion
+            val valueType = type.arguments.getOrNull(1)?.type ?: return HLIdParameterConversion
+            return HLMapParameterConversion(
+                keyName = keyType.toParameterName(),
+                valueName = valueType.toParameterName(),
+                mappingConversionForKeys = createConversion(keyType),
+                mappingConversionForValues = createConversion(valueType)
             )
         }
         if (kClass.isSubclassOf(Pair::class)) {
