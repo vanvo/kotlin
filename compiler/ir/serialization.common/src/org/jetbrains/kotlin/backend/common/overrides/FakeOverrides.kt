@@ -39,7 +39,7 @@ class FakeOverrideGlobalDeclarationTable(
     fun clear() = table.clear()
 }
 
-class FakeOverrideDeclarationTable(
+open class FakeOverrideDeclarationTable(
     mangler: KotlinMangler.IrMangler,
     globalTable: FakeOverrideGlobalDeclarationTable = FakeOverrideGlobalDeclarationTable(mangler)
 ) : DeclarationTable(globalTable) {
@@ -68,14 +68,13 @@ class FakeOverrideBuilder(
     val symbolTable: SymbolTable,
     mangler: KotlinMangler.IrMangler,
     irBuiltIns: IrBuiltIns,
-    val platformSpecificClassFilter: FakeOverrideClassFilter = DefaultFakeOverrideClassFilter
+    val platformSpecificClassFilter: FakeOverrideClassFilter = DefaultFakeOverrideClassFilter,
+    // TODO: The declaration table is needed for the signaturer.
+    private val fakeOverrideDeclarationTable: DeclarationTable = FakeOverrideDeclarationTable(signaturer),
 ) : FakeOverrideBuilderStrategy() {
     private val haveFakeOverrides = mutableSetOf<IrClass>()
 
     private val irOverridingUtil = IrOverridingUtil(irBuiltIns, this)
-
-    // TODO: The declaration table is needed for the signaturer.
-    private val fakeOverrideDeclarationTable = FakeOverrideDeclarationTable(mangler)
 
     private val fakeOverrideClassQueue = mutableListOf<IrClass>()
     fun enqueueClass(clazz: IrClass, signature: IdSignature) {
