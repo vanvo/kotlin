@@ -7,7 +7,7 @@ package org.jetbrains.kotlin.gradle.tasks
 
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.artifacts.Configuration
+import org.gradle.api.attributes.Attribute
 import org.gradle.api.file.*
 import org.gradle.api.logging.Logger
 import org.gradle.api.model.ObjectFactory
@@ -41,6 +41,7 @@ import org.jetbrains.kotlin.gradle.internal.tasks.TaskConfigurator
 import org.jetbrains.kotlin.gradle.internal.tasks.TaskWithLocalState
 import org.jetbrains.kotlin.gradle.internal.tasks.allOutputFiles
 import org.jetbrains.kotlin.gradle.internal.transforms.CLASSPATH_ENTRY_SNAPSHOT_FILE_NAME
+import org.jetbrains.kotlin.gradle.internal.transforms.ClasspathEntrySnapshotTransform
 import org.jetbrains.kotlin.gradle.logging.GradleKotlinLogger
 import org.jetbrains.kotlin.gradle.logging.GradlePrintingMessageCollector
 import org.jetbrains.kotlin.gradle.logging.kotlinDebug
@@ -158,13 +159,15 @@ abstract class AbstractKotlinCompile<T : CommonCompilerArguments> : AbstractKotl
                     project.plugins.any { it is KotlinPlatformPluginBase || it is KotlinMultiplatformPluginWrapper || it is KotlinPm20PluginWrapper }
                 }
             ).disallowChanges()
-            task.taskBuildDirectory.value(task.getKotlinBuildDir()).disallowChanges()
+            task.taskBuildDirectory.value(getKotlinBuildDir(task)).disallowChanges()
             task.localStateDirectories.from(task.taskBuildDirectory).disallowChanges()
         }
 
-        private fun Task.getKotlinBuildDir(): Provider<Directory> = project.layout.buildDirectory.dir("$KOTLIN_BUILD_DIR_NAME/$name")
-        protected fun Task.getClasspathSnapshotDir(): Provider<Directory> =
-            project.layout.buildDirectory.dir("$KOTLIN_BUILD_DIR_NAME/classpath-snapshot/$name")
+        private fun getKotlinBuildDir(task: T): Provider<Directory> =
+            task.project.layout.buildDirectory.dir("$KOTLIN_BUILD_DIR_NAME/${task.name}")
+
+        protected open fun getClasspathSnapshotDir(task: T): Provider<Directory> =
+            task.project.layout.buildDirectory.dir("$KOTLIN_BUILD_DIR_NAME/classpath-snapshot/${task.name}")
     }
 
     init {
@@ -392,22 +395,65 @@ abstract class KotlinCompile @Inject constructor(
     override val kotlinOptions: KotlinJvmOptions
 ) : AbstractKotlinCompile<K2JVMCompilerArguments>(), KotlinJvmCompile {
 
-    internal class Configurator(
-        kotlinCompilation: KotlinCompilationData<*>,
-        private val propertiesProvider: PropertiesProvider,
-        private val classpathConfiguration: Configuration?
-    ) : AbstractKotlinCompile.Configurator<KotlinCompile>(kotlinCompilation) {
+    companion object {
+        private const val TRANSFORMS_REGISTERED = "_kgp_internal_kotlin_compile_transforms_registered"
 
-        override fun configure(task: KotlinCompile) {
+        val ARTIFACT_TYPE_ATTRIBUTE: Attribute<String> = Attribute.of("artifactType", String::class.java)
+        private const val DIRECTORY_ARTIFACT_TYPE = "directory"
+        private const val JAR_ARTIFACT_TYPE = "jar"
+        const val CLASSPATH_ENTRY_SNAPSHOT_ARTIFACT_TYPE = "classpath-entry-snapshot"
+    }
+
+    internal open class Configurator<T : KotlinCompile>(
+        kotlinCompilation: KotlinCompilationData<*>,
+        private val properties: PropertiesProvider
+    ) : AbstractKotlinCompile.Configurator<T>(kotlinCompilation) {
+
+        /**
+         * Prepares for configuration of the task. This method must be called during build configuration, not during task configuration
+         * (which may happen after build configuration).
+         *
+         * For example, configurations should be created early to avoid issues with composite builds
+         * (https://issuetracker.google.com/183952598).
+         */
+        fun runAtConfigurationTime(taskProvider: TaskProvider<T>, project: Project) {
+            if (properties.useClasspathSnapshot) {
+                registerTransformsOnce(project)
+                project.configurations.create(classpathSnapshotConfigurationName(taskProvider.name)).apply {
+                    project.dependencies.add(name, project.files(project.provider { taskProvider.get().classpath }))
+                }
+            }
+        }
+
+        private fun classpathSnapshotConfigurationName(taskName: String) = "_kgp_internal_${taskName}_classpath_snapshot"
+
+        private fun registerTransformsOnce(project: Project) {
+            if (project.extensions.extraProperties.has(TRANSFORMS_REGISTERED)) {
+                return
+            }
+            project.extensions.extraProperties[TRANSFORMS_REGISTERED] = true
+
+            project.dependencies.registerTransform(ClasspathEntrySnapshotTransform::class.java) {
+                it.from.attribute(ARTIFACT_TYPE_ATTRIBUTE, JAR_ARTIFACT_TYPE)
+                it.to.attribute(ARTIFACT_TYPE_ATTRIBUTE, CLASSPATH_ENTRY_SNAPSHOT_ARTIFACT_TYPE)
+            }
+            project.dependencies.registerTransform(ClasspathEntrySnapshotTransform::class.java) {
+                it.from.attribute(ARTIFACT_TYPE_ATTRIBUTE, DIRECTORY_ARTIFACT_TYPE)
+                it.to.attribute(ARTIFACT_TYPE_ATTRIBUTE, CLASSPATH_ENTRY_SNAPSHOT_ARTIFACT_TYPE)
+            }
+        }
+
+        override fun configure(task: T) {
             super.configure(task)
 
-            if (propertiesProvider.useClasspathSnapshot) {
+            if (properties.useClasspathSnapshot) {
+                val classpathSnapshot = task.project.configurations.getByName(classpathSnapshotConfigurationName(task.name))
                 task.classpathSnapshotProperties.classpathSnapshot.from(
-                    classpathConfiguration!!.incoming.artifactView {
+                    classpathSnapshot.incoming.artifactView {
                         it.attributes.attribute(ARTIFACT_TYPE_ATTRIBUTE, CLASSPATH_ENTRY_SNAPSHOT_ARTIFACT_TYPE)
                     }.files
                 )
-                task.classpathSnapshotProperties.classpathSnapshotDir.value(task.getClasspathSnapshotDir()).disallowChanges()
+                task.classpathSnapshotProperties.classpathSnapshotDir.value(getClasspathSnapshotDir(task)).disallowChanges()
             }
         }
     }

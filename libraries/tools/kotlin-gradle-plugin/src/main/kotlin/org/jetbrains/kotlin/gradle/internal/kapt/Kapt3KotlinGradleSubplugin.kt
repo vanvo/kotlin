@@ -652,23 +652,16 @@ class Kapt3GradleSubplugin @Inject internal constructor(private val registry: To
         val kaptTaskName = getKaptTaskName("kaptGenerateStubs")
         val kaptTaskProvider = project.registerTask<KaptGenerateStubsTask>(kaptTaskName)
 
-        val classpathConfiguration = if (properties.useClasspathSnapshot) {
-            project.configurations.create("_kgp_internal_${kaptTaskProvider.name}_classpath").also {
-                project.dependencies.add(it.name, project.files(project.provider { kaptTaskProvider.get().classpath }))
-            }
-        } else null
-        val classpathSnapshotDir = if (properties.useClasspathSnapshot) {
+        val configurator = KaptGenerateStubsTask.Configurator(
+            kotlinCompile,
+            kotlinCompilation,
+            properties,
             getKaptClasspathSnapshotDir()
-        } else null
+        )
+        configurator.runAtConfigurationTime(kaptTaskProvider, project)
 
         kaptTaskProvider.configure { kaptTask ->
-            KaptGenerateStubsTask.Configurator(
-                kotlinCompile.get(),
-                kotlinCompilation,
-                properties,
-                classpathConfiguration,
-                classpathSnapshotDir
-            ).configure(kaptTask)
+            configurator.configure(kaptTask)
 
             kaptTask.stubsDir.set(getKaptStubsDir())
             kaptTask.destinationDirectory.set(getKaptIncrementalDataDir())

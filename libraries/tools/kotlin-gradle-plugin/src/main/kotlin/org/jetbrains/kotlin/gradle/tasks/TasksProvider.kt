@@ -19,10 +19,8 @@ package org.jetbrains.kotlin.gradle.tasks
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.UnknownTaskException
-import org.gradle.api.attributes.Attribute
 import org.gradle.api.tasks.TaskCollection
 import org.gradle.api.tasks.TaskProvider
-import org.jetbrains.kotlin.gradle.internal.transforms.ClasspathEntrySnapshotTransform
 import org.jetbrains.kotlin.gradle.plugin.PropertiesProvider
 import org.jetbrains.kotlin.gradle.plugin.mapKotlinTaskProperties
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KotlinCompilationData
@@ -88,43 +86,21 @@ internal open class KotlinTasksProvider {
         compilation: KotlinCompilationData<*>,
         configureAction: (KotlinCompile) -> (Unit)
     ): TaskProvider<out KotlinCompile> {
-        registerTransformsOnceForKotlinCompile(project)
-
         val properties = PropertiesProvider(project)
         val taskClass = taskOrWorkersTask<KotlinCompile, KotlinCompileWithWorkers>(properties)
         val kotlinCompile = project.registerTask(name, taskClass, constructorArgs = listOf(compilation.kotlinOptions))
-        val classpathConfiguration = if (properties.useClasspathSnapshot) {
-            project.configurations.create("_kgp_internal_${kotlinCompile.name}_classpath").also {
-                project.dependencies.add(it.name, project.files(project.provider { kotlinCompile.get().classpath }))
-            }
-        } else null
+
+        val configurator = KotlinCompile.Configurator<KotlinCompile>(compilation, properties)
+        @Suppress("UNCHECKED_CAST")
+        configurator.runAtConfigurationTime(kotlinCompile as TaskProvider<KotlinCompile>, project)
 
         kotlinCompile.configure {
             configureAction(it)
-            KotlinCompile.Configurator(compilation, properties, classpathConfiguration).configure(it)
+            configurator.configure(it)
         }
         configure(kotlinCompile, project, properties, compilation)
+
         return kotlinCompile
-    }
-
-    companion object {
-        private const val TRANSFORMS_REGISTERED = "_kgp_internal_kotlin_compile_transforms_registered"
-    }
-
-    private fun registerTransformsOnceForKotlinCompile(project: Project) {
-        if (project.extensions.extraProperties.has(TRANSFORMS_REGISTERED)) {
-            return
-        }
-        project.extensions.extraProperties[TRANSFORMS_REGISTERED] = true
-
-        project.dependencies.registerTransform(ClasspathEntrySnapshotTransform::class.java) {
-            it.from.attribute(ARTIFACT_TYPE_ATTRIBUTE, JAR_ARTIFACT_TYPE)
-            it.to.attribute(ARTIFACT_TYPE_ATTRIBUTE, CLASSPATH_ENTRY_SNAPSHOT_ARTIFACT_TYPE)
-        }
-        project.dependencies.registerTransform(ClasspathEntrySnapshotTransform::class.java) {
-            it.from.attribute(ARTIFACT_TYPE_ATTRIBUTE, DIRECTORY_ARTIFACT_TYPE)
-            it.to.attribute(ARTIFACT_TYPE_ATTRIBUTE, CLASSPATH_ENTRY_SNAPSHOT_ARTIFACT_TYPE)
-        }
     }
 
     fun registerKotlinJSTask(
@@ -209,8 +185,3 @@ internal class AndroidTasksProvider : KotlinTasksProvider() {
         }
     }
 }
-
-val ARTIFACT_TYPE_ATTRIBUTE: Attribute<String> = Attribute.of("artifactType", String::class.java)
-private const val DIRECTORY_ARTIFACT_TYPE = "directory"
-private const val JAR_ARTIFACT_TYPE = "jar"
-const val CLASSPATH_ENTRY_SNAPSHOT_ARTIFACT_TYPE = "classpath-entry-snapshot"
