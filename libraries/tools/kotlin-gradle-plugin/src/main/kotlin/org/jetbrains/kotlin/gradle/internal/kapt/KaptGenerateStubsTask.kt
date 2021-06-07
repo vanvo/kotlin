@@ -70,12 +70,12 @@ abstract class KaptGenerateStubsTask : KotlinCompile(KotlinJvmOptionsImpl()) {
                 }
             )
             if (properties.useClasspathSnapshot) {
-                task.classpathSnapshot.from(
+                task.classpathSnapshotProperties.classpathSnapshot.from(
                     classpathConfiguration!!.incoming.artifactView {
                         it.attributes.attribute(ARTIFACT_TYPE_ATTRIBUTE, CLASSPATH_ENTRY_SNAPSHOT_ARTIFACT_TYPE)
                     }.files
                 )
-                task.classpathSnapshotDir.fileValue(classpathSnapshotDir!!).disallowChanges()
+                task.classpathSnapshotProperties.classpathSnapshotDir.fileValue(classpathSnapshotDir!!).disallowChanges()
             }
         }
     }

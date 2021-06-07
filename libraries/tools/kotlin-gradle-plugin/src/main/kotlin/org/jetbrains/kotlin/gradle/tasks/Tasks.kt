@@ -402,12 +402,12 @@ abstract class KotlinCompile @Inject constructor(
             super.configure(task)
 
             if (propertiesProvider.useClasspathSnapshot) {
-                task.classpathSnapshot.from(
+                task.classpathSnapshotProperties.classpathSnapshot.from(
                     classpathConfiguration!!.incoming.artifactView {
                         it.attributes.attribute(ARTIFACT_TYPE_ATTRIBUTE, CLASSPATH_ENTRY_SNAPSHOT_ARTIFACT_TYPE)
                     }.files
                 )
-                task.classpathSnapshotDir.value(task.getClasspathSnapshotDir()).disallowChanges()
+                task.classpathSnapshotProperties.classpathSnapshotDir.value(task.getClasspathSnapshotDir()).disallowChanges()
             }
         }
     }
@@ -439,16 +439,22 @@ abstract class KotlinCompile @Inject constructor(
             logger.kotlinDebug { "Set $this.usePreciseJavaTracking=$value" }
         }
 
-    @get:Input
-    abstract val useClasspathSnapshot: Property<Boolean>
+    @get:Nested
+    abstract val classpathSnapshotProperties: ClasspathSnapshotProperties
 
-    @get:Classpath
-    @get:Optional // Set if useClasspathSnapshot == true
-    abstract val classpathSnapshot: ConfigurableFileCollection
+    /** Properties related to the `kotlin.incremental.useClasspathSnapshot` feature. */
+    abstract class ClasspathSnapshotProperties {
+        @get:Input
+        abstract val useClasspathSnapshot: Property<Boolean>
 
-    @get:OutputDirectory
-    @get:Optional // Set if useClasspathSnapshot == true
-    abstract val classpathSnapshotDir: DirectoryProperty
+        @get:Classpath
+        @get:Optional // Set if useClasspathSnapshot == true
+        abstract val classpathSnapshot: ConfigurableFileCollection
+
+        @get:OutputDirectory
+        @get:Optional // Set if useClasspathSnapshot == true
+        abstract val classpathSnapshotDir: DirectoryProperty
+    }
 
     init {
         incremental = true
@@ -483,7 +489,7 @@ abstract class KotlinCompile @Inject constructor(
         val outputItemCollector = OutputItemsCollectorImpl()
         val compilerRunner = compilerRunner.get()
 
-        if (useClasspathSnapshot.get()) {
+        if (classpathSnapshotProperties.useClasspathSnapshot.get()) {
             getClasspathChanges()
         }
         val icEnv = if (isIncrementalCompilationEnabled()) {
@@ -513,8 +519,10 @@ abstract class KotlinCompile @Inject constructor(
             environment
         )
 
-        if (useClasspathSnapshot.get()) {
-            copyClasspathSnapshotFilesToDir(classpathSnapshot.files.toList(), classpathSnapshotDir.get().asFile)
+        with(classpathSnapshotProperties) {
+            if (useClasspathSnapshot.get()) {
+                copyClasspathSnapshotFilesToDir(classpathSnapshot.files.toList(), classpathSnapshotDir.get().asFile)
+            }
         }
     }
 
@@ -560,8 +568,8 @@ abstract class KotlinCompile @Inject constructor(
 
     private fun getClasspathChanges() {
         // TODO WORK-IN-PROGRESS
-        val currentClasspathSnapshotFiles = this.classpathSnapshot.files.toList()
-        val previousClasspathSnapshotFiles = getClasspathSnapshotFilesInDir(this.classpathSnapshotDir.get().asFile)
+        val currentClasspathSnapshotFiles = classpathSnapshotProperties.classpathSnapshot.files.toList()
+        val previousClasspathSnapshotFiles = getClasspathSnapshotFilesInDir(classpathSnapshotProperties.classpathSnapshotDir.get().asFile)
     }
 
     /**
