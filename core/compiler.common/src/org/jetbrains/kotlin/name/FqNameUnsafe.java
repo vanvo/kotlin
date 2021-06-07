@@ -21,7 +21,6 @@ import kotlin.jvm.functions.Function1;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -29,8 +28,7 @@ import java.util.regex.Pattern;
 /**
  * Like {@link FqName} but allows '<' and '>' characters in name.
  */
-public final class FqNameUnsafe implements Serializable {
-    private static final long serialVersionUID = 0L;
+public final class FqNameUnsafe {
     private static final Name ROOT_NAME = Name.special("<root>");
     private static final Pattern SPLIT_BY_DOTS = Pattern.compile("\\.");
 

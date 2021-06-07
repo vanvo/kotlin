@@ -6,13 +6,57 @@
 package org.jetbrains.kotlin.incremental
 
 import org.jetbrains.kotlin.name.FqName
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 import java.io.Serializable
 
 sealed class ClasspathChanges : Serializable {
 
-    class Available(val lookupSymbols: Collection<LookupSymbol>, val fqNames: Collection<FqName>) : ClasspathChanges() {
+    class Available() : ClasspathChanges() {
+
+        lateinit var lookupSymbols: List<LookupSymbol>
+            private set
+
+        lateinit var fqNames: List<FqName>
+            private set
+
+        constructor(lookupSymbols: List<LookupSymbol>, fqNames: List<FqName>) : this() {
+            this.lookupSymbols = lookupSymbols
+            this.fqNames = fqNames
+        }
+
         companion object {
             private const val serialVersionUID = 0L
+        }
+
+        private fun writeObject(out: ObjectOutputStream) {
+            out.writeInt(lookupSymbols.size)
+            lookupSymbols.forEach {
+                out.writeUTF(it.name)
+                out.writeUTF(it.scope)
+            }
+
+            out.writeInt(fqNames.size)
+            fqNames.forEach {
+                out.writeUTF(it.asString())
+            }
+        }
+
+        private fun readObject(ois: ObjectInputStream) {
+            val lookupSymbols = mutableListOf<LookupSymbol>()
+            repeat(ois.readInt()) {
+                val name = ois.readUTF()
+                val scope = ois.readUTF()
+                lookupSymbols.add(LookupSymbol(name, scope))
+            }
+            this.lookupSymbols = lookupSymbols
+
+            val fqNames = mutableListOf<FqName>()
+            repeat(ois.readInt()) {
+                val fqNameString = ois.readUTF()
+                fqNames.add(FqName(fqNameString))
+            }
+            this.fqNames = fqNames
         }
     }
 
