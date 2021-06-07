@@ -10,28 +10,17 @@ import java.io.Serializable
 
 sealed class ClasspathChanges : Serializable {
 
-    sealed class JVM : ClasspathChanges() {
-
-        sealed class ClasspathSnapshotEnabled : JVM() {
-
-            sealed class IncrementalRun : ClasspathSnapshotEnabled() {
-
-                class Available(val lookupSymbols: Collection<LookupSymbol>, val fqNames: Collection<FqName>) : IncrementalRun() {
-                    companion object {
-                        private const val serialVersionUID = 0L
-                    }
-                }
-
-                object UnableToCompute : IncrementalRun()
-            }
-
-            object NotAvailableForNonIncrementalRun : ClasspathSnapshotEnabled()
+    class Available(val lookupSymbols: Collection<LookupSymbol>, val fqNames: Collection<FqName>) : ClasspathChanges() {
+        companion object {
+            private const val serialVersionUID = 0L
         }
-
-        object NotAvailableClasspathSnapshotIsDisabled : JVM()
-        object NotAvailableReservedForTestsOnly : JVM()
     }
 
-    object NotAvailableForJS : ClasspathChanges()
+    sealed class NotAvailable : ClasspathChanges() {
+        object UnableToCompute : NotAvailable()
+        object ForNonIncrementalRun : NotAvailable()
+        object ClasspathSnapshotIsDisabled : NotAvailable()
+        object ReservedForTestsOnly : NotAvailable()
+        object ForJSCompiler : NotAvailable()
+    }
 }
-

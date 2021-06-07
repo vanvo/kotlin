@@ -535,10 +535,10 @@ abstract class KotlinCompile @Inject constructor(
 
         val icEnv = if (isIncrementalCompilationEnabled()) {
             val classpathChanges = when {
-                !classpathSnapshotProperties.useClasspathSnapshot.get() -> ClasspathChanges.JVM.NotAvailableClasspathSnapshotIsDisabled
+                !classpathSnapshotProperties.useClasspathSnapshot.get() -> ClasspathChanges.NotAvailable.ClasspathSnapshotIsDisabled
                 else -> when (changedFiles) {
                     is ChangedFiles.Known -> getClasspathChanges()
-                    is ChangedFiles.Unknown -> ClasspathChanges.JVM.ClasspathSnapshotEnabled.NotAvailableForNonIncrementalRun
+                    is ChangedFiles.Unknown -> ClasspathChanges.NotAvailable.ForNonIncrementalRun
                     is ChangedFiles.Dependencies -> error("Unexpected type: ${changedFiles.javaClass.name}")
                 }
             }
@@ -616,12 +616,12 @@ abstract class KotlinCompile @Inject constructor(
         return super.source(*sources)
     }
 
-    private fun getClasspathChanges(): ClasspathChanges.JVM.ClasspathSnapshotEnabled.IncrementalRun {
+    private fun getClasspathChanges(): ClasspathChanges {
         val currentSnapshotFiles = classpathSnapshotProperties.classpathSnapshot.files.toList()
         val previousSnapshotFiles = getClasspathSnapshotFilesInDir(classpathSnapshotProperties.classpathSnapshotDir.get().asFile)
 
         // TODO WORK-IN-PROGRESS
-        return ClasspathChanges.JVM.ClasspathSnapshotEnabled.IncrementalRun.UnableToCompute
+        return ClasspathChanges.NotAvailable.UnableToCompute
     }
 
     /**
@@ -875,7 +875,7 @@ abstract class Kotlin2JsCompile @Inject constructor(
             logger.info(USING_JS_INCREMENTAL_COMPILATION_MESSAGE)
             IncrementalCompilationEnvironment(
                 changedFiles,
-                ClasspathChanges.NotAvailableForJS,
+                ClasspathChanges.NotAvailable.ForJSCompiler,
                 taskBuildDirectory.get().asFile,
                 multiModuleICSettings = multiModuleICSettings
             )

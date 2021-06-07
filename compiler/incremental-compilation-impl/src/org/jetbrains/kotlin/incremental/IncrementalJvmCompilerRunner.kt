@@ -46,6 +46,11 @@ import org.jetbrains.kotlin.incremental.components.LookupTracker
 import org.jetbrains.kotlin.incremental.multiproject.EmptyModulesApiHistory
 import org.jetbrains.kotlin.incremental.multiproject.ModulesApiHistory
 import org.jetbrains.kotlin.incremental.util.BufferingMessageCollector
+import org.jetbrains.kotlin.incremental.ClasspathChanges.NotAvailable.UnableToCompute
+import org.jetbrains.kotlin.incremental.ClasspathChanges.NotAvailable.ForJSCompiler
+import org.jetbrains.kotlin.incremental.ClasspathChanges.NotAvailable.ReservedForTestsOnly
+import org.jetbrains.kotlin.incremental.ClasspathChanges.NotAvailable.ForNonIncrementalRun
+import org.jetbrains.kotlin.incremental.ClasspathChanges.NotAvailable.ClasspathSnapshotIsDisabled
 import org.jetbrains.kotlin.load.java.JavaClassesTracker
 import org.jetbrains.kotlin.load.kotlin.header.KotlinClassHeader
 import org.jetbrains.kotlin.load.kotlin.incremental.components.IncrementalCompilationComponents
@@ -82,7 +87,7 @@ fun makeIncrementally(
             buildHistoryFile = buildHistoryFile,
             modulesApiHistory = EmptyModulesApiHistory,
             kotlinSourceFilesExtensions = kotlinExtensions,
-            classpathChanges = ClasspathChanges.JVM.NotAvailableReservedForTestsOnly
+            classpathChanges = ReservedForTestsOnly
         )
         compiler.compile(sourceFiles, args, messageCollector, providedChangedFiles = null)
     }
@@ -118,7 +123,7 @@ class IncrementalJvmCompilerRunner(
     outputFiles: Collection<File>,
     private val modulesApiHistory: ModulesApiHistory,
     override val kotlinSourceFilesExtensions: List<String> = DEFAULT_KOTLIN_SOURCE_FILES_EXTENSIONS,
-    private val classpathChanges: ClasspathChanges.JVM,
+    private val classpathChanges: ClasspathChanges,
 ) : IncrementalCompilerRunner<K2JVMCompilerArguments, IncrementalJvmCachesManager>(
     workingDir,
     "caches-jvm",
@@ -190,21 +195,16 @@ class IncrementalJvmCompilerRunner(
 
         val classpathChanges = when (classpathChanges) {
             // Note: classpathChanges is deserialized so we need to compare them using `is` (not `==`) even for singleton objects.
-            is ClasspathChanges.JVM.ClasspathSnapshotEnabled.IncrementalRun.Available -> {
-                ChangesEither.Known(classpathChanges.lookupSymbols, classpathChanges.fqNames)
-            }
-            is ClasspathChanges.JVM.ClasspathSnapshotEnabled.IncrementalRun.UnableToCompute,
-            is ClasspathChanges.JVM.NotAvailableClasspathSnapshotIsDisabled,
-            is ClasspathChanges.JVM.NotAvailableReservedForTestsOnly -> {
-                reporter.measure(BuildTime.IC_ANALYZE_CHANGES_IN_DEPENDENCIES) {
-                    getClasspathChanges(args.classpathAsList, changedFiles, lastBuildInfo, modulesApiHistory, reporter)
+            is ClasspathChanges.Available -> ChangesEither.Known(classpathChanges.lookupSymbols, classpathChanges.fqNames)
+            is ClasspathChanges.NotAvailable -> when (classpathChanges) {
+                is UnableToCompute, is ClasspathSnapshotIsDisabled, is ReservedForTestsOnly -> {
+                    reporter.measure(BuildTime.IC_ANALYZE_CHANGES_IN_DEPENDENCIES) {
+                        getClasspathChanges(args.classpathAsList, changedFiles, lastBuildInfo, modulesApiHistory, reporter)
+                    }
                 }
-            }
-            is ClasspathChanges.JVM.ClasspathSnapshotEnabled.NotAvailableForNonIncrementalRun -> {
-                error(
-                    "Unexpected type: ${classpathChanges.javaClass.name}." +
-                            " This code path should not be exercised in a non-incremental run."
-                )
+                is ForNonIncrementalRun, is ForJSCompiler -> {
+                    error("Unexpected type for this code path: ${classpathChanges.javaClass.name}.")
+                }
             }
         }
 

@@ -602,7 +602,7 @@ abstract class CompileServiceImplBase(
             usePreciseJavaTracking = incrementalCompilationOptions.usePreciseJavaTracking,
             modulesApiHistory = modulesApiHistory,
             kotlinSourceFilesExtensions = allKotlinExtensions,
-            classpathChanges = incrementalCompilationOptions.classpathChanges as ClasspathChanges.JVM
+            classpathChanges = incrementalCompilationOptions.classpathChanges
         )
         return try {
             compiler.compile(allKotlinFiles, k2jvmArgs, compilerMessageCollector, changedFiles, projectRoot)
