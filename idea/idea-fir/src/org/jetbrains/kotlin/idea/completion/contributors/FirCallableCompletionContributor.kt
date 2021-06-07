@@ -9,15 +9,14 @@ import org.jetbrains.kotlin.idea.completion.checkers.CompletionVisibilityChecker
 import org.jetbrains.kotlin.idea.completion.checkers.ExtensionApplicabilityChecker
 import org.jetbrains.kotlin.idea.completion.context.FirBasicCompletionContext
 import org.jetbrains.kotlin.idea.completion.context.FirNameReferencePositionContext
+import org.jetbrains.kotlin.idea.completion.contributors.helpers.insertSymbolAndInvokeCompletion
 import org.jetbrains.kotlin.idea.completion.lookups.CallableInsertionStrategy
-import org.jetbrains.kotlin.idea.completion.lookups.ImportStrategy
 import org.jetbrains.kotlin.idea.fir.low.level.api.IndexHelper
 import org.jetbrains.kotlin.idea.frontend.api.KtAnalysisSession
 import org.jetbrains.kotlin.idea.frontend.api.components.KtScopeContext
 import org.jetbrains.kotlin.idea.frontend.api.scopes.KtCompositeScope
 import org.jetbrains.kotlin.idea.frontend.api.scopes.KtScope
 import org.jetbrains.kotlin.idea.frontend.api.symbols.*
-import org.jetbrains.kotlin.idea.frontend.api.symbols.markers.KtSymbolWithVisibility
 import org.jetbrains.kotlin.idea.frontend.api.types.KtClassType
 import org.jetbrains.kotlin.idea.frontend.api.types.KtType
 import org.jetbrains.kotlin.psi.KtExpression
@@ -27,7 +26,9 @@ internal open class FirCallableCompletionContributor(
 ) : FirContextCompletionContributorBase<FirNameReferencePositionContext>(basicContext) {
     private val typeNamesProvider = TypeNamesProvider(indexHelper)
 
-    protected open val insertionStrategy: CallableInsertionStrategy = CallableInsertionStrategy.AS_CALL
+    protected open val insertionStrategy: CallableInsertionStrategy = CallableInsertionStrategy.AsCall
+
+    protected open fun KtAnalysisSession.filter(symbol: KtCallableSymbol): Boolean = true
 
     private val shouldCompleteTopLevelCallablesFromIndex: Boolean
         get() = prefixMatcher.prefix.isNotEmpty()
@@ -114,6 +115,7 @@ internal open class FirCallableCompletionContributor(
             .getCallableSymbols(scopeNameFilter)
             .filterNot { it.isExtension }
             .filter { with(visibilityChecker) { isVisible(it) } }
+            .filter { filter(it) }
             .forEach { callable ->
                 addCallableSymbolToCompletion(expectedType, callable, insertionStrategy = insertionStrategy)
             }
@@ -132,10 +134,16 @@ internal open class FirCallableCompletionContributor(
         val nonExtensionMembers = collectNonExtensions(possibleReceiverScope, visibilityChecker)
         val extensionNonMembers = collectSuitableExtensions(implicitScopes, extensionChecker, visibilityChecker)
 
-        nonExtensionMembers.forEach { addCallableSymbolToCompletion(expectedType, it, insertionStrategy = insertionStrategy) }
-        extensionNonMembers.forEach { addCallableSymbolToCompletion(expectedType, it, insertionStrategy = insertionStrategy) }
+        nonExtensionMembers
+            .filter { filter(it) }
+            .forEach { addCallableSymbolToCompletion(expectedType, it, insertionStrategy = insertionStrategy) }
+
+        extensionNonMembers
+            .filter { filter(it) }
+            .forEach { addCallableSymbolToCompletion(expectedType, it, insertionStrategy = insertionStrategy) }
 
         collectTopLevelExtensionsFromIndices(listOf(typeOfPossibleReceiver), extensionChecker, visibilityChecker)
+            .filter { filter(it) }
             .forEach { addCallableSymbolToCompletion(expectedType, it, insertionStrategy = insertionStrategy) }
     }
 
@@ -149,6 +157,7 @@ internal open class FirCallableCompletionContributor(
 
         return topLevelExtensions.asSequence()
             .map { it.getSymbol() as KtCallableSymbol }
+            .filter { filter(it) }
             .filter { with(visibilityChecker) { isVisible(it) } }
             .filter { with(extensionChecker) { isApplicable(it) } }
     }
@@ -156,6 +165,7 @@ internal open class FirCallableCompletionContributor(
     private fun KtAnalysisSession.collectNonExtensions(scope: KtScope, visibilityChecker: CompletionVisibilityChecker) =
         scope.getCallableSymbols(scopeNameFilter)
             .filterNot { it.isExtension }
+            .filter { filter(it) }
             .filter { with(visibilityChecker) { isVisible(it) } }
 
     private fun KtAnalysisSession.collectSuitableExtensions(
@@ -166,6 +176,7 @@ internal open class FirCallableCompletionContributor(
         scope.getCallableSymbols(scopeNameFilter)
             .filter { it.isExtension }
             .filter { with(visibilityChecker) { isVisible(it) } }
+            .filter { filter(it) }
             .filter { with(hasSuitableExtensionReceiver) { isApplicable(it) } }
 
     private fun KtAnalysisSession.findAllNamesOfTypes(implicitReceiversTypes: List<KtType>) =
@@ -175,7 +186,7 @@ internal open class FirCallableCompletionContributor(
 internal class FirCallableReferenceCompletionContributor(
     basicContext: FirBasicCompletionContext
 ) : FirCallableCompletionContributor(basicContext) {
-    override val insertionStrategy: CallableInsertionStrategy = CallableInsertionStrategy.AS_IDENTIFIER
+    override val insertionStrategy: CallableInsertionStrategy = CallableInsertionStrategy.AsIdentifier
 
     override fun KtAnalysisSession.collectDotCompletion(
         implicitScopes: KtCompositeScope,
@@ -199,6 +210,18 @@ internal class FirCallableReferenceCompletionContributor(
                 collectDotCompletionForCallableReceiver(implicitScopes, explicitReceiver, expectedType, extensionChecker, visibilityChecker)
             }
         }
+    }
+}
+
+internal class FirInfixCallableCompletionContributor(
+    basicContext: FirBasicCompletionContext
+) : FirCallableCompletionContributor(basicContext) {
+    override val insertionStrategy: CallableInsertionStrategy = CallableInsertionStrategy.AsIdentifierCustom {
+        insertSymbolAndInvokeCompletion(" ")
+    }
+
+    override fun KtAnalysisSession.filter(symbol: KtCallableSymbol): Boolean {
+        return symbol is KtFunctionSymbol && symbol.isInfix
     }
 }
 
