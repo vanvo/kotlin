@@ -113,6 +113,15 @@ internal class KtFirErrorType(
     override val error: String get() = withValidityAssertion { coneType.diagnostic.reason }
 }
 
+internal class KtFirCapturedType(
+    coneType: ConeCapturedType,
+    override val token: ValidityToken,
+) : KtCapturedType(), KtFirType {
+    override val coneType by weakRef(coneType)
+    override fun asString(): String = withValidityAssertion { "*" }
+}
+
+
 internal class KtFirTypeParameterType(
     coneType: ConeTypeParameterType,
     override val token: ValidityToken,

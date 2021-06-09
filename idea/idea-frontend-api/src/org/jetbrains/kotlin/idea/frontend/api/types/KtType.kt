@@ -59,6 +59,8 @@ abstract class KtTypeParameterType : KtDenotableType(), KtTypeWithNullability {
     abstract val symbol: KtTypeParameterSymbol
 }
 
+abstract class KtCapturedType : KtDenotableType()
+
 sealed class KtNonDenotableType : KtType
 
 abstract class KtFlexibleType : KtNonDenotableType() {
