@@ -43,6 +43,7 @@ abstract class KtFunctionalType : KtClassType() {
     abstract val isSuspend: Boolean
     abstract val arity: Int
     abstract val receiverType: KtType?
+    abstract val hasReceiver: Boolean
     abstract val parameterTypes: List<KtType>
     abstract val returnType: KtType
 }
