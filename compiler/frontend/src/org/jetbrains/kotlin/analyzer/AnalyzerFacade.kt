@@ -98,6 +98,10 @@ interface CombinedModuleInfo : ModuleInfo {
     val platformModule: ModuleInfo
 }
 
+interface DerivedModuleInfo : ModuleInfo {
+    val originalModuleInfo: ModuleInfo
+}
+
 fun ModuleInfo.flatten(): List<ModuleInfo> = when (this) {
     is CombinedModuleInfo -> listOf(this) + containedModules
     else -> listOf(this)
