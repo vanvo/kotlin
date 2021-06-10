@@ -92,7 +92,7 @@ abstract class AbstractResolverForProject<M : ModuleInfo>(
     override val name: String
         get() = "Resolver for '$debugName'"
 
-    private fun isCorrectModuleInfo(moduleInfo: M) = moduleInfo in allModules
+    private fun isCorrectModuleInfo(moduleInfo: M): Boolean = moduleInfo.unwrapPlatform() in allModules
 
     final override fun resolverForModuleDescriptor(descriptor: ModuleDescriptor): ResolverForModule {
         val moduleResolver = resolverForModuleDescriptorImpl(descriptor)
@@ -168,6 +168,7 @@ abstract class AbstractResolverForProject<M : ModuleInfo>(
 
     private fun doGetDescriptorForModule(module: M): ModuleDescriptorImpl {
         val moduleFromThisResolver = moduleInfoToResolvableInfo[module]
+            ?: module.takeIf { it is CombinedModuleInfo && it.platformModule in moduleInfoToResolvableInfo }
             ?: return delegateResolver.descriptorForModule(module) as ModuleDescriptorImpl
 
         return projectContext.storageManager.compute {
