@@ -1,0 +1,33 @@
+package
+
+@kotlin.OptIn(markerClass = {Protected::class}) public abstract class Derived : Owner {
+    public constructor Derived(/*0*/ value: kotlin.Int)
+    public final override /*1*/ var someProperty: kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+@kotlin.OptIn(markerClass = {Protected::class}) public abstract class Owner {
+    public constructor Owner()
+    @Protected public abstract val someProperty: kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+@kotlin.RequiresOptIn public final annotation class Protected : kotlin.Annotation {
+    public constructor Protected()
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public final class User : Derived {
+    public constructor User()
+    public final override /*1*/ /*fake_override*/ var someProperty: kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+    public final fun use(): kotlin.Int
+}

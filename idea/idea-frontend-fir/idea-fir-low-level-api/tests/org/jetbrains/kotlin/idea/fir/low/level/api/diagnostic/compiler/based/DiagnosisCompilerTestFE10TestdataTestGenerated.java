@@ -30226,6 +30226,11 @@ public class DiagnosisCompilerTestFE10TestdataTestGenerated extends AbstractDiag
                 runTest("compiler/testData/diagnostics/testsWithStdLib/experimental/typealias.kt");
             }
 
+            @TestMetadata("usageFromDerivedClass.kt")
+            public void testUsageFromDerivedClass() throws Exception {
+                runTest("compiler/testData/diagnostics/testsWithStdLib/experimental/usageFromDerivedClass.kt");
+            }
+
             @TestMetadata("usageNotAsAnnotation.kt")
             public void testUsageNotAsAnnotation() throws Exception {
                 runTest("compiler/testData/diagnostics/testsWithStdLib/experimental/usageNotAsAnnotation.kt");

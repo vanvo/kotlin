@@ -34526,6 +34526,12 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
             }
 
             @Test
+            @TestMetadata("usageFromDerivedClass.kt")
+            public void testUsageFromDerivedClass() throws Exception {
+                runTest("compiler/testData/diagnostics/testsWithStdLib/experimental/usageFromDerivedClass.kt");
+            }
+
+            @Test
             @TestMetadata("usageNotAsAnnotation.kt")
             public void testUsageNotAsAnnotation() throws Exception {
                 runTest("compiler/testData/diagnostics/testsWithStdLib/experimental/usageNotAsAnnotation.kt");
