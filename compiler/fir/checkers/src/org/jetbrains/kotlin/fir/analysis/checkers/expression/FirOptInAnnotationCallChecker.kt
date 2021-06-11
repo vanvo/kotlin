@@ -23,8 +23,8 @@ object FirOptInAnnotationCallChecker : FirAnnotationCallChecker() {
     override fun check(expression: FirAnnotationCall, context: CheckerContext, reporter: DiagnosticReporter) {
         val lookupTag = expression.annotationTypeRef.coneTypeSafe<ConeClassLikeType>()?.lookupTag ?: return
         val fqName = lookupTag.classId.asSingleFqName()
-        val isMarker = fqName in OptInNames.EXPERIMENTAL_FQ_NAMES
-        val isOptIn = fqName in OptInNames.USE_EXPERIMENTAL_FQ_NAMES
+        val isMarker = fqName == OptInNames.REQUIRES_OPT_IN_FQ_NAME
+        val isOptIn = fqName == OptInNames.OPT_IN_FQ_NAME
         if (isMarker || isOptIn) {
             checkUsageOfKotlinExperimentalOrUseExperimental(expression.source, context, reporter)
             if (isOptIn) {
@@ -56,9 +56,7 @@ object FirOptInAnnotationCallChecker : FirAnnotationCallChecker() {
         reporter: DiagnosticReporter
     ) {
         val useExperimentalFqNames = context.session.languageVersionSettings.getFlag(AnalysisFlags.useExperimental)
-        if (OptInNames.REQUIRES_OPT_IN_FQ_NAME.asString() !in useExperimentalFqNames &&
-            OptInNames.OLD_EXPERIMENTAL_FQ_NAME.asString() !in useExperimentalFqNames
-        ) {
+        if (OptInNames.REQUIRES_OPT_IN_FQ_NAME.asString() !in useExperimentalFqNames) {
             reporter.reportOn(element, FirErrors.EXPERIMENTAL_IS_NOT_ENABLED, context)
         }
     }
