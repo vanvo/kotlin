@@ -196,7 +196,7 @@ private fun <T> PsiElement.collectInfos(c: ModuleInfoCollector<T>): T {
     return c.virtualFileProcessor(
         project,
         virtualFile,
-        (containingFile as? KtFile)?.isCompiled ?: false
+        (containingFile as? KtFile)?.isCompiled == false
     )
 }
 
