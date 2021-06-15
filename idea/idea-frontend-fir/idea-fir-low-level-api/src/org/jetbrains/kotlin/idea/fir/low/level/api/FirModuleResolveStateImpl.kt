@@ -126,14 +126,11 @@ internal class FirModuleResolveStateImpl(
 
         val searcher = FirDeclarationForCompiledElementSearcher(rootModuleSession.symbolProvider)
 
-        return when (ktDeclaration) {
-            is KtClassOrObject -> searcher.findNonLocalClass(ktDeclaration)
-            is KtConstructor<*> -> searcher.findConstructorOfNonLocalClass(ktDeclaration)
-            is KtNamedFunction -> searcher.findNonLocalFunction(ktDeclaration)
-            is KtProperty -> searcher.findNonLocalProperty(ktDeclaration)
+        return searcher.findForNonLocalDeclaration(ktDeclaration)
+    }
 
-            else -> error("Unsupported compiled declaration of type ${ktDeclaration::class}: ${ktDeclaration.getElementTextInContext()}")
-        }
+    override fun getTowerContextProvider(ktFile: KtFile): FirTowerContextProvider {
+        return LowLevelFirApiFacadeForResolveOnAir.TowerProviderForElementForState(this)
     }
 
     override fun <D : FirDeclaration> resolveFirToPhase(declaration: D, toPhase: FirResolvePhase): D {

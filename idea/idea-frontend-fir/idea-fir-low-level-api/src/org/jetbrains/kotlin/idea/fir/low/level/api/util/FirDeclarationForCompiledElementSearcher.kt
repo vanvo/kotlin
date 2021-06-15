@@ -5,10 +5,7 @@
 
 package org.jetbrains.kotlin.idea.fir.low.level.api.util
 
-import org.jetbrains.kotlin.fir.declarations.FirClassLikeDeclaration
-import org.jetbrains.kotlin.fir.declarations.FirConstructor
-import org.jetbrains.kotlin.fir.declarations.FirFunction
-import org.jetbrains.kotlin.fir.declarations.FirProperty
+import org.jetbrains.kotlin.fir.declarations.*
 import org.jetbrains.kotlin.fir.resolve.providers.FirSymbolProvider
 import org.jetbrains.kotlin.fir.resolve.providers.getClassDeclaredConstructors
 import org.jetbrains.kotlin.fir.resolve.providers.getClassDeclaredFunctionSymbols
@@ -25,6 +22,17 @@ import org.jetbrains.kotlin.psi.psiUtil.containingClassOrObject
  * Allows to search for FIR declarations by compiled [KtDeclaration]s.
  */
 internal class FirDeclarationForCompiledElementSearcher(private val symbolProvider: FirSymbolProvider) {
+
+    fun findForNonLocalDeclaration(ktDeclaration: KtDeclaration): FirDeclaration {
+        return when (ktDeclaration) {
+            is KtClassOrObject -> findNonLocalClass(ktDeclaration)
+            is KtConstructor<*> -> findConstructorOfNonLocalClass(ktDeclaration)
+            is KtNamedFunction -> findNonLocalFunction(ktDeclaration)
+            is KtProperty -> findNonLocalProperty(ktDeclaration)
+
+            else -> error("Unsupported compiled declaration of type ${ktDeclaration::class}: ${ktDeclaration.getElementTextInContext()}")
+        }
+    }
     fun findNonLocalClass(declaration: KtClassOrObject): FirClassLikeDeclaration<*> {
         require(!declaration.isLocal)
         val classId = declaration.getClassId()
