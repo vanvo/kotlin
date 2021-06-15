@@ -5,17 +5,19 @@
 
 package org.jetbrains.kotlin.idea.fir.low.level.api
 
+import org.jetbrains.kotlin.fir.FirElement
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.declarations.FirFile
 import org.jetbrains.kotlin.fir.declarations.FirResolvePhase
+import org.jetbrains.kotlin.fir.resolve.ResolutionMode
 import org.jetbrains.kotlin.fir.resolve.ScopeSession
 import org.jetbrains.kotlin.fir.resolve.transformers.*
-import org.jetbrains.kotlin.fir.resolve.transformers.body.resolve.FirBodyResolveProcessor
-import org.jetbrains.kotlin.fir.resolve.transformers.body.resolve.FirImplicitTypeBodyResolveProcessor
+import org.jetbrains.kotlin.fir.resolve.transformers.body.resolve.*
 import org.jetbrains.kotlin.fir.resolve.transformers.contracts.FirContractResolveProcessor
 import org.jetbrains.kotlin.fir.resolve.transformers.plugin.FirAnnotationArgumentsResolveProcessor
 import org.jetbrains.kotlin.fir.resolve.transformers.plugin.FirPluginAnnotationsResolveProcessor
 import org.jetbrains.kotlin.fir.resolve.transformers.plugin.FirTransformerBasedExtensionStatusProcessor
+import org.jetbrains.kotlin.fir.visitors.FirTransformer
 import org.jetbrains.kotlin.idea.fir.low.level.api.lazy.resolve.FirLazyBodiesCalculator
 import org.jetbrains.kotlin.idea.fir.low.level.api.util.executeWithoutPCE
 import java.util.concurrent.locks.ReentrantLock
@@ -26,18 +28,23 @@ internal class FirPhaseRunner {
     private val statusResolveLock = ReentrantLock()
     private val implicitTypesResolveLock = ReentrantLock()
 
-    fun runPhase(firFile: FirFile, phase: FirResolvePhase, scopeSession: ScopeSession) = when (phase) {
+    fun runPhase(
+        firFile: FirFile,
+        phase: FirResolvePhase,
+        scopeSession: ScopeSession,
+        towerDataContextCollector: FirTowerDataContextCollector? = null
+    ) = when (phase) {
         FirResolvePhase.SUPER_TYPES -> superTypesBodyResolveLock.withLock {
-            runPhaseWithoutLock(firFile, phase, scopeSession)
+            runPhaseWithoutLock(firFile, phase, scopeSession, towerDataContextCollector)
         }
         FirResolvePhase.STATUS -> statusResolveLock.withLock {
-            runPhaseWithoutLock(firFile, phase, scopeSession)
+            runPhaseWithoutLock(firFile, phase, scopeSession, towerDataContextCollector)
         }
         FirResolvePhase.IMPLICIT_TYPES_BODY_RESOLVE -> implicitTypesResolveLock.withLock {
-            runPhaseWithoutLock(firFile, phase, scopeSession)
+            runPhaseWithoutLock(firFile, phase, scopeSession, towerDataContextCollector)
         }
         else -> {
-            runPhaseWithoutLock(firFile, phase, scopeSession)
+            runPhaseWithoutLock(firFile, phase, scopeSession, towerDataContextCollector)
         }
     }
 
@@ -62,8 +69,14 @@ internal class FirPhaseRunner {
         }
     }
 
-    private fun runPhaseWithoutLock(firFile: FirFile, phase: FirResolvePhase, scopeSession: ScopeSession) {
-        val phaseProcessor = phase.createTransformerBasedProcessorByPhase(firFile.moduleData.session, scopeSession)
+    private fun runPhaseWithoutLock(
+        firFile: FirFile,
+        phase: FirResolvePhase,
+        scopeSession: ScopeSession,
+        towerDataContextCollector: FirTowerDataContextCollector?
+    ) {
+        val phaseProcessor =
+            phase.createTransformerBasedProcessorByPhase(firFile.moduleData.session, scopeSession, towerDataContextCollector)
         executeWithoutPCE {
             FirLazyBodiesCalculator.calculateLazyBodiesIfPhaseRequires(firFile, phase)
             phaseProcessor.processFile(firFile)
@@ -73,7 +86,8 @@ internal class FirPhaseRunner {
 
 internal fun FirResolvePhase.createTransformerBasedProcessorByPhase(
     session: FirSession,
-    scopeSession: ScopeSession
+    scopeSession: ScopeSession,
+    towerDataContextCollector: FirTowerDataContextCollector?
 ): FirTransformerBasedResolveProcessor {
     return when (this) {
         FirResolvePhase.RAW_FIR -> throw IllegalStateException("Raw FIR building phase does not have a transformer")
@@ -88,7 +102,60 @@ internal fun FirResolvePhase.createTransformerBasedProcessorByPhase(
         FirResolvePhase.STATUS -> FirStatusResolveProcessor(session, scopeSession)
         FirResolvePhase.CONTRACTS -> FirContractResolveProcessor(session, scopeSession)
         FirResolvePhase.NEW_MEMBERS_GENERATION -> FirDummyTransformerBasedProcessor(session, scopeSession) // TODO: remove
-        FirResolvePhase.IMPLICIT_TYPES_BODY_RESOLVE -> FirImplicitTypeBodyResolveProcessor(session, scopeSession)
-        FirResolvePhase.BODY_RESOLVE -> FirBodyResolveProcessor(session, scopeSession)
+        FirResolvePhase.IMPLICIT_TYPES_BODY_RESOLVE -> object : FirTransformerBasedResolveProcessor(session, scopeSession) {
+            override val transformer = FirBodyResolveTransformerAdapterWithTower(session, scopeSession, towerDataContextCollector)
+        }
+        FirResolvePhase.BODY_RESOLVE -> object : FirTransformerBasedResolveProcessor(session, scopeSession) {
+            override val transformer = FirBodyResolveTransformerAdapterWithTower(session, scopeSession, towerDataContextCollector)
+        }
     }
 }
+
+private class FirImplicitTypeBodyResolveTransformerAdapterWithTower(
+    session: FirSession,
+    scopeSession: ScopeSession,
+    towerDataContextCollector: FirTowerDataContextCollector?
+) : FirTransformer<Any?>() {
+    private val implicitBodyResolveComputationSession = ImplicitBodyResolveComputationSession()
+    private val returnTypeCalculator = ReturnTypeCalculatorWithJump(session, scopeSession, implicitBodyResolveComputationSession)
+
+    private val transformer = FirImplicitAwareBodyResolveTransformer(
+        session,
+        scopeSession,
+        implicitBodyResolveComputationSession,
+        FirResolvePhase.IMPLICIT_TYPES_BODY_RESOLVE, implicitTypeOnly = true,
+        returnTypeCalculator,
+        firTowerDataContextCollector = towerDataContextCollector,
+    )
+
+    override fun <E : FirElement> transformElement(element: E, data: Any?): E {
+        return element
+    }
+
+    override fun transformFile(file: FirFile, data: Any?): FirFile {
+        return file.transform(transformer, ResolutionMode.ContextIndependent)
+    }
+}
+
+private class FirBodyResolveTransformerAdapterWithTower(
+    session: FirSession,
+    scopeSession: ScopeSession,
+    towerDataContextCollector: FirTowerDataContextCollector?
+) : FirTransformer<Any?>() {
+    private val transformer = FirBodyResolveTransformer(
+        session,
+        phase = FirResolvePhase.BODY_RESOLVE,
+        implicitTypeOnly = false,
+        scopeSession = scopeSession,
+        firTowerDataContextCollector = towerDataContextCollector
+    )
+
+    override fun <E : FirElement> transformElement(element: E, data: Any?): E {
+        return element
+    }
+
+    override fun transformFile(file: FirFile, data: Any?): FirFile {
+        return file.transform(transformer, ResolutionMode.ContextIndependent)
+    }
+}
+

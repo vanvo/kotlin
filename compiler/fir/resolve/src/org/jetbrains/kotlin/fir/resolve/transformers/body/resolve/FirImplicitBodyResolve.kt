@@ -181,7 +181,7 @@ open class FirImplicitAwareBodyResolveTransformer(
     }
 }
 
-private class ReturnTypeCalculatorWithJump(
+class ReturnTypeCalculatorWithJump(
     private val session: FirSession,
     private val scopeSession: ScopeSession,
     val implicitBodyResolveComputationSession: ImplicitBodyResolveComputationSession,
