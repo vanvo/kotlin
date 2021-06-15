@@ -85,12 +85,9 @@ internal class RawFirNonLocalDeclarationBuilder private constructor(
         val parent = iterator.next()
         if (parent !is FirRegularClass) return moveNext(iterator, containingClass = null)
 
-        val classOrObject = parent.psi
-        check(classOrObject is KtClassOrObject)
-
-        withChildClassName(classOrObject.nameAsSafeName, false) {
-            withCapturedTypeParameters(parent.isInner, parent.typeParameters.subList(0, classOrObject.typeParameters.size)) {
-                registerSelfType(classOrObject.toDelegatedSelfType(parent))
+        withChildClassName(parent.name, false) {
+            withCapturedTypeParameters(parent.isInner, parent.typeParameters.filterIsInstance<FirTypeParameter>()) {
+                registerSelfType(null.toDelegatedSelfType(parent))
                 return moveNext(iterator, parent)
             }
         }
