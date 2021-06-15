@@ -8,7 +8,6 @@ package org.jetbrains.kotlin.idea.frontend.api.fir.components
 import org.jetbrains.kotlin.fir.declarations.*
 import org.jetbrains.kotlin.fir.expressions.FirExpression
 import org.jetbrains.kotlin.fir.resolve.calls.ImplicitReceiverValue
-import org.jetbrains.kotlin.idea.fir.low.level.api.api.LowLevelFirApiFacadeForResolveOnAir.getTowerContextProvider
 import org.jetbrains.kotlin.idea.fir.low.level.api.api.getOrBuildFirFile
 import org.jetbrains.kotlin.idea.fir.low.level.api.api.getOrBuildFirOfType
 import org.jetbrains.kotlin.idea.fir.low.level.api.resolver.ResolutionParameters
@@ -85,7 +84,7 @@ internal class KtFirCompletionCandidateChecker(
         firFile: FirFile,
         fakeNameExpression: KtSimpleNameExpression
     ): Sequence<ImplicitReceiverValue<*>?> {
-        val towerDataContext = analysisSession.firResolveState.getTowerContextProvider()
+        val towerDataContext = analysisSession.firResolveState.getTowerContextProvider(originalFile)
             .getClosestAvailableParentContext(fakeNameExpression)
             ?: error("Cannot find enclosing declaration for ${fakeNameExpression.getElementTextInContext()}")
 

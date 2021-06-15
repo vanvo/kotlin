@@ -12,14 +12,18 @@ import org.jetbrains.kotlin.fir.analysis.diagnostics.FirPsiDiagnostic
 import org.jetbrains.kotlin.fir.declarations.*
 import org.jetbrains.kotlin.fir.realPsi
 import org.jetbrains.kotlin.fir.resolve.symbolProvider
+import org.jetbrains.kotlin.fir.scopes.FirKotlinScopeProvider
 import org.jetbrains.kotlin.idea.caches.project.IdeaModuleInfo
 import org.jetbrains.kotlin.idea.caches.project.ModuleSourceInfo
 import org.jetbrains.kotlin.idea.caches.project.getModuleInfo
 import org.jetbrains.kotlin.idea.fir.low.level.api.annotations.InternalForInline
 import org.jetbrains.kotlin.idea.fir.low.level.api.api.DiagnosticCheckerFilter
+import org.jetbrains.kotlin.idea.fir.low.level.api.api.FirIdeRootModuleResolveState
 import org.jetbrains.kotlin.idea.fir.low.level.api.api.FirModuleResolveState
+import org.jetbrains.kotlin.idea.fir.low.level.api.api.LowLevelFirApiFacadeForResolveOnAir
 import org.jetbrains.kotlin.idea.fir.low.level.api.diagnostics.DiagnosticsCollector
 import org.jetbrains.kotlin.idea.fir.low.level.api.element.builder.FirElementBuilder
+import org.jetbrains.kotlin.idea.fir.low.level.api.element.builder.FirTowerContextProvider
 import org.jetbrains.kotlin.idea.fir.low.level.api.element.builder.getNonLocalContainingOrThisDeclaration
 import org.jetbrains.kotlin.idea.fir.low.level.api.file.builder.FirFileBuilder
 import org.jetbrains.kotlin.idea.fir.low.level.api.file.builder.ModuleFileCache
@@ -39,9 +43,10 @@ internal class FirModuleResolveStateImpl(
     private val sessionProvider: FirIdeSessionProvider,
     val firFileBuilder: FirFileBuilder,
     val firLazyDeclarationResolver: FirLazyDeclarationResolver,
-) : FirModuleResolveState() {
-    override val rootModuleSession: FirIdeSourcesSession get() = sessionProvider.rootModuleSession
+) : FirIdeRootModuleResolveState() {
+    override val rootModuleSession: FirIdeSourcesSession get() = sessionProvider.rootModuleSession as FirIdeSourcesSession
 
+    override val kotlinScopeProvider: FirKotlinScopeProvider get() = rootModuleSession.firIdeProvider.kotlinScopeProvider
 
     /**
      * WARNING! This object contains scopes for all statements and declarations that were ever resolved.

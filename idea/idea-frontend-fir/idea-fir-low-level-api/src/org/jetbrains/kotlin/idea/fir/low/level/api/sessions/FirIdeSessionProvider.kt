@@ -20,8 +20,8 @@ import org.jetbrains.kotlin.idea.fir.low.level.api.file.builder.ModuleFileCache
 @Immutable
 class FirIdeSessionProvider internal constructor(
     val project: Project,
-    internal val rootModuleSession: FirIdeSourcesSession,
-    val sessions: Map<ModuleSourceInfo, FirIdeSession>
+    internal val rootModuleSession: FirIdeSession,
+    val sessions: Map<IdeaModuleInfo, FirIdeSession>
 ) : FirSessionProvider() {
     override fun getSession(moduleData: FirModuleData): FirSession? =
         sessions[moduleData.moduleSourceInfo]

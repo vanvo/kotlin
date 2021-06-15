@@ -256,16 +256,16 @@ object LowLevelFirApiFacadeForResolveOnAir {
     fun onAirResolveTypeInPlace(
         place: KtElement,
         typeReference: KtTypeReference,
-        state: FirModuleResolveState
+        state: FirIdeRootModuleResolveState
     ): FirResolvedTypeRef {
-        val context = state.getTowerContextProvider().getClosestAvailableParentContext(place)
+        val context = state.getTowerContextProvider(place.containingKtFile).getClosestAvailableParentContext(place)
             ?: error("TowerContext not found for ${place.getElementTextInContext()}")
 
         val session = state.rootModuleSession
         val firTypeReference = buildFirUserTypeRef(
             typeReference = typeReference,
             session = session,
-            baseScopeProvider = session.firIdeProvider.kotlinScopeProvider
+            baseScopeProvider = state.kotlinScopeProvider
         )
 
         return FirTypeResolveTransformer(
@@ -275,7 +275,7 @@ object LowLevelFirApiFacadeForResolveOnAir {
         ).transformTypeRef(firTypeReference, null)
     }
 
-    private class TowerProviderForElementForState(private val state: FirModuleResolveState) : FirTowerContextProvider {
+    class TowerProviderForElementForState(private val state: FirModuleResolveState) : FirTowerContextProvider {
         override fun getClosestAvailableParentContext(ktElement: KtElement): FirTowerDataContext? {
             return if (ktElement.isPhysical) {
                 onAirGetTowerContextProvider(state, ktElement).getClosestAvailableParentContext(ktElement)
@@ -287,7 +287,4 @@ object LowLevelFirApiFacadeForResolveOnAir {
             }
         }
     }
-
-    fun FirModuleResolveState.getTowerContextProvider(): FirTowerContextProvider =
-        TowerProviderForElementForState(this)
 }

@@ -15,7 +15,9 @@ import org.jetbrains.kotlin.fir.declarations.FirResolvePhase
 import org.jetbrains.kotlin.idea.caches.project.IdeaModuleInfo
 import org.jetbrains.kotlin.idea.fir.low.level.api.annotations.InternalForInline
 import org.jetbrains.kotlin.idea.fir.low.level.api.api.DiagnosticCheckerFilter
+import org.jetbrains.kotlin.idea.fir.low.level.api.api.FirIdeRootModuleResolveState
 import org.jetbrains.kotlin.idea.fir.low.level.api.api.FirModuleResolveState
+import org.jetbrains.kotlin.idea.fir.low.level.api.element.builder.FirElementBuilder
 import org.jetbrains.kotlin.idea.fir.low.level.api.element.builder.FirTowerContextProvider
 import org.jetbrains.kotlin.idea.fir.low.level.api.file.builder.ModuleFileCache
 import org.jetbrains.kotlin.idea.fir.low.level.api.file.structure.KtToFirMapping
@@ -27,7 +29,7 @@ import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtLambdaExpression
 
 internal class FirModuleResolveStateDepended(
-    private val originalState: FirModuleResolveStateImpl,
+    private val originalState: FirIdeRootModuleResolveState,
     val towerProviderBuiltUponElement: FirTowerContextProvider,
     private val ktToFirMapping: KtToFirMapping?,
 ) : FirModuleResolveState() {
@@ -35,22 +37,17 @@ internal class FirModuleResolveStateDepended(
     override val project: Project get() = originalState.project
     override val moduleInfo: IdeaModuleInfo get() = originalState.moduleInfo
     override val rootModuleSession get() = originalState.rootModuleSession
-    private val fileStructureCache get() = originalState.fileStructureCache
 
     override fun getSessionFor(moduleInfo: IdeaModuleInfo): FirSession =
         originalState.getSessionFor(moduleInfo)
 
     override fun getOrBuildFirFor(element: KtElement): FirElement {
-        val psi = originalState.elementBuilder.getPsiAsFirElementSource(element)
+        val psi = FirElementBuilder.getPsiAsFirElementSource(element)
 
         ktToFirMapping?.getFirOfClosestParent(psi, this)?.let { return it }
 
-        return originalState.elementBuilder.getOrBuildFirFor(
-            element = element,
-            firFileBuilder = originalState.firFileBuilder,
-            moduleFileCache = originalState.rootModuleSession.cache,
-            fileStructureCache = fileStructureCache,
-            state = this,
+        return originalState.getOrBuildFirFor(
+            element = element
         )
     }
 
@@ -84,4 +81,7 @@ internal class FirModuleResolveStateDepended(
     @OptIn(InternalForInline::class)
     override fun findSourceFirCompiledDeclaration(ktDeclaration: KtDeclaration) =
         originalState.findSourceFirDeclaration(ktDeclaration)
+
+    override fun getTowerContextProvider(ktFile: KtFile): FirTowerContextProvider =
+        originalState.getTowerContextProvider(ktFile)
 }

@@ -6,6 +6,7 @@
 package org.jetbrains.kotlin.idea.fir.low.level.api.sessions
 
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.ModificationTracker
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toPersistentMap
@@ -14,6 +15,8 @@ import org.jetbrains.kotlin.fir.BuiltinTypes
 import org.jetbrains.kotlin.fir.FirModuleData
 import org.jetbrains.kotlin.fir.moduleData
 import org.jetbrains.kotlin.fir.session.FirModuleInfoBasedModuleData
+import org.jetbrains.kotlin.idea.caches.project.IdeaModuleInfo
+import org.jetbrains.kotlin.idea.caches.project.LibraryInfo
 import org.jetbrains.kotlin.idea.caches.project.LibraryModificationTracker
 import org.jetbrains.kotlin.idea.caches.project.ModuleSourceInfo
 import org.jetbrains.kotlin.idea.fir.low.level.api.FirPhaseRunner
@@ -24,12 +27,12 @@ import org.jetbrains.kotlin.trackers.createModuleWithoutDependenciesOutOfBlockMo
 import java.util.concurrent.ConcurrentHashMap
 
 internal class FirIdeSessionProviderStorage(private val project: Project) {
-    private val sessionsCache = ConcurrentHashMap<ModuleSourceInfo, FromModuleViewSessionCache>()
+    private val sessionsCache = ConcurrentHashMap<IdeaModuleInfo, FromModuleViewSessionCache>()
 
     private val librariesCache by cachedValue(project, LibraryModificationTracker.getInstance(project)) { LibrariesCache() }
 
     fun getSessionProvider(
-        rootModule: ModuleSourceInfo,
+        rootModule: IdeaModuleInfo,
         configureSession: (FirIdeSession.() -> Unit)? = null
     ): FirIdeSessionProvider {
         val firPhaseRunner = FirPhaseRunner()
@@ -38,20 +41,34 @@ internal class FirIdeSessionProviderStorage(private val project: Project) {
         val builtinsAndCloneableSession = FirIdeSessionFactory.createBuiltinsAndCloneableSession(project, builtinTypes)
         val cache = sessionsCache.getOrPut(rootModule) { FromModuleViewSessionCache(rootModule) }
         val (sessions, session) = cache.withMappings { mappings ->
-            val sessions = mutableMapOf<ModuleSourceInfo, FirIdeSourcesSession>().apply { putAll(mappings) }
+            val sessions = mutableMapOf<IdeaModuleInfo, FirIdeResolvableModuleSession>().apply { putAll(mappings) }
             val session = executeWithoutPCE {
-                FirIdeSessionFactory.createSourcesSession(
-                    project,
-                    rootModule,
-                    builtinsAndCloneableSession,
-                    firPhaseRunner,
-                    cache.sessionInvalidator,
-                    builtinTypes,
-                    sessions,
-                    isRootModule = true,
-                    librariesCache,
-                    configureSession = configureSession,
-                )
+                when (rootModule) {
+                    is ModuleSourceInfo -> {
+                        FirIdeSessionFactory.createSourcesSession(
+                            project,
+                            rootModule,
+                            builtinsAndCloneableSession,
+                            firPhaseRunner,
+                            cache.sessionInvalidator,
+                            builtinTypes,
+                            sessions,
+                            isRootModule = true,
+                            librariesCache,
+                            configureSession = configureSession,
+                        )
+                    }
+                    is LibraryInfo -> FirIdeSessionFactory.createResolvableLibrarySession(
+                        rootModule,
+                        project,
+                        builtinTypes,
+                        builtinsAndCloneableSession,
+                        sessions,
+                        configureSession = configureSession,
+                    )
+                    else -> error("Unexpected ${rootModule::class.simpleName}")
+                }
+
             }
             sessions to session
         }
@@ -61,10 +78,10 @@ internal class FirIdeSessionProviderStorage(private val project: Project) {
 }
 
 private class FromModuleViewSessionCache(
-    val root: ModuleSourceInfo,
+    val root: IdeaModuleInfo,
 ) {
     @Volatile
-    private var mappings: PersistentMap<ModuleSourceInfo, FirSessionWithModificationTracker> = persistentMapOf()
+    private var mappings: PersistentMap<IdeaModuleInfo, FirSessionWithModificationTracker> = persistentMapOf()
 
     val sessionInvalidator: FirSessionInvalidator = FirSessionInvalidator { session ->
         mappings[session.moduleData.moduleSourceInfo]?.invalidate()
@@ -72,20 +89,20 @@ private class FromModuleViewSessionCache(
 
 
     inline fun <R> withMappings(
-        action: (Map<ModuleSourceInfo, FirIdeSourcesSession>) -> Pair<Map<ModuleSourceInfo, FirIdeSourcesSession>, R>
-    ): Pair<Map<ModuleSourceInfo, FirIdeSourcesSession>, R> {
+        action: (Map<IdeaModuleInfo, FirIdeResolvableModuleSession>) -> Pair<Map<IdeaModuleInfo, FirIdeResolvableModuleSession>, R>
+    ): Pair<Map<IdeaModuleInfo, FirIdeSession>, R> {
         val (newMappings, result) = action(getSessions().mapValues { it.value })
         mappings = newMappings.mapValues { FirSessionWithModificationTracker(it.value) }.toPersistentMap()
         return newMappings to result
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    private fun getSessions(): Map<ModuleSourceInfo, FirIdeSourcesSession> = buildMap {
+    private fun getSessions(): Map<IdeaModuleInfo, FirIdeResolvableModuleSession> = buildMap {
         val sessions = mappings.values
         val wasSessionInvalidated = sessions.associateWithTo(hashMapOf()) { false }
 
         val reversedDependencies = sessions.reversedDependencies { session ->
-            session.firSession.dependencies.mapNotNull { mappings[it] }
+            session.firSession.moduleData.moduleSourceInfo.dependencies().mapNotNull { mappings[it] }
         }
 
         fun markAsInvalidWithDfs(session: FirSessionWithModificationTracker) {
@@ -121,10 +138,14 @@ private class FromModuleViewSessionCache(
 }
 
 private class FirSessionWithModificationTracker(
-    val firSession: FirIdeSourcesSession,
+    val firSession: FirIdeResolvableModuleSession,
 ) {
     private val modificationTracker =
-        firSession.moduleData.moduleSourceInfo.module.createModuleWithoutDependenciesOutOfBlockModificationTracker()
+        when (val moduleInfo = firSession.moduleData.moduleSourceInfo) {
+            is ModuleSourceInfo -> moduleInfo.module.createModuleWithoutDependenciesOutOfBlockModificationTracker()
+            else -> ModificationTracker.NEVER_CHANGED
+        }
+
 
     private val timeStamp = modificationTracker.modificationCount
 
@@ -138,7 +159,7 @@ private class FirSessionWithModificationTracker(
     val isValid: Boolean get() = !isInvalidated && modificationTracker.modificationCount == timeStamp
 }
 
-val FirModuleData.moduleSourceInfo: ModuleSourceInfo
+val FirModuleData.moduleSourceInfo: IdeaModuleInfo
     get() = moduleInfoUnsafe()
 
 inline fun <reified T : ModuleInfo> FirModuleData.moduleInfoUnsafe(): T = (this as FirModuleInfoBasedModuleData).moduleInfo as T

@@ -14,6 +14,7 @@ import org.jetbrains.kotlin.fir.symbols.impl.FirFunctionSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirPropertySymbol
 import org.jetbrains.kotlin.fir.types.FirResolvedTypeRef
 import org.jetbrains.kotlin.idea.fir.low.level.api.api.DeclarationCopyBuilder
+import org.jetbrains.kotlin.idea.fir.low.level.api.api.FirIdeRootModuleResolveState
 import org.jetbrains.kotlin.idea.fir.low.level.api.api.FirModuleResolveState
 import org.jetbrains.kotlin.idea.fir.low.level.api.api.LowLevelFirApiFacadeForResolveOnAir
 import org.jetbrains.kotlin.idea.fir.low.level.api.diagnostics.FileDiagnosticRetriever
@@ -49,6 +50,7 @@ internal class KtToFirMapping(firElement: FirElement, recorder: FirElementsRecor
         //This is for not inner KtUserType
         if (userType.parent is KtTypeReference) return null
 
+        if (state !is FirIdeRootModuleResolveState) return null
         return userTypeMapping.getOrPut(userType) {
             val typeReference = KtPsiFactory(ktElement.project).createType(userType)
             LowLevelFirApiFacadeForResolveOnAir.onAirResolveTypeInPlace(ktElement, typeReference, state)
@@ -115,7 +117,8 @@ internal class ReanalyzableFunctionStructureElement(
         firIdeProvider: FirIdeProvider,
     ): ReanalyzableFunctionStructureElement {
         val originalFunction = firSymbol.fir as FirSimpleFunction
-        val newFunction = DeclarationCopyBuilder.createCopy(newKtDeclaration, originalFunction)
+        val newFunction =
+            DeclarationCopyBuilder.createCopy(newKtDeclaration, originalFunction, replacement = null, firIdeProvider.kotlinScopeProvider)
 
         return FileStructureUtil.withDeclarationReplaced(firFile, cache, originalFunction, newFunction) {
             firLazyDeclarationResolver.lazyResolveDeclaration(
@@ -154,7 +157,8 @@ internal class ReanalyzablePropertyStructureElement(
         firIdeProvider: FirIdeProvider,
     ): ReanalyzablePropertyStructureElement {
         val originalProperty = firSymbol.fir
-        val newProperty = DeclarationCopyBuilder.createCopy(newKtDeclaration, originalProperty)
+        val newProperty =
+            DeclarationCopyBuilder.createCopy(newKtDeclaration, originalProperty, replacement = null, firIdeProvider.kotlinScopeProvider)
 
         return FileStructureUtil.withDeclarationReplaced(firFile, cache, originalProperty, newProperty) {
             firLazyDeclarationResolver.lazyResolveDeclaration(

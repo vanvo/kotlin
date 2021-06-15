@@ -63,12 +63,12 @@ internal object FirIdeSessionFactory {
         firPhaseRunner: FirPhaseRunner,
         sessionInvalidator: FirSessionInvalidator,
         builtinTypes: BuiltinTypes,
-        sessionsCache: MutableMap<ModuleSourceInfo, FirIdeSourcesSession>,
+        sessionsCache: MutableMap<IdeaModuleInfo, FirIdeResolvableModuleSession>,
         isRootModule: Boolean,
         librariesCache: LibrariesCache,
         configureSession: (FirIdeSession.() -> Unit)? = null
     ): FirIdeSourcesSession {
-        sessionsCache[moduleInfo]?.let { return it }
+        sessionsCache[moduleInfo]?.let { return it as FirIdeSourcesSession }
         val languageVersionSettings = moduleInfo.module.languageVersionSettings
         val scopeProvider = FirKotlinScopeProvider(::wrapScopeWithJvmMapped)
         val firBuilder = FirFileBuilder(scopeProvider, firPhaseRunner)
@@ -153,6 +153,81 @@ internal object FirIdeSessionFactory {
                     registerExtendedCommonCheckers()
                 }
             }.configure()
+
+            configureSession?.invoke(this)
+        }
+    }
+
+    fun createResolvableLibrarySession(
+        mainModuleInfo: LibraryInfo,
+        project: Project,
+        builtinTypes: BuiltinTypes,
+        builtinsAndCloneableSession: FirIdeBuiltinsAndCloneableSession,
+        sessionsCache: MutableMap<IdeaModuleInfo, FirIdeResolvableModuleSession>,
+        languageVersionSettings: LanguageVersionSettings = LanguageVersionSettingsImpl.DEFAULT,
+        configureSession: (FirIdeSession.() -> Unit)?,
+    ): FirIdeLibraryResolvableModuleSession {
+        sessionsCache[mainModuleInfo]?.let { return it as FirIdeLibraryResolvableModuleSession }
+        checkCanceled()
+        val searchScope = mainModuleInfo.contentScope()
+        val javaClassFinder = JavaClassFinderImpl().apply {
+            setProjectInstance(project)
+            setScope(searchScope)
+        }
+        val packagePartProvider = IDEPackagePartProvider(searchScope)
+
+        val kotlinClassFinder = VirtualFileFinderFactory.getInstance(project).create(searchScope)
+        return FirIdeLibraryResolvableModuleSession(mainModuleInfo, project, searchScope, builtinTypes).apply session@{
+            val mainModuleData = FirModuleInfoBasedModuleData(mainModuleInfo).apply { bindSession(this@session) }
+            registerModuleData(mainModuleData)
+
+            registerIdeComponents()
+            register(FirPhaseManager::class, FirPhaseCheckingPhaseManager)
+            registerCommonComponents(languageVersionSettings)
+            registerJavaSpecificResolveComponents()
+            registerResolveComponents()
+
+            val javaSymbolProvider = JavaSymbolProvider(this, mainModuleData, project, searchScope)
+
+            val kotlinScopeProvider = FirKotlinScopeProvider(::wrapScopeWithJvmMapped)
+
+            val moduleDataProvider = DependencyListForCliModule.build(
+                mainModuleInfo.name,
+                mainModuleInfo.platform,
+                mainModuleInfo.analyzerServices
+            ) {
+                dependencies(mainModuleInfo.dependenciesWithoutSelf().extractLibraryPaths())
+                friendDependencies(mainModuleInfo.modulesWhoseInternalsAreVisible().extractLibraryPaths())
+                dependsOnDependencies(mainModuleInfo.expectedBy.extractLibraryPaths())
+            }.moduleDataProvider
+
+            moduleDataProvider.allModuleData.forEach { it.bindSession(this@session) }
+
+            val symbolProvider = FirCompositeSymbolProvider(
+                this,
+                @OptIn(ExperimentalStdlibApi::class)
+                buildList {
+                    add(
+                        FirThreadSafeSymbolProviderWrapper(
+                            KotlinDeserializedJvmSymbolsProvider(
+                                this@session,
+                                moduleDataProvider,
+                                kotlinScopeProvider,
+                                packagePartProvider,
+                                kotlinClassFinder,
+                                javaSymbolProvider,
+                                javaClassFinder
+                            )
+                        )
+                    )
+                    add(javaSymbolProvider)
+                    addAll((builtinsAndCloneableSession.symbolProvider as FirCompositeSymbolProvider).providers)
+                }
+            )
+            register(FirProvider::class, FirIdeLibrariesSessionProvider(symbolProvider))
+            register(FirSymbolProvider::class, symbolProvider)
+            register(FirJvmTypeMapper::class, FirJvmTypeMapper(this))
+            FirSessionFactory.FirSessionConfigurator(this).configure()
 
             configureSession?.invoke(this)
         }

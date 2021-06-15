@@ -11,15 +11,15 @@ import org.jetbrains.kotlin.fir.declarations.*
 import org.jetbrains.kotlin.fir.declarations.builder.*
 import org.jetbrains.kotlin.fir.expressions.FirReturnExpression
 import org.jetbrains.kotlin.fir.moduleData
+import org.jetbrains.kotlin.fir.scopes.FirKotlinScopeProvider
 import org.jetbrains.kotlin.fir.visitors.FirVisitorVoid
 import org.jetbrains.kotlin.idea.fir.low.level.api.lazy.resolve.RawFirNonLocalDeclarationBuilder
 import org.jetbrains.kotlin.idea.fir.low.level.api.lazy.resolve.RawFirReplacement
-import org.jetbrains.kotlin.idea.fir.low.level.api.providers.firIdeProvider
 import org.jetbrains.kotlin.psi.*
 
 internal object DeclarationCopyBuilder {
     fun createDeclarationCopy(
-        state: FirModuleResolveState,
+        state: FirIdeRootModuleResolveState,
         nonLocalDeclaration: KtDeclaration,
         replacement: RawFirReplacement
     ): FirDeclaration {
@@ -51,12 +51,12 @@ internal object DeclarationCopyBuilder {
 
     private fun createFunctionCopy(
         rootNonLocalDeclaration: KtNamedFunction,
-        state: FirModuleResolveState,
+        state: FirIdeRootModuleResolveState,
         replacement: RawFirReplacement,
     ): FirSimpleFunction {
 
         val originalFunction = rootNonLocalDeclaration.getOrBuildFirOfType<FirSimpleFunction>(state)
-        val builtFunction = createCopy(rootNonLocalDeclaration, originalFunction, replacement)
+        val builtFunction = createCopy(rootNonLocalDeclaration, originalFunction, replacement, state.kotlinScopeProvider)
 
         val functionBlock = rootNonLocalDeclaration.bodyBlockExpression
         if (functionBlock == null || !PsiTreeUtil.isAncestor(functionBlock, replacement.from, true)) {
@@ -75,11 +75,11 @@ internal object DeclarationCopyBuilder {
 
     private fun createClassCopy(
         rootNonLocalDeclaration: KtClassOrObject,
-        state: FirModuleResolveState,
+        state: FirIdeRootModuleResolveState,
         replacement: RawFirReplacement,
     ): FirRegularClass {
         val originalFirClass = rootNonLocalDeclaration.getOrBuildFirOfType<FirRegularClass>(state)
-        val builtClass = createCopy(rootNonLocalDeclaration, originalFirClass, replacement)
+        val builtClass = createCopy(rootNonLocalDeclaration, originalFirClass, replacement, state.kotlinScopeProvider)
 
         val classBody = rootNonLocalDeclaration.body
         if (classBody == null || !PsiTreeUtil.isAncestor(classBody, replacement.from, true)) {
@@ -97,20 +97,20 @@ internal object DeclarationCopyBuilder {
 
     private fun createTypeAliasCopy(
         rootNonLocalDeclaration: KtTypeAlias,
-        state: FirModuleResolveState,
+        state: FirIdeRootModuleResolveState,
         replacement: RawFirReplacement,
     ): FirTypeAlias {
         val originalFirTypeAlias = rootNonLocalDeclaration.getOrBuildFirOfType<FirTypeAlias>(state)
-        return createCopy(rootNonLocalDeclaration, originalFirTypeAlias, replacement)
+        return createCopy(rootNonLocalDeclaration, originalFirTypeAlias, replacement, state.kotlinScopeProvider)
     }
 
     private fun createPropertyCopy(
         rootNonLocalDeclaration: KtProperty,
-        state: FirModuleResolveState,
+        state: FirIdeRootModuleResolveState,
         replacement: RawFirReplacement,
     ): FirProperty {
         val originalProperty = rootNonLocalDeclaration.getOrBuildFirOfType<FirProperty>(state)
-        val builtProperty = createCopy(rootNonLocalDeclaration, originalProperty, replacement)
+        val builtProperty = createCopy(rootNonLocalDeclaration, originalProperty, replacement, state.kotlinScopeProvider)
 
         val insideGetterBody = rootNonLocalDeclaration.getter?.bodyBlockExpression?.let {
             PsiTreeUtil.isAncestor(it, replacement.from, true)
@@ -162,10 +162,11 @@ internal object DeclarationCopyBuilder {
         rootNonLocalDeclaration: KtDeclaration,
         originalFirDeclaration: D,
         replacement: RawFirReplacement? = null,
+        firKotlinScopeProvider: FirKotlinScopeProvider,
     ): D {
         return RawFirNonLocalDeclarationBuilder.build(
             session = originalFirDeclaration.moduleData.session,
-            baseScopeProvider = originalFirDeclaration.moduleData.session.firIdeProvider.kotlinScopeProvider,
+            baseScopeProvider = firKotlinScopeProvider,
             designation = originalFirDeclaration.collectDesignation(),
             rootNonLocalDeclaration = rootNonLocalDeclaration,
             replacement = replacement,
