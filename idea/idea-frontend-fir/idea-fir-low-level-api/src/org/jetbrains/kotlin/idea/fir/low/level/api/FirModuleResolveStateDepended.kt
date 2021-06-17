@@ -17,6 +17,7 @@ import org.jetbrains.kotlin.idea.fir.low.level.api.annotations.InternalForInline
 import org.jetbrains.kotlin.idea.fir.low.level.api.api.DiagnosticCheckerFilter
 import org.jetbrains.kotlin.idea.fir.low.level.api.api.FirIdeRootModuleResolveState
 import org.jetbrains.kotlin.idea.fir.low.level.api.api.FirModuleResolveState
+import org.jetbrains.kotlin.idea.fir.low.level.api.api.LowLevelFirApiFacadeForResolveOnAir
 import org.jetbrains.kotlin.idea.fir.low.level.api.element.builder.FirElementBuilder
 import org.jetbrains.kotlin.idea.fir.low.level.api.element.builder.FirTowerContextProvider
 import org.jetbrains.kotlin.idea.fir.low.level.api.file.builder.ModuleFileCache
@@ -83,5 +84,5 @@ internal class FirModuleResolveStateDepended(
         originalState.findSourceFirDeclaration(ktDeclaration)
 
     override fun getTowerContextProvider(ktFile: KtFile): FirTowerContextProvider =
-        originalState.getTowerContextProvider(ktFile)
+        LowLevelFirApiFacadeForResolveOnAir.TowerProviderForElementForState(this)
 }

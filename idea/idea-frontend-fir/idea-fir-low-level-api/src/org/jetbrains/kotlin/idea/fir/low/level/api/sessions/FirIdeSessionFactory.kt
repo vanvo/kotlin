@@ -7,6 +7,7 @@ package org.jetbrains.kotlin.idea.fir.low.level.api.sessions
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.OrderRootType
+import com.intellij.psi.search.GlobalSearchScope
 import org.jetbrains.kotlin.analyzer.ModuleInfo
 import org.jetbrains.kotlin.config.LanguageVersionSettings
 import org.jetbrains.kotlin.config.LanguageVersionSettingsImpl
@@ -158,18 +159,23 @@ internal object FirIdeSessionFactory {
         }
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     fun createResolvableLibrarySession(
-        mainModuleInfo: LibraryInfo,
+        mainModuleInfo: LibraryOrLibrarySourceInfo,
         project: Project,
         builtinTypes: BuiltinTypes,
         builtinsAndCloneableSession: FirIdeBuiltinsAndCloneableSession,
         sessionsCache: MutableMap<IdeaModuleInfo, FirIdeResolvableModuleSession>,
         languageVersionSettings: LanguageVersionSettings = LanguageVersionSettingsImpl.DEFAULT,
         configureSession: (FirIdeSession.() -> Unit)?,
-    ): FirIdeLibraryResolvableModuleSession {
-        sessionsCache[mainModuleInfo]?.let { return it as FirIdeLibraryResolvableModuleSession }
+    ): FirIdeLibraryOrLibrarySourceResolvableModuleSession {
+        sessionsCache[mainModuleInfo]?.let { return it as FirIdeLibraryOrLibrarySourceResolvableModuleSession }
         checkCanceled()
-        val searchScope = mainModuleInfo.contentScope()
+        val libraryModuleInfo = when (mainModuleInfo) {
+            is LibraryInfo -> mainModuleInfo
+            is LibrarySourceInfo -> mainModuleInfo.binariesModuleInfo
+        }
+        val searchScope = GlobalSearchScope.union(mainModuleInfo.dependencies().map { it.contentScope() })
         val javaClassFinder = JavaClassFinderImpl().apply {
             setProjectInstance(project)
             setScope(searchScope)
@@ -177,7 +183,7 @@ internal object FirIdeSessionFactory {
         val packagePartProvider = IDEPackagePartProvider(searchScope)
 
         val kotlinClassFinder = VirtualFileFinderFactory.getInstance(project).create(searchScope)
-        return FirIdeLibraryResolvableModuleSession(mainModuleInfo, project, searchScope, builtinTypes).apply session@{
+        return FirIdeLibraryOrLibrarySourceResolvableModuleSession(mainModuleInfo, project, searchScope, builtinTypes).apply session@{
             val mainModuleData = FirModuleInfoBasedModuleData(mainModuleInfo).apply { bindSession(this@session) }
             registerModuleData(mainModuleData)
 
@@ -196,9 +202,9 @@ internal object FirIdeSessionFactory {
                 mainModuleInfo.platform,
                 mainModuleInfo.analyzerServices
             ) {
-                dependencies(mainModuleInfo.dependenciesWithoutSelf().extractLibraryPaths())
-                friendDependencies(mainModuleInfo.modulesWhoseInternalsAreVisible().extractLibraryPaths())
-                dependsOnDependencies(mainModuleInfo.expectedBy.extractLibraryPaths())
+                dependencies(libraryModuleInfo.dependencies().extractLibraryPaths())
+                friendDependencies(libraryModuleInfo.modulesWhoseInternalsAreVisible().extractLibraryPaths())
+                dependsOnDependencies(libraryModuleInfo.expectedBy.extractLibraryPaths())
             }.moduleDataProvider
 
             moduleDataProvider.allModuleData.forEach { it.bindSession(this@session) }

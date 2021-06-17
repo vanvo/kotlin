@@ -281,7 +281,7 @@ object LowLevelFirApiFacadeForResolveOnAir {
                 onAirGetTowerContextProvider(state, ktElement).getClosestAvailableParentContext(ktElement)
             } else {
                 require(state is FirModuleResolveStateDepended) {
-                    "Invalid resolve state ${this::class.simpleName} but have to be ${FirModuleResolveStateDepended::class.simpleName}"
+                    "Invalid resolve state ${state::class.simpleName} but have to be ${FirModuleResolveStateDepended::class.simpleName}"
                 }
                 state.towerProviderBuiltUponElement.getClosestAvailableParentContext(ktElement)
             }

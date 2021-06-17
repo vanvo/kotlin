@@ -36,7 +36,7 @@ import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtLambdaExpression
 import java.util.concurrent.ConcurrentHashMap
 
-class FirModuleResolveStateForLibrary(
+class FirModuleResolveStateForLibraryOrLibrarySource(
     override val project: Project,
     override val rootModuleSession: FirSession,
     override val moduleInfo: IdeaModuleInfo,

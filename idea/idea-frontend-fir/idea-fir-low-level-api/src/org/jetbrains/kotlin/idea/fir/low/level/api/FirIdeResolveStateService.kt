@@ -9,11 +9,9 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootModificationTracker
 import org.jetbrains.annotations.TestOnly
-import org.jetbrains.kotlin.idea.caches.project.IdeaModuleInfo
-import org.jetbrains.kotlin.idea.caches.project.LibraryInfo
-import org.jetbrains.kotlin.idea.caches.project.ModuleSourceInfo
+import org.jetbrains.kotlin.idea.caches.project.*
 import org.jetbrains.kotlin.idea.fir.low.level.api.api.FirModuleResolveState
-import org.jetbrains.kotlin.idea.fir.low.level.api.api.FirModuleResolveStateForLibrary
+import org.jetbrains.kotlin.idea.fir.low.level.api.api.FirModuleResolveStateForLibraryOrLibrarySource
 import org.jetbrains.kotlin.idea.fir.low.level.api.lazy.resolve.FirLazyDeclarationResolver
 import org.jetbrains.kotlin.idea.fir.low.level.api.sessions.FirIdeSession
 import org.jetbrains.kotlin.idea.fir.low.level.api.sessions.FirIdeSessionProviderStorage
@@ -57,8 +55,8 @@ internal class FirIdeResolveStateService(project: Project) {
                         FirLazyDeclarationResolver(firFileBuilder),
                     )
                 }
-                is LibraryInfo -> {
-                    FirModuleResolveStateForLibrary(
+                is LibraryOrLibrarySourceInfo -> {
+                    FirModuleResolveStateForLibraryOrLibrarySource(
                         moduleInfo.project, sessionProvider.rootModuleSession, moduleInfo, sessionProvider
                     )
                 }

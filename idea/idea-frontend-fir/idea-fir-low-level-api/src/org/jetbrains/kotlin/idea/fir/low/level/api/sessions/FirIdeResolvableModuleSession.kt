@@ -8,15 +8,15 @@ package org.jetbrains.kotlin.idea.fir.low.level.api.sessions
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
 import org.jetbrains.kotlin.fir.BuiltinTypes
-import org.jetbrains.kotlin.idea.caches.project.LibraryInfo
+import org.jetbrains.kotlin.idea.caches.project.LibraryOrLibrarySourceInfo
 
 abstract class FirIdeResolvableModuleSession(
     builtinTypes: BuiltinTypes,
 ) : FirIdeModuleSession(builtinTypes)
 
 
-class FirIdeLibraryResolvableModuleSession(
-    val moduleInfo: LibraryInfo,
+class FirIdeLibraryOrLibrarySourceResolvableModuleSession(
+    val moduleInfo: LibraryOrLibrarySourceInfo,
     override val project: Project,
     override val scope: GlobalSearchScope,
     builtinTypes: BuiltinTypes,

@@ -15,10 +15,7 @@ import org.jetbrains.kotlin.fir.BuiltinTypes
 import org.jetbrains.kotlin.fir.FirModuleData
 import org.jetbrains.kotlin.fir.moduleData
 import org.jetbrains.kotlin.fir.session.FirModuleInfoBasedModuleData
-import org.jetbrains.kotlin.idea.caches.project.IdeaModuleInfo
-import org.jetbrains.kotlin.idea.caches.project.LibraryInfo
-import org.jetbrains.kotlin.idea.caches.project.LibraryModificationTracker
-import org.jetbrains.kotlin.idea.caches.project.ModuleSourceInfo
+import org.jetbrains.kotlin.idea.caches.project.*
 import org.jetbrains.kotlin.idea.fir.low.level.api.FirPhaseRunner
 import org.jetbrains.kotlin.idea.fir.low.level.api.util.addValueFor
 import org.jetbrains.kotlin.idea.fir.low.level.api.util.executeWithoutPCE
@@ -58,7 +55,7 @@ internal class FirIdeSessionProviderStorage(private val project: Project) {
                             configureSession = configureSession,
                         )
                     }
-                    is LibraryInfo -> FirIdeSessionFactory.createResolvableLibrarySession(
+                    is LibraryOrLibrarySourceInfo -> FirIdeSessionFactory.createResolvableLibrarySession(
                         rootModule,
                         project,
                         builtinTypes,

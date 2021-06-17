@@ -134,9 +134,8 @@ internal class FirModuleResolveStateImpl(
         return searcher.findForNonLocalDeclaration(ktDeclaration)
     }
 
-    override fun getTowerContextProvider(ktFile: KtFile): FirTowerContextProvider {
-        return LowLevelFirApiFacadeForResolveOnAir.TowerProviderForElementForState(this)
-    }
+    override fun getTowerContextProvider(ktFile: KtFile): FirTowerContextProvider =
+        LowLevelFirApiFacadeForResolveOnAir.TowerProviderForElementForState(this)
 
     override fun <D : FirDeclaration> resolveFirToPhase(declaration: D, toPhase: FirResolvePhase): D {
         val fileCache = when (val session = declaration.moduleData.session) {

@@ -58,7 +58,9 @@ abstract class AbstractSessionsInvalidationTest : AbstractMultiModuleTest() {
         val sessionsAfterOOBM = storage.getFirSessions(rootModuleSourceInfo)
 
         val changedSessions = Sets.symmetricDifference(initialSessions, sessionsAfterOOBM)
-        val changedSessionsModulesNamesSorted = changedSessions.map { it.moduleData.moduleSourceInfo.module.name }.distinct().sorted()
+        val changedSessionsModulesNamesSorted = changedSessions.map {
+            (it.moduleData.moduleSourceInfo as ModuleSourceInfo).module.name
+        }.distinct().sorted()
 
         Assert.assertEquals(testStructure.expectedInvalidatedModules, changedSessionsModulesNamesSorted)
     }

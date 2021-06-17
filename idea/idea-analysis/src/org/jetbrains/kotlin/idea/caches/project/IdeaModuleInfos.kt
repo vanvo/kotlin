@@ -332,8 +332,13 @@ private class ModuleTestSourceScope(module: Module) : ModuleSourceScope(module) 
     override fun toString() = "ModuleTestSourceScope($module)"
 }
 
-abstract class LibraryInfo(override val project: Project, val library: Library) :
-    IdeaModuleInfo, LibraryModuleInfo, BinaryModuleInfo, TrackableModuleInfo {
+sealed interface LibraryOrLibrarySourceInfo : IdeaModuleInfo {
+    val library: Library
+    abstract override val project: Project
+}
+
+abstract class LibraryInfo(override val project: Project, override val library: Library) :
+    IdeaModuleInfo, LibraryModuleInfo, BinaryModuleInfo, TrackableModuleInfo, LibraryOrLibrarySourceInfo {
 
     override val moduleOrigin: ModuleOrigin
         get() = ModuleOrigin.LIBRARY
@@ -389,8 +394,11 @@ abstract class LibraryInfo(override val project: Project, val library: Library) 
     override fun hashCode(): Int = lazyHashCode
 }
 
-data class LibrarySourceInfo(override val project: Project, val library: Library, override val binariesModuleInfo: BinaryModuleInfo) :
-    IdeaModuleInfo, SourceForBinaryModuleInfo {
+data class LibrarySourceInfo(
+    override val project: Project,
+    override val library: Library,
+    override val binariesModuleInfo: LibraryInfo
+) : IdeaModuleInfo, SourceForBinaryModuleInfo, LibraryOrLibrarySourceInfo {
 
     override val name: Name = Name.special("<sources for library ${library.name}>")
 
