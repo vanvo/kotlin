@@ -32,6 +32,10 @@ public interface KtCallableDeclaration extends KtNamedDeclaration, KtTypeParamet
     @Nullable
     KtTypeReference getReceiverTypeReference();
 
+    default boolean isExtension() {
+        return getReceiverTypeReference() != null;
+    }
+
     @Nullable
     KtTypeReference getTypeReference();
 
