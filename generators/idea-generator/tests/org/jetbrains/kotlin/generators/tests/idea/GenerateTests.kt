@@ -100,7 +100,6 @@ import org.jetbrains.kotlin.idea.fir.quickfix.AbstractHighLevelQuickFixMultiFile
 import org.jetbrains.kotlin.idea.fir.quickfix.AbstractHighLevelQuickFixTest
 import org.jetbrains.kotlin.idea.fir.resolve.AbstractFirReferenceResolveTest
 import org.jetbrains.kotlin.idea.folding.AbstractKotlinFoldingTest
-import org.jetbrains.kotlin.idea.frontend.api.components.*
 import org.jetbrains.kotlin.idea.fir.frontend.api.fir.AbstractResolveCallTest
 import org.jetbrains.kotlin.idea.fir.frontend.api.scopes.AbstractFileScopeTest
 import org.jetbrains.kotlin.idea.fir.frontend.api.scopes.AbstractMemberScopeByFqNameTest
@@ -109,6 +108,9 @@ import org.jetbrains.kotlin.idea.fir.frontend.api.symbols.AbstractSymbolByFqName
 import org.jetbrains.kotlin.idea.fir.frontend.api.symbols.AbstractSymbolByPsiTest
 import org.jetbrains.kotlin.idea.fir.frontend.api.symbols.AbstractSymbolByReferenceTest
 import org.jetbrains.kotlin.idea.fir.inspections.AbstractFe10BindingIntentionTest
+import org.jetbrains.kotlin.idea.fir.resolve.AbstractFirReferenceResolveInLibraryClassesTest
+import org.jetbrains.kotlin.idea.fir.resolve.AbstractFirReferenceResolveInLibrarySourcesTest
+import org.jetbrains.kotlin.idea.fir.resolve.AbstractFirReferenceResolveInLibraryTest
 import org.jetbrains.kotlin.idea.hierarchy.AbstractHierarchyTest
 import org.jetbrains.kotlin.idea.hierarchy.AbstractHierarchyWithLibTest
 import org.jetbrains.kotlin.idea.highlighter.*
@@ -174,7 +176,6 @@ import org.jetbrains.kotlin.idea.fir.shortenRefs.AbstractFirShortenRefsTest
 import org.jetbrains.kotlin.shortenRefs.AbstractShortenRefsTest
 import org.jetbrains.kotlin.spec.utils.GeneralConfiguration
 import org.jetbrains.kotlin.test.TargetBackend
-import org.jetbrains.kotlin.test.runners.AbstractFirDiagnosticTestSpec
 import org.jetbrains.kotlin.tools.projectWizard.cli.AbstractProjectTemplateBuildFileGenerationTest
 import org.jetbrains.kotlin.tools.projectWizard.cli.AbstractYamlBuildFileGenerationTest
 import org.jetbrains.kotlin.tools.projectWizard.wizard.AbstractProjectTemplateNewWizardProjectImportTest
@@ -1159,6 +1160,17 @@ fun main(args: Array<String>) {
                 model("handlers/basic", testMethod = "doPerfTest", pattern = KT_WITHOUT_DOTS_IN_NAME)
             }
         }
+
+        testGroup("idea/idea-fir/tests", "idea/idea-fir/testData") {
+            testClass<AbstractFirReferenceResolveInLibraryClassesTest> {
+                model("references/inLibraryClassFiles", pattern = KT_WITHOUT_DOTS_IN_NAME)
+            }
+
+            testClass<AbstractFirReferenceResolveInLibrarySourcesTest> {
+                model("references/inLibrarySourceFiles", pattern = KT_WITHOUT_DOTS_IN_NAME)
+            }
+        }
+
 
         testGroup("idea/idea-fir/tests", "idea/testData") {
             testClass<AbstractFirReferenceResolveTest> {
