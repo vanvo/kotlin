@@ -409,9 +409,13 @@ object NodeConfigurator : AbstractFieldConfigurator<FirTreeBuilder>(FirTreeBuild
         }
 
         file.configure {
+            +field("packageDirective", packageDirective)
             +fieldList(import).withTransform()
             +declarations.withTransform()
             +stringField("name")
+        }
+
+        packageDirective.configure {
             +field("packageFqName", fqNameType)
         }
 

@@ -6,14 +6,11 @@
 package org.jetbrains.kotlin.idea.references
 
 import com.intellij.psi.tree.TokenSet
-import org.jetbrains.kotlin.fir.FirFakeSourceElementKind
-import org.jetbrains.kotlin.fir.FirSession
-import org.jetbrains.kotlin.fir.ROOT_PREFIX_FOR_IDE_RESOLUTION_MODE
+import org.jetbrains.kotlin.fir.*
 import org.jetbrains.kotlin.fir.declarations.*
 import org.jetbrains.kotlin.fir.declarations.builder.buildImport
 import org.jetbrains.kotlin.fir.declarations.synthetic.FirSyntheticProperty
 import org.jetbrains.kotlin.fir.expressions.*
-import org.jetbrains.kotlin.fir.psi
 import org.jetbrains.kotlin.fir.references.*
 import org.jetbrains.kotlin.fir.resolve.ScopeSession
 import org.jetbrains.kotlin.fir.resolve.calls.FirSyntheticPropertySymbol
@@ -43,7 +40,6 @@ import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.collectDescendantsOfType
-import org.jetbrains.kotlin.psi.psiUtil.getNonStrictParentOfType
 import org.jetbrains.kotlin.psi.psiUtil.getQualifiedExpressionForSelector
 import org.jetbrains.kotlin.psi.psiUtil.unwrapNullability
 import org.jetbrains.kotlin.utils.addIfNotNull
@@ -181,7 +177,8 @@ internal object FirReferenceResolveHelper {
                 getSymbolsForResolvedQualifier(fir, expression, session, symbolBuilder, analysisSession)
             is FirAnnotationCall -> getSymbolsForAnnotationCall(fir, session, symbolBuilder)
             is FirResolvedImport -> getSymbolsByResolvedImport(expression, symbolBuilder, fir, session)
-            is FirFile -> getSymbolsByFirFile(expression, symbolBuilder, fir)
+            is FirPackageDirective -> getSymbolsForPackageDirective(expression, symbolBuilder)
+            is FirFile -> getSymbolsByFirFile(symbolBuilder, fir)
             is FirArrayOfCall -> {
                 // We can't yet find PsiElement for arrayOf, intArrayOf, etc.
                 emptyList()
@@ -195,6 +192,14 @@ internal object FirReferenceResolveHelper {
             else -> handleUnknownFirElement(expression, analysisSession, session, symbolBuilder)
         }
     }
+
+    private fun getSymbolsForPackageDirective(
+        expression: KtSimpleNameExpression,
+        symbolBuilder: KtSymbolByFirBuilder
+    ): List<KtFirPackageSymbol> {
+        return listOfNotNull(getPackageSymbolFor(expression, symbolBuilder, forQualifiedType = false))
+    }
+
 
     private fun getSymbolByResolvedNameReference(
         fir: FirResolvedNamedReference,
@@ -316,14 +321,9 @@ internal object FirReferenceResolveHelper {
     }
 
     private fun getSymbolsByFirFile(
-        expression: KtSimpleNameExpression,
         symbolBuilder: KtSymbolByFirBuilder,
         fir: FirFile
     ): List<KtSymbol> {
-        if (expression.getNonStrictParentOfType<KtPackageDirective>() != null) {
-            // Special: package reference in the middle of package directive
-            return listOfNotNull(getPackageSymbolFor(expression, symbolBuilder, forQualifiedType = false))
-        }
         return listOf(symbolBuilder.buildSymbol(fir))
     }
 
