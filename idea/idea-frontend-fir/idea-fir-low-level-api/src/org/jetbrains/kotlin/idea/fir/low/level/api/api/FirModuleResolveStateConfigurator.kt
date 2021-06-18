@@ -6,8 +6,11 @@
 package org.jetbrains.kotlin.idea.fir.low.level.api.api
 
 import com.intellij.psi.search.GlobalSearchScope
+import org.jetbrains.kotlin.analyzer.ModuleInfo
 import org.jetbrains.kotlin.idea.fir.low.level.api.DeclarationProvider
+import org.jetbrains.kotlin.idea.fir.low.level.api.PackageExistenceChecker
 
 abstract class FirModuleResolveStateConfigurator {
     abstract fun createDeclarationProvider(scope: GlobalSearchScope): DeclarationProvider
+    abstract fun createPackageExistingCheckerForModule(moduleInfo: ModuleInfo): PackageExistenceChecker
 }
