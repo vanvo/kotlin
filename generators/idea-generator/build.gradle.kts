@@ -36,6 +36,7 @@ dependencies {
     testCompile(projectTests(":kotlinx-serialization-ide-plugin"))
     testCompile(projectTests(":compiler:tests-common"))
     testCompile(projectTests(":compiler:tests-spec"))
+    testApiJUnit5()
 }
 
 val generateIdeaTests by generator("org.jetbrains.kotlin.generators.tests.idea.GenerateTestsKt")

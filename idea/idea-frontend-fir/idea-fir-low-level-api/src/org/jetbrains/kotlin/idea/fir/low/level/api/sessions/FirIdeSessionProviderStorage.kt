@@ -25,7 +25,7 @@ import org.jetbrains.kotlin.idea.fir.low.level.api.util.*
 import org.jetbrains.kotlin.idea.fir.low.level.api.util.executeWithoutPCE
 import java.util.concurrent.ConcurrentHashMap
 
-internal class FirIdeSessionProviderStorage(val project: Project) {
+class FirIdeSessionProviderStorage(val project: Project) {
     private val sessionsCache = ConcurrentHashMap<ModuleSourceInfoBase, FromModuleViewSessionCache>()
     private val configurator = ServiceManager.getService(project, FirModuleResolveStateConfigurator::class.java)
 

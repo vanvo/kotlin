@@ -18,7 +18,7 @@ dependencies {
     implementation(project(":compiler:fir:entrypoint"))
 
 
-    compileOnly(intellijCoreDep()) { includeJars("intellij-core", "guava", rootProject = rootProject) }
+    compile(intellijCoreDep()) { includeJars("intellij-core", "guava", rootProject = rootProject) }
 
 
     testCompile(projectTests(":compiler:test-infrastructure-utils"))
@@ -30,7 +30,7 @@ dependencies {
     testCompile(projectTests(":compiler:tests-common"))
     testCompile(projectTests(":compiler:fir:analysis-tests:legacy-fir-tests"))
     testCompile(project(":kotlin-test:kotlin-test-junit"))
-    testCompile(commonDep("junit:junit"))
+    testApiJUnit5()
 }
 
 sourceSets {
@@ -38,15 +38,10 @@ sourceSets {
     "test" { projectDefault() }
 }
 
-projectTest(parallel = true ) {
+projectTest(jUnit5Enabled = true) {
     dependsOn(":dist")
     workingDir = rootDir
-    val useFirIdeaPlugin = kotlinBuildProperties.useFirIdeaPlugin
-    doFirst {
-        if (!useFirIdeaPlugin) {
-            error("Test task in the module should be executed with -Pidea.fir.plugin=true")
-        }
-    }
+    useJUnitPlatform()
 }
 
 testsJar()

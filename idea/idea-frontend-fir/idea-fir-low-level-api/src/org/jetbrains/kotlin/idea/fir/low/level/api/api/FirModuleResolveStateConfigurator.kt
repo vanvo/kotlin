@@ -14,6 +14,7 @@ import org.jetbrains.kotlin.analyzer.ModuleSourceInfoBase
 import org.jetbrains.kotlin.analyzer.SdkInfoBase
 import org.jetbrains.kotlin.config.LanguageVersionSettings
 import org.jetbrains.kotlin.fir.declarations.SealedClassInheritorsProvider
+import org.jetbrains.kotlin.fir.deserialization.ModuleDataProvider
 import org.jetbrains.kotlin.idea.fir.low.level.api.DeclarationProvider
 import org.jetbrains.kotlin.idea.fir.low.level.api.PackageExistenceChecker
 import org.jetbrains.kotlin.load.kotlin.PackagePartProvider
@@ -24,7 +25,10 @@ abstract class FirModuleResolveStateConfigurator {
     abstract fun createDeclarationProvider(scope: GlobalSearchScope): DeclarationProvider
     abstract fun createPackageExistingCheckerForModule(moduleInfo: ModuleInfo): PackageExistenceChecker
     abstract fun createPackagePartsProvider(scope: GlobalSearchScope): PackagePartProvider
-    abstract fun getLibraryPaths(sdkInfo: SdkInfoBase): List<Path>
+
+    abstract fun createModuleDataProvider(moduleInfo: ModuleSourceInfoBase): ModuleDataProvider
+
+
     abstract fun getLanguageVersionSettings(moduleInfo: ModuleSourceInfoBase): LanguageVersionSettings
     abstract fun getModuleSourceScope(moduleInfo: ModuleSourceInfoBase): GlobalSearchScope
     abstract fun createScopeForModuleLibraries(moduleInfo: ModuleSourceInfoBase): GlobalSearchScope

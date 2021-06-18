@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 JetBrains s.r.o. and Kotlin Programming Language contributors.
+ * Copyright 2010-2021 JetBrains s.r.o. and Kotlin Programming Language contributors.
  * Use of this source code is governed by the Apache 2.0 license that can be found in the license/LICENSE.txt file.
  */
 
@@ -58,7 +58,10 @@ abstract class AbstractSessionsInvalidationTest : AbstractMultiModuleTest() {
         val sessionsAfterOOBM = storage.getFirSessions(rootModuleSourceInfo)
 
         val changedSessions = Sets.symmetricDifference(initialSessions, sessionsAfterOOBM)
-        val changedSessionsModulesNamesSorted = changedSessions.map { it.moduleData.moduleSourceInfo.module.name }.distinct().sorted()
+        val changedSessionsModulesNamesSorted = changedSessions
+            .map { (it.moduleData.moduleSourceInfo as ModuleSourceInfo).module.name }
+            .distinct()
+            .sorted()
 
         Assert.assertEquals(testStructure.expectedInvalidatedModules, changedSessionsModulesNamesSorted)
     }

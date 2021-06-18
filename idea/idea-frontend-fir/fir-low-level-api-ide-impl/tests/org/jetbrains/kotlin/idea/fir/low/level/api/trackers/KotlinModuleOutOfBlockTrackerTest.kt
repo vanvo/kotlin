@@ -15,6 +15,10 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiManager
 import com.intellij.testFramework.PsiTestUtil
 import junit.framework.Assert
+import org.jetbrains.kotlin.idea.caches.project.ModuleSourceInfo
+import org.jetbrains.kotlin.idea.caches.project.productionSourceInfo
+import org.jetbrains.kotlin.idea.fir.low.level.api.api.createModuleWithoutDependenciesOutOfBlockModificationTracker
+import org.jetbrains.kotlin.idea.fir.low.level.api.api.createProjectWideOutOfBlockModificationTracker
 import org.jetbrains.kotlin.idea.stubs.AbstractMultiModuleTest
 import org.jetbrains.kotlin.idea.util.application.runWriteAction
 import org.jetbrains.kotlin.idea.util.sourceRoots
@@ -22,9 +26,6 @@ import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtProperty
 import org.jetbrains.kotlin.psi.KtPsiFactory
-import org.jetbrains.kotlin.trackers.KotlinOutOfBlockModificationTrackerFactory
-import org.jetbrains.kotlin.trackers.createModuleWithoutDependenciesOutOfBlockModificationTracker
-import org.jetbrains.kotlin.trackers.createProjectWideOutOfBlockModificationTracker
 import java.nio.file.Files
 import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.writeText
@@ -167,7 +168,7 @@ class KotlinModuleOutOfBlockTrackerTest : AbstractMultiModuleTest() {
     }
 
     private class ModuleWithModificationTracker(module: Module) : WithModificationTracker(
-        module.createModuleWithoutDependenciesOutOfBlockModificationTracker()
+        module.productionSourceInfo()!!.createModuleWithoutDependenciesOutOfBlockModificationTracker(module.project)
     )
 
     private class ProjectWithModificationTracker(project: Project) : WithModificationTracker(

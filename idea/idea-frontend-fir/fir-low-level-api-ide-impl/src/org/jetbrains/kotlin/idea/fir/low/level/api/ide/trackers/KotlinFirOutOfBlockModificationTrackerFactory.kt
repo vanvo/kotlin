@@ -10,14 +10,23 @@ import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
 import org.jetbrains.annotations.TestOnly
-import org.jetbrains.kotlin.trackers.KotlinOutOfBlockModificationTrackerFactory
+import org.jetbrains.kotlin.analyzer.ModuleSourceInfoBase
+import org.jetbrains.kotlin.idea.caches.project.LibraryModificationTracker
+import org.jetbrains.kotlin.idea.caches.project.ModuleSourceInfo
+import org.jetbrains.kotlin.idea.fir.low.level.api.api.KotlinOutOfBlockModificationTrackerFactory
 
 class KotlinFirOutOfBlockModificationTrackerFactory(private val project: Project) : KotlinOutOfBlockModificationTrackerFactory() {
     override fun createProjectWideOutOfBlockModificationTracker(): ModificationTracker =
         KotlinFirOutOfBlockModificationTracker(project)
 
-    override fun createModuleWithoutDependenciesOutOfBlockModificationTracker(module: Module): ModificationTracker =
-        KotlinFirOutOfBlockModuleModificationTracker(module)
+    override fun createModuleWithoutDependenciesOutOfBlockModificationTracker(moduleInfo: ModuleSourceInfoBase): ModificationTracker {
+        require(moduleInfo is ModuleSourceInfo)
+        return KotlinFirOutOfBlockModuleModificationTracker(moduleInfo.module)
+    }
+
+    override fun createLibraryOutOfBlockModificationTracker(): ModificationTracker {
+        return LibraryModificationTracker.getInstance(project)
+    }
 
     @TestOnly
     fun incrementModificationsCount() {

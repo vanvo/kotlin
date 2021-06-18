@@ -5,51 +5,49 @@
 
 package org.jetbrains.kotlin.idea.fir.low.level.api
 
-import com.intellij.openapi.util.io.FileUtil
-import com.intellij.testFramework.LightProjectDescriptor
 import org.jetbrains.kotlin.fir.FirRenderer
 import org.jetbrains.kotlin.fir.declarations.FirResolvePhase
 import org.jetbrains.kotlin.fir.render
-import org.jetbrains.kotlin.idea.caches.project.ModuleSourceInfo
-import org.jetbrains.kotlin.idea.caches.project.getModuleInfo
+import org.jetbrains.kotlin.idea.fir.low.level.api.api.FirModuleResolveState
 import org.jetbrains.kotlin.idea.fir.low.level.api.api.withFirDeclaration
+import org.jetbrains.kotlin.idea.fir.low.level.api.compiler.based.FrontendApiSingleTestDataFileTest
 import org.jetbrains.kotlin.idea.fir.low.level.api.lazy.resolve.FirLazyDeclarationResolver
-import org.jetbrains.kotlin.idea.test.KotlinLightCodeInsightFixtureTestCase
-import org.jetbrains.kotlin.idea.test.KotlinWithJdkAndRuntimeLightProjectDescriptor
 import org.jetbrains.kotlin.psi.KtDeclaration
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.psiUtil.collectDescendantsOfType
 import org.jetbrains.kotlin.test.KotlinTestUtils
-import java.io.File
+import org.jetbrains.kotlin.test.builders.TestConfigurationBuilder
+import org.jetbrains.kotlin.test.directives.JvmEnvironmentConfigurationDirectives
+import org.jetbrains.kotlin.test.model.TestModule
+import org.jetbrains.kotlin.test.services.TestServices
 
 /**
  * Test that we do not resolve declarations we do not need & do not build bodies for them
  */
-abstract class AbstractFirLazyDeclarationResolveTest : KotlinLightCodeInsightFixtureTestCase() {
-    override fun isFirPlugin(): Boolean = true
+abstract class AbstractFirLazyDeclarationResolveTest : FrontendApiSingleTestDataFileTest() {
 
-    fun doTest(path: String) {
-        val testDataFile = File(path)
-        val ktFile = myFixture.configureByText(testDataFile.name, FileUtil.loadFile(testDataFile)) as KtFile
+    override fun TestConfigurationBuilder.configureTest() {
+        defaultDirectives {
+            +JvmEnvironmentConfigurationDirectives.WITH_STDLIB
+            +JvmEnvironmentConfigurationDirectives.WITH_REFLECT
+        }
+    }
+
+    override fun doTest(ktFile: KtFile, module: TestModule, resolveState: FirModuleResolveState, testServices: TestServices) {
         val lazyDeclarations = ktFile.collectDescendantsOfType<KtDeclaration> { ktDeclaration ->
             FirLazyDeclarationResolver.declarationCanBeLazilyResolved(ktDeclaration)
         }
 
         val declarationToResolve = lazyDeclarations.firstOrNull { it.name?.lowercase() == "resolveme" }
             ?: error("declaration with name `resolveMe` was not found")
-        resolveWithClearCaches(ktFile) { firModuleResolveState ->
-            check(firModuleResolveState is FirModuleResolveStateImpl)
-            val rendered = declarationToResolve.withFirDeclaration(
-                firModuleResolveState,
-                FirResolvePhase.BODY_RESOLVE
-            ) @Suppress("UNUSED_ANONYMOUS_PARAMETER") { firDeclaration ->
-                val firFile = firModuleResolveState.getOrBuildFirFile(ktFile)
-                firFile.render(FirRenderer.RenderMode.WithResolvePhases)
-            }
-            val expectedFileName = testDataFile.name.replace(".kt", ".txt")
-            KotlinTestUtils.assertEqualsToFile(testDataFile.parentFile.resolve(expectedFileName), rendered)
+        check(resolveState is FirModuleResolveStateImpl)
+        val rendered = declarationToResolve.withFirDeclaration(
+            resolveState,
+            FirResolvePhase.BODY_RESOLVE
+        ) @Suppress("UNUSED_ANONYMOUS_PARAMETER") { firDeclaration ->
+            val firFile = resolveState.getOrBuildFirFile(ktFile)
+            firFile.render(FirRenderer.RenderMode.WithResolvePhases)
         }
+        KotlinTestUtils.assertEqualsToFile(testDataFileSibling(".txt"), rendered)
     }
-
-    override fun getProjectDescriptor(): LightProjectDescriptor = KotlinWithJdkAndRuntimeLightProjectDescriptor.INSTANCE
 }

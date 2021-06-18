@@ -169,7 +169,7 @@ internal object FirIdeSessionFactory {
         configureSession: (FirIdeSession.() -> Unit)?,
     ): FirIdeLibrariesSession = librariesCache.cached(mainModuleInfo) {
         checkCanceled()
-        val searchScope = project.stateConfigurator.getModuleSourceScope(mainModuleInfo)
+        val searchScope = project.stateConfigurator.createScopeForModuleLibraries(mainModuleInfo)
         val javaClassFinder = JavaClassFinderImpl().apply {
             setProjectInstance(project)
             setScope(searchScope)
@@ -189,15 +189,7 @@ internal object FirIdeSessionFactory {
 
             val kotlinScopeProvider = FirKotlinScopeProvider(::wrapScopeWithJvmMapped)
 
-            val moduleDataProvider = DependencyListForCliModule.build(
-                mainModuleInfo.name,
-                mainModuleInfo.platform,
-                mainModuleInfo.analyzerServices
-            ) {
-                dependencies(mainModuleInfo.dependenciesWithoutSelf().extractLibraryPaths(project))
-                friendDependencies(mainModuleInfo.modulesWhoseInternalsAreVisible().extractLibraryPaths(project))
-                dependsOnDependencies(mainModuleInfo.expectedBy.extractLibraryPaths(project))
-            }.moduleDataProvider
+            val moduleDataProvider = project.stateConfigurator.createModuleDataProvider(mainModuleInfo)
 
             moduleDataProvider.allModuleData.forEach { it.bindSession(this@session) }
 
@@ -226,33 +218,6 @@ internal object FirIdeSessionFactory {
             register(FirSymbolProvider::class, symbolProvider)
             register(FirJvmTypeMapper::class, FirJvmTypeMapper(this))
             configureSession?.invoke(this)
-        }
-    }
-
-    private fun Sequence<ModuleInfo>.extractLibraryPaths(project: Project): List<Path> {
-        return fold(mutableListOf()) { acc, moduleInfo ->
-            moduleInfo.extractLibraryPaths(project, acc)
-            acc
-        }
-    }
-
-    private fun Iterable<ModuleInfo>.extractLibraryPaths(project: Project): List<Path> {
-        return fold(mutableListOf()) { acc, moduleInfo ->
-            moduleInfo.extractLibraryPaths(project, acc)
-            acc
-        }
-    }
-
-    private fun ModuleInfo.extractLibraryPaths(project: Project, destination: MutableList<Path>) {
-        when (this) {
-            is SdkInfoBase -> {
-                destination += project.stateConfigurator.getLibraryPaths(this)
-            }
-            is LibraryModuleInfo -> {
-                getLibraryRoots().mapTo(destination) {
-                    Paths.get(it).normalize()
-                }
-            }
         }
     }
 

@@ -1,9 +1,9 @@
 /*
- * Copyright 2010-2020 JetBrains s.r.o. and Kotlin Programming Language contributors.
+ * Copyright 2010-2021 JetBrains s.r.o. and Kotlin Programming Language contributors.
  * Use of this source code is governed by the Apache 2.0 license that can be found in the license/LICENSE.txt file.
  */
 
-package org.jetbrains.kotlin.idea.fir.low.level.api.util
+package org.jetbrains.kotlin.idea.fir.low.level.api.ide
 
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.JdkOrderEntry
@@ -14,7 +14,8 @@ import com.intellij.openapi.util.Comparing
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 
-private class ModuleLibrariesSearchScope(module: Module) : GlobalSearchScope(module.project) {
+
+internal class ModuleLibrariesSearchScope(module: Module) : GlobalSearchScope(module.project) {
     private val projectFileIndex = ProjectRootManager.getInstance(module.project).fileIndex
     private val moduleFileIndex = ModuleRootManager.getInstance(module).fileIndex
 
@@ -34,5 +35,3 @@ private class ModuleLibrariesSearchScope(module: Module) : GlobalSearchScope(mod
 
     override fun isSearchInLibraries(): Boolean = true
 }
-
-fun createScopeForModuleLibraries(module: Module): GlobalSearchScope = ModuleLibrariesSearchScope(module)

@@ -15,7 +15,6 @@ import org.jetbrains.kotlin.analyzer.ModuleSourceInfoBase
 
 abstract class KotlinOutOfBlockModificationTrackerFactory {
     abstract fun createProjectWideOutOfBlockModificationTracker(): ModificationTracker
-    abstract fun createModuleWithoutDependenciesOutOfBlockModificationTracker(module: Module): ModificationTracker
     abstract fun createModuleWithoutDependenciesOutOfBlockModificationTracker(moduleInfo: ModuleSourceInfoBase): ModificationTracker
     abstract fun createLibraryOutOfBlockModificationTracker(): ModificationTracker
 }

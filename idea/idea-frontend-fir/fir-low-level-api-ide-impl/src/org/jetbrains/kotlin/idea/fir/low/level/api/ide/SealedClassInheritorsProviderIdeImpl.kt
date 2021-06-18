@@ -3,7 +3,7 @@
  * Use of this source code is governed by the Apache 2.0 license that can be found in the license/LICENSE.txt file.
  */
 
-package org.jetbrains.kotlin.idea.fir.low.level.api
+package org.jetbrains.kotlin.idea.fir.low.level.api.ide
 
 import com.intellij.openapi.module.Module
 import com.intellij.psi.JavaDirectoryService
@@ -16,14 +16,16 @@ import org.jetbrains.kotlin.asJava.KotlinAsJavaSupport
 import org.jetbrains.kotlin.asJava.toLightClass
 import org.jetbrains.kotlin.fir.declarations.*
 import org.jetbrains.kotlin.fir.psi
+import org.jetbrains.kotlin.idea.core.util.toPsiFile
 import org.jetbrains.kotlin.idea.util.classIdIfNonLocal
 import org.jetbrains.kotlin.idea.util.module
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.psi.KtClass
+import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.resolve.jvm.KotlinJavaPsiFacade
 import java.util.concurrent.ConcurrentHashMap
 
-class SealedClassInheritorsProviderIdeImpl : SealedClassInheritorsProvider() {
+internal class SealedClassInheritorsProviderIdeImpl : SealedClassInheritorsProvider() {
     val cache = ConcurrentHashMap<ClassId, List<ClassId>>()
 
     @OptIn(SealedClassInheritorsProviderInternals::class)
