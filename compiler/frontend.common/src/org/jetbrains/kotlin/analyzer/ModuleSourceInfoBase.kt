@@ -3,5 +3,8 @@
  * Use of this source code is governed by the Apache 2.0 license that can be found in the license/LICENSE.txt file.
  */
 
-package org.jetbrains.kotlin.idea.fir.low.level.api.ide
+package org.jetbrains.kotlin.analyzer
+
+interface ModuleSourceInfoBase: ModuleInfo
+interface SdkInfoBase: ModuleInfo
 

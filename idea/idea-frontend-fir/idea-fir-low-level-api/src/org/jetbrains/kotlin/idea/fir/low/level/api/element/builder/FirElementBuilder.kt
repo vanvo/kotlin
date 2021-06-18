@@ -19,8 +19,8 @@ import org.jetbrains.kotlin.idea.fir.low.level.api.file.structure.FileStructureC
 import org.jetbrains.kotlin.idea.fir.low.level.api.file.structure.FileStructureElement
 import org.jetbrains.kotlin.idea.fir.low.level.api.file.structure.KtToFirMapping
 import org.jetbrains.kotlin.idea.fir.low.level.api.lazy.resolve.FirLazyDeclarationResolver
+import org.jetbrains.kotlin.idea.fir.low.level.api.util.getElementTextInContext
 import org.jetbrains.kotlin.idea.fir.low.level.api.util.isNonAnonymousClassOrObject
-import org.jetbrains.kotlin.idea.util.getElementTextInContext
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.containingClassOrObject
 import org.jetbrains.kotlin.psi.psiUtil.isAncestor
@@ -115,7 +115,7 @@ internal inline fun PsiElement.getNonLocalContainingOrThisDeclaration(predicate:
     return null
 }
 
-internal fun PsiElement.getNonLocalContainingInBodyDeclarationWith(): KtNamedDeclaration? =
+fun PsiElement.getNonLocalContainingInBodyDeclarationWith(): KtNamedDeclaration? =
     getNonLocalContainingOrThisDeclaration { declaration ->
         when (declaration) {
             is KtNamedFunction -> declaration.bodyExpression?.isAncestor(this) == true

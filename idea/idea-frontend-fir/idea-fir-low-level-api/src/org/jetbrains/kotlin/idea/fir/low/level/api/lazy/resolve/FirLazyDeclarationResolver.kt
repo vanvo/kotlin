@@ -24,7 +24,6 @@ import org.jetbrains.kotlin.idea.fir.low.level.api.file.builder.ModuleFileCache
 import org.jetbrains.kotlin.idea.fir.low.level.api.providers.firIdeProvider
 import org.jetbrains.kotlin.idea.fir.low.level.api.transformers.*
 import org.jetbrains.kotlin.idea.fir.low.level.api.util.*
-import org.jetbrains.kotlin.idea.util.ifTrue
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.containingClassOrObject
 
@@ -299,13 +298,13 @@ internal class FirLazyDeclarationResolver(
         val scopeSession = ScopeSession()
 
         //This needed to override standard symbol resolve in supertype transformer with adding on-air created symbols
-        val firProviderInterceptor = isOnAirResolve.ifTrue {
+        val firProviderInterceptor = if(isOnAirResolve) {
             FirProviderInterceptorForIDE.createForFirElement(
                 session = designation.firFile.moduleData.session,
                 firFile = designation.firFile,
                 element = designation.declaration
             )
-        }
+        } else null
 
         while (currentPhase < toPhase) {
             currentPhase = currentPhase.next

@@ -23,7 +23,7 @@ import com.intellij.psi.impl.source.tree.FileElement
 import org.jetbrains.annotations.TestOnly
 import org.jetbrains.kotlin.idea.KotlinLanguage
 import org.jetbrains.kotlin.idea.fir.low.level.api.element.builder.getNonLocalContainingInBodyDeclarationWith
-import org.jetbrains.kotlin.idea.fir.low.level.api.file.structure.FileElementFactory
+import org.jetbrains.kotlin.idea.fir.low.level.api.file.structure.isReanalyzableContainer
 import org.jetbrains.kotlin.idea.util.module
 
 internal class KotlinFirModificationTrackerService(project: Project) : Disposable {
@@ -140,7 +140,7 @@ internal class KotlinFirModificationTrackerService(project: Project) : Disposabl
                 return true
             }
             val container = psi.getNonLocalContainingInBodyDeclarationWith() ?: return true
-            return !FileElementFactory.isReanalyzableContainer(container)
+            return !isReanalyzableContainer(container)
         }
     }
 }

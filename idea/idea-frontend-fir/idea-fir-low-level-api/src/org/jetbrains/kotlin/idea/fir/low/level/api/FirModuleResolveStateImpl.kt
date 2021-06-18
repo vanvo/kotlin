@@ -6,18 +6,18 @@
 package org.jetbrains.kotlin.idea.fir.low.level.api
 
 import com.intellij.openapi.project.Project
+import org.jetbrains.kotlin.analyzer.ModuleInfo
+import org.jetbrains.kotlin.analyzer.ModuleSourceInfoBase
 import org.jetbrains.kotlin.fir.FirElement
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirPsiDiagnostic
 import org.jetbrains.kotlin.fir.declarations.*
 import org.jetbrains.kotlin.fir.realPsi
 import org.jetbrains.kotlin.fir.resolve.symbolProvider
-import org.jetbrains.kotlin.idea.caches.project.IdeaModuleInfo
-import org.jetbrains.kotlin.idea.caches.project.ModuleSourceInfo
-import org.jetbrains.kotlin.idea.caches.project.getModuleInfo
 import org.jetbrains.kotlin.idea.fir.low.level.api.annotations.InternalForInline
 import org.jetbrains.kotlin.idea.fir.low.level.api.api.DiagnosticCheckerFilter
 import org.jetbrains.kotlin.idea.fir.low.level.api.api.FirModuleResolveState
+import org.jetbrains.kotlin.idea.fir.low.level.api.api.getModuleInfo
 import org.jetbrains.kotlin.idea.fir.low.level.api.diagnostics.DiagnosticsCollector
 import org.jetbrains.kotlin.idea.fir.low.level.api.element.builder.FirElementBuilder
 import org.jetbrains.kotlin.idea.fir.low.level.api.element.builder.getNonLocalContainingOrThisDeclaration
@@ -30,12 +30,11 @@ import org.jetbrains.kotlin.idea.fir.low.level.api.sessions.FirIdeSessionProvide
 import org.jetbrains.kotlin.idea.fir.low.level.api.sessions.FirIdeSourcesSession
 import org.jetbrains.kotlin.idea.fir.low.level.api.util.*
 import org.jetbrains.kotlin.idea.fir.low.level.api.util.findSourceNonLocalFirDeclaration
-import org.jetbrains.kotlin.idea.util.getElementTextInContext
 import org.jetbrains.kotlin.psi.*
 
 internal class FirModuleResolveStateImpl(
     override val project: Project,
-    override val moduleInfo: IdeaModuleInfo,
+    override val moduleInfo: ModuleInfo,
     private val sessionProvider: FirIdeSessionProvider,
     val firFileBuilder: FirFileBuilder,
     val firLazyDeclarationResolver: FirLazyDeclarationResolver,
@@ -53,7 +52,7 @@ internal class FirModuleResolveStateImpl(
     val elementBuilder = FirElementBuilder()
     private val diagnosticsCollector = DiagnosticsCollector(fileStructureCache, rootModuleSession.cache)
 
-    override fun getSessionFor(moduleInfo: IdeaModuleInfo): FirSession =
+    override fun getSessionFor(moduleInfo: ModuleInfo): FirSession =
         sessionProvider.getSession(moduleInfo)!!
 
     override fun getOrBuildFirFor(element: KtElement): FirElement =
@@ -83,7 +82,7 @@ internal class FirModuleResolveStateImpl(
      * [ktDeclaration] should be either [KtDeclaration] or [KtLambdaExpression]
      */
     private fun findSourceFirDeclarationByExpression(ktDeclaration: KtExpression): FirDeclaration {
-        require(ktDeclaration.getModuleInfo() is ModuleSourceInfo) {
+        require(ktDeclaration.getModuleInfo() is ModuleSourceInfoBase) {
             "Declaration should have ModuleSourceInfo, instead it had ${ktDeclaration.getModuleInfo()}"
         }
 
@@ -93,7 +92,7 @@ internal class FirModuleResolveStateImpl(
         val nonLocalFirForNamedDeclaration = nonLocalNamedDeclaration.findSourceNonLocalFirDeclaration(
             firFileBuilder,
             rootModuleSession.firIdeProvider.symbolProvider,
-            sessionProvider.getModuleCache(ktDeclaration.getModuleInfo() as ModuleSourceInfo)
+            sessionProvider.getModuleCache(ktDeclaration.getModuleInfo() as ModuleSourceInfoBase)
         )
 
         if (ktDeclaration == nonLocalNamedDeclaration) return nonLocalFirForNamedDeclaration
