@@ -24,16 +24,3 @@ internal class PackageExistenceCheckerForSingleModule(
         project.service<IdePackageOracleFactory>().createOracle(module)
     override fun isPackageExists(packageFqName: FqName): Boolean = oracle.packageExists(packageFqName)
 }
-
-internal class PackageExistenceCheckerForMultipleModules(
-    project: Project,
-    modules: List<ModuleInfo>
-) : PackageExistenceChecker() {
-    private val oracles = run {
-        val factory = project.service<IdePackageOracleFactory>()
-        modules.map { factory.createOracle(it) }
-    }
-
-    override fun isPackageExists(packageFqName: FqName): Boolean =
-        oracles.any { oracle -> oracle.packageExists(packageFqName) }
-}
