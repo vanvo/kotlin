@@ -20,7 +20,6 @@ interface KtReference : PsiPolyVariantReference {
     val resolvesByNames: Collection<Name>
 }
 
-
 abstract class AbstractKtReference<T : KtElement>(element: T) : PsiPolyVariantReferenceBase<T>(element), KtReference {
     val expression: T
         get() = element

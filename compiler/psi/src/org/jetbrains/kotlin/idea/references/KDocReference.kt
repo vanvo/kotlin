@@ -5,6 +5,11 @@
 
 package org.jetbrains.kotlin.idea.references
 
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.kdoc.psi.impl.KDocName
+import org.jetbrains.kotlin.name.Name
+
 abstract class KDocReference(element: KDocName) : KtMultiReference<KDocName>(element) {
     override fun getRangeInElement(): TextRange = element.getNameTextRange()
 

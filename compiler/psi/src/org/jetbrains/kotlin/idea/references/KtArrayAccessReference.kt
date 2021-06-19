@@ -5,6 +5,16 @@
 
 package org.jetbrains.kotlin.idea.references
 
+import com.google.common.collect.Lists
+import com.intellij.psi.MultiRangeReference
+import com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.lexer.KtToken
+import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.name.Name
+import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.psi.psiUtil.getPossiblyQualifiedCallExpression
+import org.jetbrains.kotlin.util.OperatorNameConventions
+
 abstract class KtArrayAccessReference(
     expression: KtArrayAccessExpression
 ) : KtSimpleReference<KtArrayAccessExpression>(expression), MultiRangeReference {
@@ -37,7 +47,7 @@ abstract class KtArrayAccessReference(
                 appendExpressions(arrayAccessExpression.indexExpressions, ",")
                 appendFixedText(")")
             }
-            val fullCallExpression = arrayAccessExpression.replaced(replacement)
+            val fullCallExpression = arrayAccessExpression.replace(replacement) as KtExpression
             val callExpression = fullCallExpression.getPossiblyQualifiedCallExpression()
             if (callExpression != null && canMoveLambdaOutsideParentheses(callExpression)) {
                 moveFunctionLiteralOutsideParentheses(callExpression)
