@@ -1,20 +1,9 @@
 /*
- * Copyright 2010-2020 JetBrains s.r.o. and Kotlin Programming Language contributors.
+ * Copyright 2010-2021 JetBrains s.r.o. and Kotlin Programming Language contributors.
  * Use of this source code is governed by the Apache 2.0 license that can be found in the license/LICENSE.txt file.
  */
 
 package org.jetbrains.kotlin.idea.references
-
-import com.google.common.collect.Lists
-import com.intellij.psi.MultiRangeReference
-import com.intellij.psi.PsiElement
-import org.jetbrains.kotlin.idea.core.replaced
-import org.jetbrains.kotlin.lexer.KtToken
-import org.jetbrains.kotlin.lexer.KtTokens
-import org.jetbrains.kotlin.name.Name
-import org.jetbrains.kotlin.psi.*
-import org.jetbrains.kotlin.psi.psiUtil.getPossiblyQualifiedCallExpression
-import org.jetbrains.kotlin.util.OperatorNameConventions
 
 abstract class KtArrayAccessReference(
     expression: KtArrayAccessExpression
