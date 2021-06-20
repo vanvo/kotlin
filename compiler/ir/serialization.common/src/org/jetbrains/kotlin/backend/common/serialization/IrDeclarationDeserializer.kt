@@ -299,6 +299,7 @@ class IrDeclarationDeserializer(
             val flags = ClassFlags.decode(fcode)
 
             symbolTable.declareClass(signature, { symbol as IrClassSymbol }) {
+                assert(it === symbol)
                 irFactory.createClass(
                     startOffset, endOffset, origin,
                     it,
