@@ -5,6 +5,7 @@
 
 package org.jetbrains.kotlin.idea.fir
 
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.io.FileUtil
@@ -24,7 +25,9 @@ fun Project.invalidateCaches(context: KtElement?) {
     service<KotlinOutOfBlockModificationTrackerFactory>().incrementModificationsCount()
     service<KtAnalysisSessionProvider>().clearCaches()
     if (context != null) {
-        executeOnPooledThreadInReadAction { analyse(context) {} }
+        ApplicationManager.getApplication().executeOnPooledThread {
+            runReadAction { analyse(context) { } }
+        }.get()
     }
 }
 
