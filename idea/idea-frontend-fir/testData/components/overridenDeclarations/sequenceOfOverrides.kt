@@ -17,13 +17,3 @@ open class C : D() {
 open class D {
     open fun foo(x: Int) {}
 }
-
-
-// RESULT
-// ALL:
-// B.foo(x: Int): Unit
-// C.foo(x: Int): Unit
-// D.foo(x: Int): Unit
-
-// DIRECT:
-// B.foo(x: Int): Unit

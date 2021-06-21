@@ -15,12 +15,3 @@ public class B extends C {
 abstract class C {
     abstract val x: Int
 }
-
-
-// RESULT
-// ALL:
-// /B.x: Int
-// C.x: Int
-
-// DIRECT:
-// /B.x: Int

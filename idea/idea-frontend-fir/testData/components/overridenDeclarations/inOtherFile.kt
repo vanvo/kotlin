@@ -8,11 +8,3 @@ abstract class B {
     open fun foo(x: Int): Int
     abstract fun foo(x: String): Int
 }
-
-
-// RESULT
-// ALL:
-// B.foo(x: Int): Int
-
-// DIRECT:
-// B.foo(x: Int): Int

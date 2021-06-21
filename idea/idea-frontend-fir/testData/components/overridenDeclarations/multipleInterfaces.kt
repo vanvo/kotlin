@@ -24,15 +24,3 @@ interface D {
     fun foo(x: Int)
     fun foo(x: String)
 }
-
-
-// RESULT
-// ALL:
-// B.foo(x: String): Unit
-// C.foo(x: String): Unit
-// D.foo(x: String): Unit
-
-// DIRECT:
-// B.foo(x: String): Unit
-// C.foo(x: String): Unit
-// D.foo(x: String): Unit
