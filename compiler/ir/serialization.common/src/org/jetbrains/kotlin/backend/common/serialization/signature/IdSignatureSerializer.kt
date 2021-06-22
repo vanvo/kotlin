@@ -79,7 +79,6 @@ class PublicIdSignatureComputer(val mangler: KotlinMangler.IrMangler) : IdSignat
         }
 
         override fun visitScript(declaration: IrScript) {
-            hashId = mangler.run { declaration.signatureMangle }
             collectFqNames(declaration)
         }
 
