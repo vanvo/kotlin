@@ -8,6 +8,8 @@ package org.jetbrains.kotlin.idea.fir.low.level.api
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
+import org.jetbrains.kotlin.analyzer.ModuleInfo
+import org.jetbrains.kotlin.analyzer.ModuleSourceInfoBase
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.platform.TargetPlatform
@@ -18,9 +20,9 @@ abstract class KtPackageProvider {
 }
 
 abstract class KtPackageProviderFactory {
-    abstract fun createPackageProvider(searchScope: GlobalSearchScope): KtPackageProvider
+    abstract fun createPackageProvider(moduleInfo: ModuleInfo, searchScope: GlobalSearchScope): KtPackageProvider
 }
 
-fun Project.createPackageProvider(searchScope: GlobalSearchScope): KtPackageProvider =
+fun Project.createPackageProvider(moduleInfo: ModuleInfo, searchScope: GlobalSearchScope): KtPackageProvider =
     ServiceManager.getService(this, KtPackageProviderFactory::class.java)
-        .createPackageProvider(searchScope)
+        .createPackageProvider(moduleInfo, searchScope)

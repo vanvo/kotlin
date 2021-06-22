@@ -8,6 +8,8 @@ package org.jetbrains.kotlin.idea.fir.low.level.api
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
+import org.jetbrains.kotlin.analyzer.ModuleInfo
+import org.jetbrains.kotlin.analyzer.ModuleSourceInfoBase
 import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
@@ -34,9 +36,9 @@ abstract class DeclarationProvider {
 }
 
 abstract class KtDeclarationProviderFactory {
-    abstract fun createDeclarationProvider(searchScope: GlobalSearchScope): DeclarationProvider
+    abstract fun createDeclarationProvider(moduleInfo: ModuleInfo, searchScope: GlobalSearchScope): DeclarationProvider
 }
 
-fun Project.createDeclarationProvider(searchScope: GlobalSearchScope): DeclarationProvider =
+fun Project.createDeclarationProvider(moduleInfo: ModuleInfo, searchScope: GlobalSearchScope): DeclarationProvider =
     ServiceManager.getService(this, KtDeclarationProviderFactory::class.java)
-        .createDeclarationProvider(searchScope)
+        .createDeclarationProvider(moduleInfo, searchScope)

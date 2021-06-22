@@ -8,6 +8,7 @@ package org.jetbrains.kotlin.idea.frontend.api.fir.scopes
 import com.intellij.openapi.project.Project
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.search.GlobalSearchScope
+import org.jetbrains.kotlin.analyzer.ModuleInfo
 import org.jetbrains.kotlin.fir.scopes.impl.FirPackageMemberScope
 import org.jetbrains.kotlin.idea.fir.low.level.api.createDeclarationProvider
 import org.jetbrains.kotlin.idea.fir.low.level.api.createPackageProvider
@@ -32,12 +33,13 @@ internal class KtFirPackageScope(
     private val builder: KtSymbolByFirBuilder,
     _scopeProvider: KtFirScopeProvider,
     override val token: ValidityToken,
+    moduleInfo: ModuleInfo,
     private val searchScope: GlobalSearchScope,
     private val targetPlatform: TargetPlatform,
 ) : KtPackageScope {
     private val scopeProvider by weakRef(_scopeProvider)
-    private val declarationsProvider = project.createDeclarationProvider(searchScope)
-    private val packageProvider = project.createPackageProvider(searchScope)
+    private val declarationsProvider = project.createDeclarationProvider(moduleInfo, searchScope)
+    private val packageProvider = project.createPackageProvider(moduleInfo, searchScope)
 
     private val firScope: FirPackageMemberScope by lazyThreadUnsafeWeakRef {
         val scope = FirPackageMemberScope(fqName, builder.rootSession)

@@ -112,7 +112,7 @@ internal class KtSymbolByFirBuilder private constructor(
 
     fun buildFileSymbol(fir: FirFile) = filesCache.cache(fir) { KtFirFileSymbol(fir, resolveState, token) }
 
-    private val packageProvider = project.createPackageProvider( GlobalSearchScope.allScope(project))//todo scope
+    private val packageProvider = project.createPackageProvider(resolveState.moduleInfo, GlobalSearchScope.allScope(project))//todo scope
 
     fun createPackageSymbolIfOneExists(packageFqName: FqName): KtFirPackageSymbol? {
         val exists =
@@ -125,7 +125,7 @@ internal class KtSymbolByFirBuilder private constructor(
     }
 
     fun createPackageSymbol(packageFqName: FqName): KtFirPackageSymbol {
-        return KtFirPackageSymbol(packageFqName, project, token)
+        return KtFirPackageSymbol(packageFqName, resolveState.moduleInfo, project, token)
     }
 
     inner class ClassifierSymbolBuilder {

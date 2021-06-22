@@ -11,6 +11,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiManager
 import com.intellij.psi.impl.file.PsiPackageImpl
 import com.intellij.psi.search.GlobalSearchScope
+import org.jetbrains.kotlin.analyzer.ModuleInfo
 import org.jetbrains.kotlin.idea.fir.low.level.api.createPackageProvider
 import org.jetbrains.kotlin.idea.frontend.api.ValidityTokenOwner
 import org.jetbrains.kotlin.idea.frontend.api.tokens.ValidityToken
@@ -23,12 +24,13 @@ import org.jetbrains.kotlin.name.FqName
 
 class KtFirPackageSymbol(
     override val fqName: FqName,
+    private val moduleInfo: ModuleInfo,
     private val project: Project,
     override val token: ValidityToken
 ) : KtPackageSymbol(), ValidityTokenOwner {
     override val psi: PsiElement? by cached {
         JavaPsiFacade.getInstance(project).findPackage(fqName.asString())
-            ?: KtPackage(PsiManager.getInstance(project), fqName, GlobalSearchScope.allScope(project)/*TODO*/)
+            ?: KtPackage(PsiManager.getInstance(project), fqName, moduleInfo, GlobalSearchScope.allScope(project)/*TODO*/)
     }
 
     override val origin: KtSymbolOrigin
@@ -43,9 +45,10 @@ class KtFirPackageSymbol(
 class KtPackage(
     manager: PsiManager,
     private val fqName: FqName,
+    private val moduleInfo: ModuleInfo,
     private val scope: GlobalSearchScope
 ) : PsiPackageImpl(manager, fqName.asString().replace('/', '.')) {
-    override fun copy() = KtPackage(manager, fqName, scope)
+    override fun copy() = KtPackage(manager, fqName, moduleInfo, scope)
 
-    override fun isValid(): Boolean = project.createPackageProvider(scope).isPackageExists(fqName)
+    override fun isValid(): Boolean = project.createPackageProvider(moduleInfo, scope).isPackageExists(fqName)
 }

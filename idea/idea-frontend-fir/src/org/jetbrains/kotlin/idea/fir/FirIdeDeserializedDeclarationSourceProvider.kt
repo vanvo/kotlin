@@ -8,12 +8,14 @@ package org.jetbrains.kotlin.idea.fir
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
+import org.jetbrains.kotlin.analyzer.ModuleInfo
 import org.jetbrains.kotlin.fir.*
 import org.jetbrains.kotlin.fir.declarations.*
 import org.jetbrains.kotlin.idea.fir.FirIdeDeserializedDeclarationSourceProvider.scope
 import org.jetbrains.kotlin.idea.fir.low.level.api.api.KtDeclarationAndFirDeclarationEqualityChecker
 import org.jetbrains.kotlin.idea.fir.low.level.api.createDeclarationProvider
 import org.jetbrains.kotlin.idea.fir.low.level.api.sessions.FirIdeSession
+import org.jetbrains.kotlin.idea.fir.low.level.api.sessions.moduleInfoUnsafe
 
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
@@ -43,7 +45,8 @@ object FirIdeDeserializedDeclarationSourceProvider {
         project: Project
     ): PsiElement? {
         val candidates = if (function.isTopLevel) {
-            project.createDeclarationProvider(function.scope(project)).getTopLevelFunctions(function.symbol.callableId)
+            project.createDeclarationProvider(function.moduleData.moduleInfoUnsafe(), function.scope(project))
+                .getTopLevelFunctions(function.symbol.callableId)
                 .filter(KtNamedFunction::isCompiled)
         } else {
             function.containingKtClass(project)?.body?.functions
@@ -56,7 +59,8 @@ object FirIdeDeserializedDeclarationSourceProvider {
 
     private fun provideSourceForProperty(property: FirProperty, project: Project): PsiElement? {
         val candidates = if (property.isTopLevel) {
-            project.createDeclarationProvider(property.scope(project)).getTopLevelFunctions(property.symbol.callableId)
+            project.createDeclarationProvider(property.moduleData.moduleInfoUnsafe(), property.scope(project))
+                .getTopLevelFunctions(property.symbol.callableId)
         } else {
             property.containingKtClass(project)?.declarations
                 ?.filter { it.name == property.name.asString() }
@@ -67,10 +71,11 @@ object FirIdeDeserializedDeclarationSourceProvider {
     }
 
     private fun provideSourceForClass(klass: FirClass<*>, project: Project): PsiElement? =
-        classByClassId(klass.symbol.classId, klass.scope(project), project)
+        classByClassId(klass.symbol.classId, klass.moduleData.moduleInfoUnsafe(), klass.scope(project), project)
 
     private fun provideSourceForTypeAlias(alias: FirTypeAlias, project: Project): PsiElement? {
-        val candidates = project.createDeclarationProvider(alias.scope(project)).getTypeAliasesByClassId(alias.symbol.classId)
+        val candidates = project.createDeclarationProvider(alias.moduleData.moduleInfoUnsafe(), alias.scope(project))
+            .getTypeAliasesByClassId(alias.symbol.classId)
         return candidates.firstOrNull(KtElement::isCompiled)
     }
 
@@ -107,11 +112,13 @@ object FirIdeDeserializedDeclarationSourceProvider {
     }
 
     private fun FirCallableDeclaration<*>.containingKtClass(project: Project): KtClassOrObject? =
-        unwrapFakeOverrides().containingClass()?.classId?.let { classByClassId(it, scope(project), project) }
+        unwrapFakeOverrides().containingClass()?.classId?.let {
+            classByClassId(it, this.moduleData.moduleInfoUnsafe(), scope(project), project)
+        }
 
-    private fun classByClassId(classId: ClassId, scope: GlobalSearchScope, project: Project): KtClassOrObject? {
+    private fun classByClassId(classId: ClassId, moduleInfo: ModuleInfo, scope: GlobalSearchScope, project: Project): KtClassOrObject? {
         val correctedClassId = classIdMapping[classId] ?: classId
-        return project.createDeclarationProvider(scope)
+        return project.createDeclarationProvider(moduleInfo, scope)
             .getClassesByClassId(correctedClassId)
             .firstOrNull(KtElement::isCompiled)
     }

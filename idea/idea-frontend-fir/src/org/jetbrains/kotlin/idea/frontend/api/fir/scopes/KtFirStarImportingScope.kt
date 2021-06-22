@@ -7,11 +7,13 @@ package org.jetbrains.kotlin.idea.frontend.api.fir.scopes
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
+import org.jetbrains.kotlin.fir.moduleData
 import org.jetbrains.kotlin.fir.scopes.getContainingCallableNamesIfPresent
 import org.jetbrains.kotlin.fir.scopes.getContainingClassifierNamesIfPresent
 import org.jetbrains.kotlin.fir.scopes.impl.FirAbstractStarImportingScope
 import org.jetbrains.kotlin.fir.scopes.impl.FirDefaultStarImportingScope
 import org.jetbrains.kotlin.idea.fir.low.level.api.createDeclarationProvider
+import org.jetbrains.kotlin.idea.fir.low.level.api.sessions.moduleSourceInfo
 import org.jetbrains.kotlin.idea.frontend.api.ValidityTokenOwner
 import org.jetbrains.kotlin.idea.frontend.api.fir.KtSymbolByFirBuilder
 import org.jetbrains.kotlin.idea.frontend.api.fir.utils.cached
@@ -37,7 +39,8 @@ internal class KtFirStarImportingScope(
     override val isDefaultImportingScope: Boolean = withValidityAssertion { firScope is FirDefaultStarImportingScope }
 
     //todo use more concrete scope
-    private val declarationProvider = project.createDeclarationProvider(GlobalSearchScope.allScope(project))
+    private val declarationProvider =
+        project.createDeclarationProvider(firScope.session.moduleData.moduleSourceInfo, GlobalSearchScope.allScope(project))
 
     override val imports: List<StarImport> by cached {
         firScope.starImports.map { import ->
