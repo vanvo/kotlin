@@ -1,3 +1,4 @@
+// FIR_IDE_IGNORE
 // !LANGUAGE: +ProhibitInvisibleAbstractMethodsInSuperclasses
 // MODULE: base
 // FILE: Base.kt

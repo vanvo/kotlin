@@ -1,3 +1,4 @@
+// FIR_IDE_IGNORE
 // !LANGUAGE: +MultiPlatformProjects
 // ISSUE: KT-45848
 // MODULE: m1-common
