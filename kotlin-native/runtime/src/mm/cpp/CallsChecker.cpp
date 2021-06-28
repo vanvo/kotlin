@@ -140,7 +140,6 @@ extern "C" const char* Kotlin_callsCheckerGoodFunctionNames[] = {
         "pthread_mutex_unlock",
         "pthread_self",
 
-        "+[NSError errorWithDomain:code:userInfo:]",
         "+[NSMethodSignature signatureWithObjCTypes:]",
         "+[NSNull null]",
         "+[NSObject allocWithZone:]",
@@ -151,9 +150,6 @@ extern "C" const char* Kotlin_callsCheckerGoodFunctionNames[] = {
         "+[NSString stringWithFormat:]",
         "+[NSString stringWithUTF8String:]",
         "+[NSValue valueWithPointer:]",
-        "-[NSDictionary objectForKeyedSubscript:]",
-        "-[NSError localizedDescription]",
-        "-[NSError userInfo]",
         "-[NSException name]",
         "-[NSException reason]",
         "-[NSMethodSignature getArgumentTypeAtIndex:]",
@@ -166,11 +162,6 @@ extern "C" const char* Kotlin_callsCheckerGoodFunctionNames[] = {
         "-[NSPlaceholderString initWithBytes:length:encoding:]",
         "-[NSPlaceholderString initWithBytesNoCopy:length:encoding:freeWhenDone:]",
         "-[NSValue pointerValue]",
-        "-[__NSArray0 count]",
-        "-[__NSArrayI count]",
-        "-[__NSArrayI objectAtIndex:]",
-        "-[__NSArrayM count]",
-        "-[__NSArrayM objectAtIndex:]",
         "-[__NSCFBoolean boolValue]",
         "-[__NSCFNumber doubleValue]",
         "-[__NSCFNumber floatValue]",
@@ -178,9 +169,6 @@ extern "C" const char* Kotlin_callsCheckerGoodFunctionNames[] = {
         "-[__NSCFNumber longLongValue]",
         "-[__NSCFNumber objCType]",
         "-[__NSCFString isEqual:]",
-        "-[__NSDictionaryM setObject:forKeyedSubscript:]",
-        "-[__NSFrozenDictionaryM objectForKeyedSubscript:]",
-        "-[__SwiftNativeNSError userInfo]",
         "CFStringCreateCopy",
         "CFStringGetCharacters",
         "CFStringGetLength",
@@ -219,24 +207,6 @@ extern "C" const char* Kotlin_callsCheckerGoodFunctionNames[] = {
         "protocol_getMethodDescription",
         "protocol_getName",
         "sel_registerName",
-
-
-        // @objc Swift._ContiguousArrayStorage.count.getter : Swift.Int
-        "$ss23_ContiguousArrayStorageC5countSivgTo",
-        // @objc Swift.__SwiftDeferredNSArray.count.getter : Swift.Int
-        "$ss22__SwiftDeferredNSArrayC5countSivgTo",
-        // @objc Swift._ContiguousArrayStorage.objectAt(Swift.Int) -> Swift.Unmanaged<Swift.AnyObject>
-        "$ss23_ContiguousArrayStorageC8objectAtys9UnmanagedVyyXlGSiFTo",
-        //   @objc Swift.__SwiftNativeNSArrayWithContiguousStorage.objectAt(Swift.Int) -> Swift.Unmanaged<Swift.AnyObject>
-        "$ss41__SwiftNativeNSArrayWithContiguousStorageC8objectAtys9UnmanagedVyyXlGSiFTo",
-        // @objc Swift.__EmptyDictionarySingleton.count.getter : Swift.Int
-        "$ss26__EmptyDictionarySingletonC5countSivgTo",
-        // @objc Swift._SwiftDeferredNSDictionary.count.getter : Swift.Int
-        "$ss26_SwiftDeferredNSDictionaryC5countSivgTo",
-        // @objc Swift._SwiftDeferredNSDictionary.keyEnumerator() -> Swift._NSEnumerator
-        "$ss26_SwiftDeferredNSDictionaryC13keyEnumerators13_NSEnumerator_pyFTo",
-        // @objc Swift._SwiftDictionaryNSEnumerator.nextObject() -> Swift.AnyObject?
-        "$ss28_SwiftDictionaryNSEnumeratorC10nextObjectyXlSgyFTo",
 
         "llvm.assume",
         "llvm.ceil.*",

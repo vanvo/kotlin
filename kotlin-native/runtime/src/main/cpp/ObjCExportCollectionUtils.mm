@@ -53,11 +53,22 @@ static inline KInt objCSizeToKotlinOrThrow(NSUInteger size) {
 
 // Exported to ObjCExportUtils.kt:
 
+// Note: a lot of functions below call Objective-C virtual methods of arbitrary classes
+// in Runnable thread state. Some these functions are marked with NO_EXTERNAL_CALLS_CHECK.
+// On the one hand, these calls aren't guaranteed to be fast, and also can call back to Kotlin.
+// Anything of this is harmful in Runnable state.
+// On the other hand, anything of this is unlikely to actually happen, and switching thread state
+// to Native might kill the performance, because these functions are just tiny wrappers for tiny functions.
+// So let's just ignore this for now, and deal with it later.
+// TODO: come up with a proper solution.
+
+NO_EXTERNAL_CALLS_CHECK
 extern "C" KInt Kotlin_NSArrayAsKList_getSize(KRef obj) {
   NSArray* array = (NSArray*) GetAssociatedObject(obj);
   return objCSizeToKotlinOrThrow([array count]);
 }
 
+NO_EXTERNAL_CALLS_CHECK
 extern "C" OBJ_GETTER(Kotlin_NSArrayAsKList_get, KRef obj, KInt index) {
   NSArray* array = (NSArray*) GetAssociatedObject(obj);
   id element = [array objectAtIndex:index];
@@ -87,6 +98,7 @@ extern "C" OBJ_GETTER(Kotlin_NSMutableArrayAsKMutableList_set, KRef thiz, KInt i
   return res;
 }
 
+NO_EXTERNAL_CALLS_CHECK
 extern "C" void Kotlin_NSEnumeratorAsKIterator_computeNext(KRef thiz) {
   NSEnumerator* enumerator = (NSEnumerator*) GetAssociatedObject(thiz);
   id next = [enumerator nextObject];
@@ -123,6 +135,7 @@ extern "C" OBJ_GETTER(Kotlin_NSSetAsKSet_iterator, KRef thiz) {
   RETURN_RESULT_OF(CreateKIteratorFromNSEnumerator, [set objectEnumerator]);
 }
 
+NO_EXTERNAL_CALLS_CHECK
 extern "C" KInt Kotlin_NSDictionaryAsKMap_getSize(KRef thiz) {
   NSDictionary* dict = (NSDictionary*) GetAssociatedObject(thiz);
   return objCSizeToKotlinOrThrow(dict.count);
@@ -166,6 +179,7 @@ extern "C" KBoolean Kotlin_NSDictionaryAsKMap_containsEntry(KRef thiz, KRef key,
   return [refToObjCOrNSNull(value) isEqual:[dict objectForKey:refToObjCOrNSNull(key)]];
 }
 
+NO_EXTERNAL_CALLS_CHECK
 extern "C" OBJ_GETTER(Kotlin_NSDictionaryAsKMap_keyIterator, KRef thiz) {
   NSDictionary* dict = (NSDictionary*) GetAssociatedObject(thiz);
   RETURN_RESULT_OF(CreateKIteratorFromNSEnumerator, [dict keyEnumerator]);
