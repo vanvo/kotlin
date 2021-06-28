@@ -1,4 +1,3 @@
-// FIR_IDE_IGNORE
 // !LANGUAGE: +MultiPlatformProjects
 // MODULE: m1-common
 // FILE: common.kt

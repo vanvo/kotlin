@@ -1,4 +1,3 @@
-// FIR_IDE_IGNORE
 // !LANGUAGE: +MultiPlatformProjects
 
 // MODULE: common

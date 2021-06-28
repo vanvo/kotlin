@@ -1,4 +1,3 @@
-// FIR_IDE_IGNORE
 // FIR_IDENTICAL
 /*
  * This test is used for general testing of how compiler diagnostics tests for HMPP projects works

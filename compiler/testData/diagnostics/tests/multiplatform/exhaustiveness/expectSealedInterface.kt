@@ -1,4 +1,3 @@
-// FIR_IDE_IGNORE
 // !LANGUAGE: +MultiPlatformProjects
 // !DIAGNOSTICS: -UNUSED_VARIABLE
 // ISSUE: KT-44474

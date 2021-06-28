@@ -1,4 +1,3 @@
-// FIR_IDE_IGNORE
 // FIR_IDENTICAL
 // !LANGUAGE: +MultiPlatformProjects
 // SKIP_TXT
