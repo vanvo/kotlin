@@ -230,6 +230,10 @@ sealed class KtFirDiagnostic<PSI: PsiElement> : KtDiagnosticWithPsi<PSI> {
         override val diagnosticClass get() = IllegalSelector::class
     }
 
+    abstract class NoReceiverAllowed : KtFirDiagnostic<PsiElement>() {
+        override val diagnosticClass get() = NoReceiverAllowed::class
+    }
+
     abstract class SuperIsNotAnExpression : KtFirDiagnostic<PsiElement>() {
         override val diagnosticClass get() = SuperIsNotAnExpression::class
     }
