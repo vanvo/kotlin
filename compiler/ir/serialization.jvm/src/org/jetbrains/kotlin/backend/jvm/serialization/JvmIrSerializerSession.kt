@@ -34,7 +34,7 @@ class JvmIrSerializerSession(
         }
         proto.addAllAnnotation(serializeAnnotations(irFile.annotations))
 
-        proto.auxTables = serializeAuxTables()
+        proto.auxTables = serializeAuxTables(irFile.fileEntry.name)
 
         return proto.build()
     }
@@ -42,16 +42,17 @@ class JvmIrSerializerSession(
     fun serializeTopLevelClass(irClass: IrClass): JvmIr.JvmIrClass {
         val proto = JvmIr.JvmIrClass.newBuilder()
         proto.irClass = serializeIrClass(irClass)
-        proto.auxTables = serializeAuxTables()
+        proto.auxTables = serializeAuxTables((irClass.parent as? IrFile)?.fileEntry?.name ?: "<unknown>")
         return proto.build()
     }
 
-    private fun serializeAuxTables(): JvmIr.AuxTables {
+    private fun serializeAuxTables(pathName: String): JvmIr.AuxTables {
         val proto = JvmIr.AuxTables.newBuilder()
         protoTypeArray.forEach { proto.addType(it.toByteString()) }
         protoIdSignatureArray.forEach { proto.addSignature(it.toByteString()) }
         protoStringArray.forEach { proto.addString(ByteString.copyFromUtf8(it)) }
         protoBodyArray.forEach { proto.addBody(ByteString.copyFrom(it.toByteArray())) }
+        proto.filePathname = pathName
         return proto.build()
     }
 }

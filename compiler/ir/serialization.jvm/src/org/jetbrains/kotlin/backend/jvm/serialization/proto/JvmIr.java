@@ -648,6 +648,20 @@ public final class JvmIr {
      * <code>repeated bytes body = 4;</code>
      */
     org.jetbrains.kotlin.protobuf.ByteString getBody(int index);
+
+    /**
+     * <code>required string file_pathname = 5;</code>
+     */
+    boolean hasFilePathname();
+    /**
+     * <code>required string file_pathname = 5;</code>
+     */
+    java.lang.String getFilePathname();
+    /**
+     * <code>required string file_pathname = 5;</code>
+     */
+    org.jetbrains.kotlin.protobuf.ByteString
+        getFilePathnameBytes();
   }
   /**
    * Protobuf type {@code org.jetbrains.kotlin.backend.jvm.serialization.proto.AuxTables}
@@ -731,6 +745,12 @@ public final class JvmIr {
               body_.add(input.readBytes());
               break;
             }
+            case 42: {
+              org.jetbrains.kotlin.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000001;
+              filePathname_ = bs;
+              break;
+            }
           }
         }
       } catch (org.jetbrains.kotlin.protobuf.InvalidProtocolBufferException e) {
@@ -776,6 +796,7 @@ public final class JvmIr {
       return PARSER;
     }
 
+    private int bitField0_;
     public static final int TYPE_FIELD_NUMBER = 1;
     private java.util.List<org.jetbrains.kotlin.protobuf.ByteString> type_;
     /**
@@ -864,11 +885,54 @@ public final class JvmIr {
       return body_.get(index);
     }
 
+    public static final int FILE_PATHNAME_FIELD_NUMBER = 5;
+    private java.lang.Object filePathname_;
+    /**
+     * <code>required string file_pathname = 5;</code>
+     */
+    public boolean hasFilePathname() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required string file_pathname = 5;</code>
+     */
+    public java.lang.String getFilePathname() {
+      java.lang.Object ref = filePathname_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        org.jetbrains.kotlin.protobuf.ByteString bs = 
+            (org.jetbrains.kotlin.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          filePathname_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string file_pathname = 5;</code>
+     */
+    public org.jetbrains.kotlin.protobuf.ByteString
+        getFilePathnameBytes() {
+      java.lang.Object ref = filePathname_;
+      if (ref instanceof java.lang.String) {
+        org.jetbrains.kotlin.protobuf.ByteString b = 
+            org.jetbrains.kotlin.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        filePathname_ = b;
+        return b;
+      } else {
+        return (org.jetbrains.kotlin.protobuf.ByteString) ref;
+      }
+    }
+
     private void initFields() {
       type_ = java.util.Collections.emptyList();
       signature_ = java.util.Collections.emptyList();
       string_ = java.util.Collections.emptyList();
       body_ = java.util.Collections.emptyList();
+      filePathname_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -876,6 +940,10 @@ public final class JvmIr {
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
+      if (!hasFilePathname()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -894,6 +962,9 @@ public final class JvmIr {
       }
       for (int i = 0; i < body_.size(); i++) {
         output.writeBytes(4, body_.get(i));
+      }
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(5, getFilePathnameBytes());
       }
       output.writeRawBytes(unknownFields);
     }
@@ -939,6 +1010,10 @@ public final class JvmIr {
         }
         size += dataSize;
         size += 1 * getBodyList().size();
+      }
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += org.jetbrains.kotlin.protobuf.CodedOutputStream
+          .computeBytesSize(5, getFilePathnameBytes());
       }
       size += unknownFields.size();
       memoizedSerializedSize = size;
@@ -1042,6 +1117,8 @@ public final class JvmIr {
         bitField0_ = (bitField0_ & ~0x00000004);
         body_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000008);
+        filePathname_ = "";
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
 
@@ -1064,6 +1141,7 @@ public final class JvmIr {
       public org.jetbrains.kotlin.backend.jvm.serialization.proto.JvmIr.AuxTables buildPartial() {
         org.jetbrains.kotlin.backend.jvm.serialization.proto.JvmIr.AuxTables result = new org.jetbrains.kotlin.backend.jvm.serialization.proto.JvmIr.AuxTables(this);
         int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
           type_ = java.util.Collections.unmodifiableList(type_);
           bitField0_ = (bitField0_ & ~0x00000001);
@@ -1084,6 +1162,11 @@ public final class JvmIr {
           bitField0_ = (bitField0_ & ~0x00000008);
         }
         result.body_ = body_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.filePathname_ = filePathname_;
+        result.bitField0_ = to_bitField0_;
         return result;
       }
 
@@ -1129,12 +1212,21 @@ public final class JvmIr {
           }
           
         }
+        if (other.hasFilePathname()) {
+          bitField0_ |= 0x00000010;
+          filePathname_ = other.filePathname_;
+          
+        }
         setUnknownFields(
             getUnknownFields().concat(other.unknownFields));
         return this;
       }
 
       public final boolean isInitialized() {
+        if (!hasFilePathname()) {
+          
+          return false;
+        }
         return true;
       }
 
@@ -1441,6 +1533,82 @@ public final class JvmIr {
       public Builder clearBody() {
         body_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000008);
+        
+        return this;
+      }
+
+      private java.lang.Object filePathname_ = "";
+      /**
+       * <code>required string file_pathname = 5;</code>
+       */
+      public boolean hasFilePathname() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>required string file_pathname = 5;</code>
+       */
+      public java.lang.String getFilePathname() {
+        java.lang.Object ref = filePathname_;
+        if (!(ref instanceof java.lang.String)) {
+          org.jetbrains.kotlin.protobuf.ByteString bs =
+              (org.jetbrains.kotlin.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            filePathname_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string file_pathname = 5;</code>
+       */
+      public org.jetbrains.kotlin.protobuf.ByteString
+          getFilePathnameBytes() {
+        java.lang.Object ref = filePathname_;
+        if (ref instanceof String) {
+          org.jetbrains.kotlin.protobuf.ByteString b = 
+              org.jetbrains.kotlin.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          filePathname_ = b;
+          return b;
+        } else {
+          return (org.jetbrains.kotlin.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string file_pathname = 5;</code>
+       */
+      public Builder setFilePathname(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+        filePathname_ = value;
+        
+        return this;
+      }
+      /**
+       * <code>required string file_pathname = 5;</code>
+       */
+      public Builder clearFilePathname() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        filePathname_ = getDefaultInstance().getFilePathname();
+        
+        return this;
+      }
+      /**
+       * <code>required string file_pathname = 5;</code>
+       */
+      public Builder setFilePathnameBytes(
+          org.jetbrains.kotlin.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+        filePathname_ = value;
         
         return this;
       }
@@ -1788,6 +1956,10 @@ public final class JvmIr {
           return false;
         }
       }
+      if (!getAuxTables().isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -2041,6 +2213,10 @@ public final class JvmIr {
             
             return false;
           }
+        }
+        if (!getAuxTables().isInitialized()) {
+          
+          return false;
         }
         return true;
       }
@@ -2635,6 +2811,10 @@ public final class JvmIr {
         memoizedIsInitialized = 0;
         return false;
       }
+      if (!getAuxTables().isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -2821,6 +3001,10 @@ public final class JvmIr {
           return false;
         }
         if (!getIrClass().isInitialized()) {
+          
+          return false;
+        }
+        if (!getAuxTables().isInitialized()) {
           
           return false;
         }

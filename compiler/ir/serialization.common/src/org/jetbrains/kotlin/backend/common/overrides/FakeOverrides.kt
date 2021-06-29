@@ -70,7 +70,7 @@ class FakeOverrideBuilder(
     irBuiltIns: IrBuiltIns,
     val platformSpecificClassFilter: FakeOverrideClassFilter = DefaultFakeOverrideClassFilter,
     // TODO: The declaration table is needed for the signaturer.
-    private val fakeOverrideDeclarationTable: DeclarationTable = FakeOverrideDeclarationTable(signaturer),
+    private val fakeOverrideDeclarationTable: DeclarationTable = FakeOverrideDeclarationTable(mangler),
 ) : FakeOverrideBuilderStrategy() {
     private val haveFakeOverrides = mutableSetOf<IrClass>()
 

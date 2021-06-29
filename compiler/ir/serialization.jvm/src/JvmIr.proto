@@ -19,6 +19,7 @@ message AuxTables {
   repeated bytes signature = 2;
   repeated bytes string = 3;
   repeated bytes body = 4;
+  required string file_pathname = 5;
 }
 
 message JvmIrFile {
