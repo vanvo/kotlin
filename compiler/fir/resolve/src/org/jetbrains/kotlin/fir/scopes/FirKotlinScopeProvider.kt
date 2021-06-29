@@ -41,7 +41,7 @@ class FirKotlinScopeProvider(
                     if (delegateFields.isEmpty())
                         it
                     else
-                        FirNewDelegatedMemberScope(useSiteSession, scopeSession, klass, it, delegateFields)
+                        FirDelegatedMemberScope(useSiteSession, scopeSession, klass, it, delegateFields)
                 }
 
 
