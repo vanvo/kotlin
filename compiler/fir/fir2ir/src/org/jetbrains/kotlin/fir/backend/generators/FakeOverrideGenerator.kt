@@ -13,7 +13,6 @@ import org.jetbrains.kotlin.fir.resolve.defaultType
 import org.jetbrains.kotlin.fir.resolve.toSymbol
 import org.jetbrains.kotlin.fir.scopes.*
 import org.jetbrains.kotlin.fir.scopes.impl.FirFakeOverrideGenerator
-import org.jetbrains.kotlin.fir.scopes.impl.delegatedWrapperData
 import org.jetbrains.kotlin.fir.symbols.AbstractFirBasedSymbol
 import org.jetbrains.kotlin.fir.symbols.ConeClassLikeLookupTag
 import org.jetbrains.kotlin.fir.symbols.impl.FirCallableSymbol
@@ -251,14 +250,10 @@ class FakeOverrideGenerator(
 
         return scope.directOverridden(symbol).map {
             // Unwrapping should happen only for fake overrides members from the same class, not from supertypes
-            if (it.dispatchReceiverClassOrNull() != containingClass) return@map it
-            when {
-                it.fir.isSubstitutionOverride ->
-                    it.originalForSubstitutionOverride!!
-                it.fir.origin == FirDeclarationOrigin.Delegated ->
-                    it.fir.delegatedWrapperData?.wrapped?.symbol!! as S
-                else -> it
-            }
+            if (it.fir.isSubstitutionOverride && it.dispatchReceiverClassOrNull() == containingClass)
+                it.originalForSubstitutionOverride!!
+            else
+                it
         }
     }
 
