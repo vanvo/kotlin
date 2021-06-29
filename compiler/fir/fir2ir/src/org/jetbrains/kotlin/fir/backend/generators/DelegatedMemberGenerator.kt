@@ -5,19 +5,23 @@
 
 package org.jetbrains.kotlin.fir.backend.generators
 
-import org.jetbrains.kotlin.fir.*
 import org.jetbrains.kotlin.fir.backend.*
 import org.jetbrains.kotlin.fir.declarations.*
+import org.jetbrains.kotlin.fir.isIntersectionOverride
+import org.jetbrains.kotlin.fir.isJavaDefault
 import org.jetbrains.kotlin.fir.scopes.*
-import org.jetbrains.kotlin.fir.scopes.impl.unwrapDelegateTarget
-import org.jetbrains.kotlin.fir.symbols.impl.*
+import org.jetbrains.kotlin.fir.scopes.impl.delegatedWrapperData
+import org.jetbrains.kotlin.fir.symbols.ConeClassLikeLookupTag
+import org.jetbrains.kotlin.fir.symbols.impl.FirCallableSymbol
+import org.jetbrains.kotlin.fir.symbols.impl.FirPropertySymbol
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.expressions.IrBlockBody
 import org.jetbrains.kotlin.ir.expressions.impl.IrCallImpl
 import org.jetbrains.kotlin.ir.expressions.impl.IrGetFieldImpl
 import org.jetbrains.kotlin.ir.expressions.impl.IrGetValueImpl
 import org.jetbrains.kotlin.ir.expressions.impl.IrReturnImpl
-import org.jetbrains.kotlin.ir.types.*
+import org.jetbrains.kotlin.ir.types.isNothing
+import org.jetbrains.kotlin.ir.types.isUnit
 
 /**
  * A generator for delegated members from implementation by delegation.
@@ -194,4 +198,33 @@ internal class DelegatedMemberGenerator(
         return delegateProperty
     }
 
+}
+
+private fun <S : FirCallableSymbol<D>, D : FirCallableMemberDeclaration<D>> S.unwrapDelegateTarget(
+    subClassLookupTag: ConeClassLikeLookupTag,
+    directOverridden: S.() -> List<S>,
+    firField: FirField,
+    firSubClass: FirClass<*>,
+): D? {
+    firSubClass.hashCode()
+    val unwrappedIntersectionSymbol = this.unwrapIntersectionOverride(directOverridden) ?: return null
+
+    val callable = unwrappedIntersectionSymbol.fir as? D ?: return null
+
+    val delegatedWrapperData = callable.delegatedWrapperData ?: return null
+    if (delegatedWrapperData.containingClass != subClassLookupTag) return null
+    if (delegatedWrapperData.delegateField != firField) return null
+
+    val wrapped = delegatedWrapperData.wrapped as? D ?: return null
+
+    @Suppress("UNCHECKED_CAST")
+    val wrappedSymbol = wrapped.symbol as? S ?: return null
+
+    @Suppress("UNCHECKED_CAST")
+    return wrappedSymbol.unwrapCallRepresentative().fir as D
+}
+
+private fun <S : FirCallableSymbol<*>> S.unwrapIntersectionOverride(directOverridden: S.() -> List<S>): S? {
+    if (this.fir.isIntersectionOverride) return directOverridden().firstOrNull { it.fir.delegatedWrapperData != null }
+    return this
 }
