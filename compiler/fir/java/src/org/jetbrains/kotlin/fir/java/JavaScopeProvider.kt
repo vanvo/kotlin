@@ -11,10 +11,13 @@ import org.jetbrains.kotlin.fir.declarations.*
 import org.jetbrains.kotlin.fir.java.declarations.FirJavaClass
 import org.jetbrains.kotlin.fir.java.scopes.*
 import org.jetbrains.kotlin.fir.resolve.*
-import org.jetbrains.kotlin.fir.scopes.*
+import org.jetbrains.kotlin.fir.scopes.FirScope
+import org.jetbrains.kotlin.fir.scopes.FirScopeProvider
+import org.jetbrains.kotlin.fir.scopes.FirTypeScope
 import org.jetbrains.kotlin.fir.scopes.impl.*
-import org.jetbrains.kotlin.name.StandardClassIds
+import org.jetbrains.kotlin.fir.scopes.scopeForSupertype
 import org.jetbrains.kotlin.fir.symbols.impl.FirRegularClassSymbol
+import org.jetbrains.kotlin.name.StandardClassIds
 import org.jetbrains.kotlin.utils.DFS
 
 class JavaScopeProvider(
@@ -84,7 +87,7 @@ class JavaScopeProvider(
                     lookupSuperTypes(regularClass, lookupInterfaces = true, deep = false, useSiteSession = useSiteSession)
 
             val superTypeScopes = superTypes.mapNotNull {
-                it.scopeForSupertype(useSiteSession, scopeSession, subClass = regularClass, declaredScope, delegateFields = null)
+                it.scopeForSupertype(useSiteSession, scopeSession, subClass = regularClass)
             }
 
             JavaClassUseSiteMemberScope(
