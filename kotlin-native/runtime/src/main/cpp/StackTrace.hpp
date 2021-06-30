@@ -8,6 +8,9 @@
 
 namespace kotlin {
 
+// TODO: Instead of KStd* provide allocator-customizable versions, to allow stack memory allocation.
+// TODO: Model API as in upcoming https://en.cppreference.com/w/cpp/utility/basic_stacktrace
+
 KStdVector<void*> GetCurrentStackTrace(int extraSkipFrames) noexcept;
 
 // TODO: This is asking for a span.

@@ -5,6 +5,8 @@
 
 #include "StackTrace.hpp"
 
+#include <signal.h>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
@@ -24,7 +26,7 @@ NO_INLINE KStdVector<void*> GetStackTrace2(int skipFrames) {
     return GetStackTrace1(skipFrames);
 }
 
-NO_INLINE void AbortWithStackTrace() {
+NO_INLINE void AbortWithStackTrace(int) {
     PrintStackTraceStderr();
     konan::abort();
 }
@@ -59,7 +61,20 @@ TEST(StackTraceTest, StackTraceWithSkip) {
 
 TEST(StackTraceDeathTest, PrintStackTrace) {
     EXPECT_DEATH(
-            { kotlin::RunInNewThread(AbortWithStackTrace); },
-            testing::AllOf(testing::HasSubstr("AbortWithStackTrace"), testing::Not(testing::HasSubstr("PrintStackTraceStderr")))
-            );
+            { AbortWithStackTrace(0); },
+            testing::AllOf(
+                    testing::HasSubstr("AbortWithStackTrace"), testing::HasSubstr("StackTraceDeathTest_PrintStackTrace_Test"),
+                    testing::Not(testing::HasSubstr("PrintStackTraceStderr"))));
+}
+
+TEST(StackTraceDeathTest, PrintStackTraceInSignalHandler) {
+    EXPECT_DEATH(
+            {
+                signal(SIGINT, &AbortWithStackTrace);
+                raise(SIGINT);
+            },
+            testing::AllOf(
+                    testing::HasSubstr("AbortWithStackTrace"),
+                    testing::HasSubstr("StackTraceDeathTest_PrintStackTraceInSignalHandler_Test"),
+                    testing::Not(testing::HasSubstr("PrintStackTraceStderr"))));
 }

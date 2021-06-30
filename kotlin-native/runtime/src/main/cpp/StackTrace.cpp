@@ -17,9 +17,9 @@
 
 #include "Common.h"
 #include "ExecFormat.h"
-#include "Memory.h"
-#include "Natives.h"
+#include "Porting.h"
 #include "SourceInfo.h"
+#include "Types.h"
 
 #include "utf8.h"
 
@@ -167,9 +167,8 @@ void kotlin::DisallowSourceInfo() {
 }
 
 NO_INLINE void kotlin::PrintStackTraceStderr() {
+    // NOTE: This might be called from both runnable and native states (including in uninitialized runtime)
     // TODO: This is intended for runtime use. Try to avoid memory allocations and signal unsafe functions.
-
-    kotlin::ThreadStateGuard guard(kotlin::ThreadState::kNative, true);
 
     // TODO: This might have to go into `GetCurrentStackTrace`, but this changes the generated stacktrace for
     //       `Throwable`.
