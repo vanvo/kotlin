@@ -138,6 +138,7 @@ class MemberScopeTowerLevel(
                 this.processFunctionsAndConstructorsByName(
                     info.name, session, bodyResolveComponents,
                     includeInnerConstructors = true,
+                    info.containingDeclarations,
                     processor = {
                         lookupCtx.recordCallableMemberLookup(it)
                         // WARNING, DO NOT CAST FUNCTIONAL TYPE ITSELF
@@ -284,6 +285,7 @@ class ScopeTowerLevel(
         if (dispatchReceiverValue == null && shouldSkipCandidateWithInconsistentExtensionReceiver(candidate)) {
             return
         }
+
         val unwrappedCandidate = candidate.fir.importedFromObjectData?.original?.symbol ?: candidate
         @Suppress("UNCHECKED_CAST")
         processor.consumeCandidate(
@@ -303,7 +305,8 @@ class ScopeTowerLevel(
             info.name,
             session,
             bodyResolveComponents,
-            includeInnerConstructors = includeInnerConstructors
+            includeInnerConstructors = includeInnerConstructors,
+            info.containingDeclarations
         ) { candidate ->
             empty = false
             consumeCallableCandidate(candidate, processor)

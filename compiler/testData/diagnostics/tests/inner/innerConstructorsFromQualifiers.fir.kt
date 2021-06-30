@@ -26,8 +26,6 @@ import abc.Outer
 import abc.Outer.Inner
 
 fun bar() {
-    Inner()
-    Inner(1)
 
     with(Outer()) {
         Inner()
