@@ -21,6 +21,7 @@ import org.jetbrains.kotlin.descriptors.PropertyDescriptor
 import org.jetbrains.kotlin.idea.MainFunctionDetector
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.util.fqNameWhenAvailable
+import org.jetbrains.kotlin.ir.util.isFacadeClass
 import org.jetbrains.kotlin.ir.util.isFromJava
 import org.jetbrains.kotlin.load.java.descriptors.JavaMethodDescriptor
 import org.jetbrains.kotlin.load.java.lazy.descriptors.isJavaField
@@ -35,14 +36,7 @@ abstract class AbstractJvmManglerIr : IrBasedKotlinManglerImpl() {
         override fun IrDeclaration.isPlatformSpecificExported(): Boolean {
             // We need to handle references to file-level declarations from classes declared in those files.
             // Thus we give them all public signatures
-            return (parent as? IrDeclaration)?.origin?.let {
-                it == IrDeclarationOrigin.FILE_CLASS || it == IrDeclarationOrigin.JVM_MULTIFILE_CLASS
-            } == true ||
-                    // We also need public signatures for monitorEnter/monitorExit
-                    (this as? IrSimpleFunction)?.let {
-                        name.asString().let { it == "monitorEnter" || it == "monitorExit" } &&
-                                fqNameWhenAvailable?.toString()?.startsWith("kotlin.jvm.internal.unsafe") == true
-                    } == true
+            return parent.isFacadeClass
         }
 
         override fun visitField(declaration: IrField, data: Nothing?): Boolean {
