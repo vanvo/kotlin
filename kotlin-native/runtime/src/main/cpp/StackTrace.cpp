@@ -29,23 +29,18 @@ namespace {
 
 #if USE_GCC_UNWIND
 struct Backtrace {
-    Backtrace(int count, int skip) : index(0), skipCount(skip) {
+    Backtrace(int count, int skip) : skipCount(skip) {
         uint32_t size = count - skipCount;
         if (size < 0) {
             size = 0;
         }
-        auto result = AllocArrayInstance(theNativePtrArrayTypeInfo, size, arrayHolder.slot());
-        // TODO: throw cached OOME?
-        RuntimeCheck(result != nullptr, "Cannot create backtrace array");
+        array.reserve(size);
     }
 
-    void setNextElement(_Unwind_Ptr element) { Kotlin_NativePtrArray_set(obj(), index++, (KNativePtr)element); }
+    void setNextElement(_Unwind_Ptr element) { array.push_back(reinterpret_cast<void*>(element)); }
 
-    ObjHeader* obj() { return arrayHolder.obj(); }
-
-    int index;
     int skipCount;
-    ObjHolder arrayHolder;
+    KStdVector<void*> array;
 };
 
 _Unwind_Reason_Code depthCountCallback(struct _Unwind_Context* context, void* arg) {
@@ -87,9 +82,9 @@ SourceInfo getSourceInfo(void* symbol) {
 
 // TODO: this implementation is just a hack, e.g. the result is inexact;
 // however it is better to have an inexact stacktrace than not to have any.
-NO_INLINE OBJ_GETTER(kotlin::GetCurrentStackTrace, int extraSkipFrames) {
+NO_INLINE KStdVector<void*> kotlin::GetCurrentStackTrace(int extraSkipFrames) noexcept {
 #if KONAN_NO_BACKTRACE
-    return AllocArrayInstance(theNativePtrArrayTypeInfo, 0, OBJ_RESULT);
+    return {};
 #else
     // Skips this function frame + anything asked by the caller.
     const int kSkipFrames = 1 + extraSkipFrames;
@@ -97,23 +92,23 @@ NO_INLINE OBJ_GETTER(kotlin::GetCurrentStackTrace, int extraSkipFrames) {
     int depth = 0;
     CallWithThreadState<ThreadState::kNative>(_Unwind_Backtrace, depthCountCallback, static_cast<void*>(&depth));
     Backtrace result(depth, kSkipFrames);
-    if (result.obj()->array()->count_ > 0) {
+    if (result.array.capacity() > 0) {
         CallWithThreadState<ThreadState::kNative>(_Unwind_Backtrace, unwindCallback, static_cast<void*>(&result));
     }
-    RETURN_OBJ(result.obj());
+    return std::move(result.array);
 #else
     const int maxSize = 32;
     void* buffer[maxSize];
 
     int size = kotlin::CallWithThreadState<kotlin::ThreadState::kNative>(backtrace, buffer, maxSize);
-    if (size < kSkipFrames) return AllocArrayInstance(theNativePtrArrayTypeInfo, 0, OBJ_RESULT);
+    if (size < kSkipFrames) return {};
 
-    ObjHolder resultHolder;
-    ObjHeader* result = AllocArrayInstance(theNativePtrArrayTypeInfo, size - kSkipFrames, resultHolder.slot());
+    KStdVector<void*> result;
+    result.reserve(size - kSkipFrames);
     for (int index = kSkipFrames; index < size; ++index) {
-        Kotlin_NativePtrArray_set(result, index - kSkipFrames, buffer[index]);
+        result.push_back(buffer[index]);
     }
-    RETURN_OBJ(result);
+    return result;
 #endif
 #endif // !KONAN_NO_BACKTRACE
 }
@@ -179,7 +174,6 @@ NO_INLINE void kotlin::PrintStackTraceStderr() {
 
     kotlin::ThreadStateGuard guard(kotlin::ThreadState::kRunnable, true);
 
-    ObjHolder stackTrace;
     // TODO: This might have to go into `GetCurrentStackTrace`, but this changes the generated stacktrace for
     //       `Throwable`.
 #if KONAN_WINDOWS
@@ -189,10 +183,8 @@ NO_INLINE void kotlin::PrintStackTraceStderr() {
     // Skip this function.
     constexpr int kSkipFrames = 1;
 #endif
-    GetCurrentStackTrace(kSkipFrames, stackTrace.slot());
-    const KNativePtr* array = PrimitiveArrayAddressOfElementAt<KNativePtr>(stackTrace.obj()->array(), 0);
-    size_t size = stackTrace.obj()->array()->count_;
-    auto stackTraceStrings = CallWithThreadState<ThreadState::kNative>(GetStackTraceStrings, array, size);
+    auto stackTrace = GetCurrentStackTrace(kSkipFrames);
+    auto stackTraceStrings = CallWithThreadState<ThreadState::kNative>(GetStackTraceStrings, static_cast<void* const*>(stackTrace.data()), stackTrace.size());
     for (auto& frame : stackTraceStrings) {
         konan::consoleErrorUtf8(frame.c_str(), frame.size());
         konan::consoleErrorf("\n");

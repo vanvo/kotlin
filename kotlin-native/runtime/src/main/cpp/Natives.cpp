@@ -43,7 +43,14 @@ KInt Kotlin_Any_hashCode(KConstRef thiz) {
 
 NO_INLINE OBJ_GETTER0(Kotlin_getCurrentStackTrace) {
     // Skip this function and primary `Throwable` constructor.
-    RETURN_RESULT_OF(kotlin::GetCurrentStackTrace, 2);
+    auto stackTrace = kotlin::GetCurrentStackTrace(2);
+
+    ObjHolder resultHolder;
+    ObjHeader* result = AllocArrayInstance(theNativePtrArrayTypeInfo, stackTrace.size(), resultHolder.slot());
+    for (size_t index = 0; index < stackTrace.size(); ++index) {
+        Kotlin_NativePtrArray_set(result, index, stackTrace[index]);
+    }
+    RETURN_OBJ(result);
 }
 
 OBJ_GETTER(Kotlin_getStackTraceStrings, KConstRef stackTrace) {

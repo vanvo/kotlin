@@ -8,7 +8,7 @@
 
 namespace kotlin {
 
-OBJ_GETTER(GetCurrentStackTrace, int extraSkipFrames);
+KStdVector<void*> GetCurrentStackTrace(int extraSkipFrames) noexcept;
 
 // TODO: This is asking for a span.
 KStdVector<KStdString> GetStackTraceStrings(void* const* stackTrace, size_t stackTraceSize) noexcept;
