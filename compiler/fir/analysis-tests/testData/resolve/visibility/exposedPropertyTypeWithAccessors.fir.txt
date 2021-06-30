@@ -1,0 +1,30 @@
+FILE: exposedPropertyTypeWithAccessors.kt
+    public final class A : R|kotlin/Any| {
+        public constructor(): R|A| {
+            super<R|kotlin/Any|>()
+        }
+
+        private final class AInnerPrivate : R|kotlin/Any| {
+            public constructor(str: R|kotlin/String|): R|A.AInnerPrivate| {
+                super<R|kotlin/Any|>()
+            }
+
+            public final val str: R|kotlin/String| = R|<local>/str|
+                public get(): R|kotlin/String|
+
+        }
+
+    }
+    public final class Property : R|kotlin/Any| {
+        public constructor(): R|Property| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final var var1: R|A.AInnerPrivate?| = Null(null)
+            public get(): R|A.AInnerPrivate?| {
+                ^ this@R|/Property|.F|/Property.var1|
+            }
+            public set(value: R|A.AInnerPrivate?|): R|kotlin/Unit| {
+            }
+
+    }

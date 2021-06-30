@@ -3906,6 +3906,12 @@ public class FirDiagnosticsWithLightTreeTestGenerated extends AbstractFirDiagnos
             }
 
             @Test
+            @TestMetadata("exposedPropertyTypeWithAccessors.kt")
+            public void testExposedPropertyTypeWithAccessors() throws Exception {
+                runTest("compiler/fir/analysis-tests/testData/resolve/visibility/exposedPropertyTypeWithAccessors.kt");
+            }
+
+            @Test
             @TestMetadata("exposedSupertype.kt")
             public void testExposedSupertype() throws Exception {
                 runTest("compiler/fir/analysis-tests/testData/resolve/visibility/exposedSupertype.kt");

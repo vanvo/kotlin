@@ -3504,6 +3504,11 @@ public class LazyBodyIsNotTouchedTilContractsPhaseTestGenerated extends Abstract
             runTest("compiler/fir/analysis-tests/testData/resolve/visibility/exposedPropertyType.kt");
         }
 
+        @TestMetadata("exposedPropertyTypeWithAccessors.kt")
+        public void testExposedPropertyTypeWithAccessors() throws Exception {
+            runTest("compiler/fir/analysis-tests/testData/resolve/visibility/exposedPropertyTypeWithAccessors.kt");
+        }
+
         @TestMetadata("exposedSupertype.kt")
         public void testExposedSupertype() throws Exception {
             runTest("compiler/fir/analysis-tests/testData/resolve/visibility/exposedSupertype.kt");
