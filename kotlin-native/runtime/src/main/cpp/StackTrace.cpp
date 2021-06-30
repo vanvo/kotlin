@@ -87,12 +87,12 @@ SourceInfo getSourceInfo(void* symbol) {
 
 // TODO: this implementation is just a hack, e.g. the result is inexact;
 // however it is better to have an inexact stacktrace than not to have any.
-extern "C" NO_INLINE OBJ_GETTER0(Kotlin_getCurrentStackTrace) {
+NO_INLINE OBJ_GETTER(kotlin::GetCurrentStackTrace, int extraSkipFrames) {
 #if KONAN_NO_BACKTRACE
     return AllocArrayInstance(theNativePtrArrayTypeInfo, 0, OBJ_RESULT);
 #else
-    // Skips first 2 elements as irrelevant: this function and primary Throwable constructor.
-    constexpr int kSkipFrames = 2;
+    // Skips this function frame + anything asked by the caller.
+    const int kSkipFrames = 1 + extraSkipFrames;
 #if USE_GCC_UNWIND
     int depth = 0;
     CallWithThreadState<ThreadState::kNative>(_Unwind_Backtrace, depthCountCallback, static_cast<void*>(&depth));
@@ -174,13 +174,22 @@ void kotlin::DisallowSourceInfo() {
     disallowSourceInfo = true;
 }
 
-void kotlin::PrintStackTraceStderr() {
+NO_INLINE void kotlin::PrintStackTraceStderr() {
     // TODO: This is intended for runtime use. Try to avoid memory allocations and signal unsafe functions.
 
     kotlin::ThreadStateGuard guard(kotlin::ThreadState::kRunnable, true);
 
     ObjHolder stackTrace;
-    Kotlin_getCurrentStackTrace(stackTrace.slot());
+    // TODO: This might have to go into `GetCurrentStackTrace`, but this changes the generated stacktrace for
+    //       `Throwable`.
+#if KONAN_WINDOWS
+    // Skip this function and `_Unwind_Backtrace`.
+    constexpr int kSkipFrames = 2;
+#else
+    // Skip this function.
+    constexpr int kSkipFrames = 1;
+#endif
+    GetCurrentStackTrace(kSkipFrames, stackTrace.slot());
     const KNativePtr* array = PrimitiveArrayAddressOfElementAt<KNativePtr>(stackTrace.obj()->array(), 0);
     size_t size = stackTrace.obj()->array()->count_;
     auto stackTraceStrings = CallWithThreadState<ThreadState::kNative>(GetStackTraceStrings, array, size);

@@ -41,6 +41,11 @@ KInt Kotlin_Any_hashCode(KConstRef thiz) {
   return reinterpret_cast<uintptr_t>(thiz);
 }
 
+NO_INLINE OBJ_GETTER0(Kotlin_getCurrentStackTrace) {
+    // Skip this function and primary `Throwable` constructor.
+    RETURN_RESULT_OF(kotlin::GetCurrentStackTrace, 2);
+}
+
 OBJ_GETTER(Kotlin_getStackTraceStrings, KConstRef stackTrace) {
     const KNativePtr* array = PrimitiveArrayAddressOfElementAt<KNativePtr>(stackTrace->array(), 0);
     size_t size = stackTrace->array()->count_;

@@ -26,11 +26,6 @@ NO_INLINE void AbortWithStackTrace() {
 TEST(StackTraceDeathTest, PrintStackTrace) {
     EXPECT_DEATH(
             { kotlin::RunInNewThread(AbortWithStackTrace); },
-#if KONAN_WINDOWS
-            // TODO: Fix Windows to match other platforms.
-            testing::AllOf(testing::HasSubstr("AbortWithStackTrace"), testing::HasSubstr("PrintStackTraceStderr"))
-#else
             testing::AllOf(testing::HasSubstr("AbortWithStackTrace"), testing::Not(testing::HasSubstr("PrintStackTraceStderr")))
-#endif
             );
 }
