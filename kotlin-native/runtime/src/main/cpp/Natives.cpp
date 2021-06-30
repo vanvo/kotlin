@@ -41,7 +41,9 @@ KInt Kotlin_Any_hashCode(KConstRef thiz) {
 }
 
 OBJ_GETTER(Kotlin_getStackTraceStrings, KConstRef stackTrace) {
-    RETURN_RESULT_OF(kotlin::GetStackTraceStrings, stackTrace);
+    const KNativePtr* array = PrimitiveArrayAddressOfElementAt<KNativePtr>(stackTrace->array(), 0);
+    size_t size = stackTrace->array()->count_;
+    RETURN_RESULT_OF(kotlin::GetStackTraceStrings, array, size);
 }
 
 // TODO: consider handling it with compiler magic instead.

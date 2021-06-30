@@ -79,9 +79,8 @@ _Unwind_Reason_Code unwindCallback(struct _Unwind_Context* context, void* arg) {
 THREAD_LOCAL_VARIABLE bool disallowSourceInfo = false;
 
 #if !KONAN_NO_BACKTRACE && !USE_GCC_UNWIND
-SourceInfo getSourceInfo(KConstRef stackTrace, int32_t index) {
-    return disallowSourceInfo ? SourceInfo{.fileName = nullptr, .lineNumber = -1, .column = -1}
-                              : Kotlin_getSourceInfo(*PrimitiveArrayAddressOfElementAt<KNativePtr>(stackTrace->array(), index));
+SourceInfo getSourceInfo(void* symbol) {
+    return disallowSourceInfo ? SourceInfo{.fileName = nullptr, .lineNumber = -1, .column = -1} : Kotlin_getSourceInfo(symbol);
 }
 #endif
 
@@ -120,7 +119,7 @@ extern "C" NO_INLINE OBJ_GETTER0(Kotlin_getCurrentStackTrace) {
 #endif // !KONAN_NO_BACKTRACE
 }
 
-OBJ_GETTER(kotlin::GetStackTraceStrings, KConstRef stackTrace) {
+OBJ_GETTER(kotlin::GetStackTraceStrings, void* const* stackTrace, size_t stackTraceSize) {
 #if KONAN_NO_BACKTRACE
     ObjHeader* result = AllocArrayInstance(theArrayTypeInfo, 1, OBJ_RESULT);
     ObjHolder holder;
@@ -128,12 +127,11 @@ OBJ_GETTER(kotlin::GetStackTraceStrings, KConstRef stackTrace) {
     UpdateHeapRef(ArrayAddressOfElementAt(result->array(), 0), holder.obj());
     return result;
 #else
-    int32_t size = static_cast<int32_t>(stackTrace->array()->count_);
     ObjHolder resultHolder;
-    ObjHeader* strings = AllocArrayInstance(theArrayTypeInfo, size, resultHolder.slot());
+    ObjHeader* strings = AllocArrayInstance(theArrayTypeInfo, stackTraceSize, resultHolder.slot());
 #if USE_GCC_UNWIND
-    for (int32_t index = 0; index < size; ++index) {
-        KNativePtr address = Kotlin_NativePtrArray_get(stackTrace, index);
+    for (size_t index = 0; index < stackTraceSize; ++index) {
+        KNativePtr address = stackTrace[index];
         char symbol[512];
         if (!CallWithThreadState<ThreadState::kNative>(AddressToSymbol, (const void*)address, symbol, sizeof(symbol))) {
             // Make empty string:
@@ -146,13 +144,13 @@ OBJ_GETTER(kotlin::GetStackTraceStrings, KConstRef stackTrace) {
         UpdateHeapRef(ArrayAddressOfElementAt(strings->array(), index), holder.obj());
     }
 #else
-    if (size > 0) {
-        char** symbols = CallWithThreadState<ThreadState::kNative>(
-                backtrace_symbols, PrimitiveArrayAddressOfElementAt<KNativePtr>(stackTrace->array(), 0), size);
+    if (stackTraceSize > 0) {
+        char** symbols = CallWithThreadState<ThreadState::kNative>(backtrace_symbols, stackTrace, static_cast<int>(stackTraceSize));
         RuntimeCheck(symbols != nullptr, "Not enough memory to retrieve the stacktrace");
 
-        for (int32_t index = 0; index < size; ++index) {
-            auto sourceInfo = CallWithThreadState<ThreadState::kNative>(getSourceInfo, stackTrace, index);
+        for (size_t index = 0; index < stackTraceSize; ++index) {
+            KNativePtr address = stackTrace[index];
+            auto sourceInfo = CallWithThreadState<ThreadState::kNative>(getSourceInfo, address);
             const char* symbol = symbols[index];
             const char* result;
             char line[1024];
@@ -191,7 +189,9 @@ void kotlin::PrintStackTraceStderr() {
     ObjHolder stackTrace;
     Kotlin_getCurrentStackTrace(stackTrace.slot());
     ObjHolder stackTraceStrings;
-    kotlin::GetStackTraceStrings(stackTrace.obj(), stackTraceStrings.slot());
+    const KNativePtr* array = PrimitiveArrayAddressOfElementAt<KNativePtr>(stackTrace.obj()->array(), 0);
+    size_t size = stackTrace.obj()->array()->count_;
+    kotlin::GetStackTraceStrings(array, size, stackTraceStrings.slot());
     ArrayHeader* stackTraceStringsArray = stackTraceStrings.obj()->array();
     for (uint32_t i = 0; i < stackTraceStringsArray->count_; ++i) {
         ArrayHeader* symbol = (*ArrayAddressOfElementAt(stackTraceStringsArray, i))->array();
