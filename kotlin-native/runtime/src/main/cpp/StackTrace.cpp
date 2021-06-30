@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "ExecFormat.h"
 #include "Memory.h"
-#include "KString.h"
 #include "Natives.h"
 #include "SourceInfo.h"
 
@@ -119,16 +118,14 @@ extern "C" NO_INLINE OBJ_GETTER0(Kotlin_getCurrentStackTrace) {
 #endif // !KONAN_NO_BACKTRACE
 }
 
-OBJ_GETTER(kotlin::GetStackTraceStrings, void* const* stackTrace, size_t stackTraceSize) {
+KStdVector<KStdString> kotlin::GetStackTraceStrings(void* const* stackTrace, size_t stackTraceSize) noexcept {
 #if KONAN_NO_BACKTRACE
-    ObjHeader* result = AllocArrayInstance(theArrayTypeInfo, 1, OBJ_RESULT);
-    ObjHolder holder;
-    CreateStringFromCString("<UNIMPLEMENTED>", holder.slot());
-    UpdateHeapRef(ArrayAddressOfElementAt(result->array(), 0), holder.obj());
-    return result;
+    KStdVector<KStdString> strings;
+    strings.push_back("<UNIMPLEMENTED>");
+    return strings;
 #else
-    ObjHolder resultHolder;
-    ObjHeader* strings = AllocArrayInstance(theArrayTypeInfo, stackTraceSize, resultHolder.slot());
+    KStdVector<KStdString> strings;
+    strings.reserve(stackTraceSize);
 #if USE_GCC_UNWIND
     for (size_t index = 0; index < stackTraceSize; ++index) {
         KNativePtr address = stackTrace[index];
@@ -139,9 +136,7 @@ OBJ_GETTER(kotlin::GetStackTraceStrings, void* const* stackTrace, size_t stackTr
         }
         char line[512];
         konan::snprintf(line, sizeof(line) - 1, "%s (%p)", symbol, (void*)(intptr_t)address);
-        ObjHolder holder;
-        CreateStringFromCString(line, holder.slot());
-        UpdateHeapRef(ArrayAddressOfElementAt(strings->array(), index), holder.obj());
+        strings.push_back(line);
     }
 #else
     if (stackTraceSize > 0) {
@@ -165,15 +160,13 @@ OBJ_GETTER(kotlin::GetStackTraceStrings, void* const* stackTrace, size_t stackTr
             } else {
                 result = symbol;
             }
-            ObjHolder holder;
-            CreateStringFromCString(result, holder.slot());
-            UpdateHeapRef(ArrayAddressOfElementAt(strings->array(), index), holder.obj());
+            strings.push_back(result);
         }
         // Not konan::free. Used to free memory allocated in backtrace_symbols where malloc is used.
         free(symbols);
     }
 #endif
-    RETURN_OBJ(strings);
+    return strings;
 #endif // !KONAN_NO_BACKTRACE
 }
 
@@ -188,18 +181,11 @@ void kotlin::PrintStackTraceStderr() {
 
     ObjHolder stackTrace;
     Kotlin_getCurrentStackTrace(stackTrace.slot());
-    ObjHolder stackTraceStrings;
     const KNativePtr* array = PrimitiveArrayAddressOfElementAt<KNativePtr>(stackTrace.obj()->array(), 0);
     size_t size = stackTrace.obj()->array()->count_;
-    kotlin::GetStackTraceStrings(array, size, stackTraceStrings.slot());
-    ArrayHeader* stackTraceStringsArray = stackTraceStrings.obj()->array();
-    for (uint32_t i = 0; i < stackTraceStringsArray->count_; ++i) {
-        ArrayHeader* symbol = (*ArrayAddressOfElementAt(stackTraceStringsArray, i))->array();
-        auto* utf16 = CharArrayAddressOfElementAt(symbol, 0);
-        KStdString utf8;
-        utf8::with_replacement::utf16to8(utf16, utf16 + symbol->count_, std::back_inserter(utf8));
-        kotlin::ThreadStateGuard guard(kotlin::ThreadState::kNative);
-        konan::consoleErrorUtf8(utf8.c_str(), utf8.size());
+    auto stackTraceStrings = kotlin::GetStackTraceStrings(array, size);
+    for (auto& frame : stackTraceStrings) {
+        konan::consoleErrorUtf8(frame.c_str(), frame.size());
         konan::consoleErrorf("\n");
     }
 }

@@ -9,7 +9,7 @@
 namespace kotlin {
 
 // TODO: This is asking for a span.
-OBJ_GETTER(GetStackTraceStrings, void* const* stackTrace, size_t stackTraceSize);
+KStdVector<KStdString> GetStackTraceStrings(void* const* stackTrace, size_t stackTraceSize) noexcept;
 
 // It's not always safe to extract SourceInfo during unhandled exception termination.
 void DisallowSourceInfo();

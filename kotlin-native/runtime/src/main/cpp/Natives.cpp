@@ -22,6 +22,7 @@
 #include <type_traits>
 
 #include "KAssert.h"
+#include "KString.h"
 #include "StackTrace.hpp"
 #include "Memory.h"
 #include "Natives.h"
@@ -43,7 +44,17 @@ KInt Kotlin_Any_hashCode(KConstRef thiz) {
 OBJ_GETTER(Kotlin_getStackTraceStrings, KConstRef stackTrace) {
     const KNativePtr* array = PrimitiveArrayAddressOfElementAt<KNativePtr>(stackTrace->array(), 0);
     size_t size = stackTrace->array()->count_;
-    RETURN_RESULT_OF(kotlin::GetStackTraceStrings, array, size);
+    auto stackTraceStrings = kotlin::GetStackTraceStrings(array, size);
+    ObjHolder resultHolder;
+    ObjHeader* strings = AllocArrayInstance(theArrayTypeInfo, stackTraceStrings.size(), resultHolder.slot());
+
+    for (size_t index = 0; index < stackTraceStrings.size(); ++index) {
+        ObjHolder holder;
+        CreateStringFromCString(stackTraceStrings[index].c_str(), holder.slot());
+        UpdateHeapRef(ArrayAddressOfElementAt(strings->array(), index), holder.obj());
+    }
+
+    RETURN_OBJ(strings);
 }
 
 // TODO: consider handling it with compiler magic instead.
