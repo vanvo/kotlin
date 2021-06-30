@@ -17,8 +17,8 @@ class Outer {
 }
 
 fun foo() {
-    Outer.<!UNRESOLVED_REFERENCE!>Inner<!>()
-    Outer.<!UNRESOLVED_REFERENCE!>Inner<!>(1)
+    Outer.<!RESOLUTION_TO_CLASSIFIER!>Inner<!>()
+    Outer.<!RESOLUTION_TO_CLASSIFIER!>Inner<!>(1)
 }
 
 // FILE: imported.kt

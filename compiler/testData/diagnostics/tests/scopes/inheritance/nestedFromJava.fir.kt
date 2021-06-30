@@ -46,7 +46,7 @@ class Y: B() {
 
     init {
         B_()
-        B.<!UNRESOLVED_REFERENCE!>B_<!>()
+        B.<!RESOLUTION_TO_CLASSIFIER!>B_<!>()
         Y.<!UNRESOLVED_REFERENCE!>B_<!>()
 
         B_S()
