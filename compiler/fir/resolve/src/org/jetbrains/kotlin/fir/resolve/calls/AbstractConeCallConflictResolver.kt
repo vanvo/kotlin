@@ -112,6 +112,7 @@ abstract class AbstractConeCallConflictResolver(
             (variable as? FirProperty)?.typeParameters?.map { it.symbol.toLookupTag() }.orEmpty(),
             listOfNotNull(variable.receiverTypeRef?.coneType),
             variable.receiverTypeRef != null,
+            0, // TODO
             false,
             0,
             (variable as? FirProperty)?.isExpect == true,
@@ -126,6 +127,7 @@ abstract class AbstractConeCallConflictResolver(
             computeParameterTypes(call, constructor),
             //constructor.receiverTypeRef != null,
             false,
+            0, // TODO
             constructor.valueParameters.any { it.isVararg },
             call.numDefaults,
             constructor.isExpect,
@@ -139,6 +141,7 @@ abstract class AbstractConeCallConflictResolver(
             function.typeParameters.map { it.symbol.toLookupTag() },
             computeParameterTypes(call, function),
             function.receiverTypeRef != null,
+            0, // TODO
             function.valueParameters.any { it.isVararg },
             call.numDefaults,
             function.isExpect,
@@ -167,6 +170,7 @@ abstract class AbstractConeCallConflictResolver(
             (klass as? FirTypeParameterRefsOwner)?.typeParameters?.map { it.symbol.toLookupTag() }.orEmpty(),
             valueParameterTypes = emptyList(),
             hasExtensionReceiver = false,
+            0, // TODO
             hasVarargs = false,
             numDefaults = 0,
             isExpect = (klass as? FirRegularClass)?.isExpect == true,

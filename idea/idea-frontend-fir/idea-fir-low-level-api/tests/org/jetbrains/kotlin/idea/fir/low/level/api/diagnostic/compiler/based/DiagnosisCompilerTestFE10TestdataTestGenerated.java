@@ -8563,6 +8563,11 @@ public class DiagnosisCompilerTestFE10TestdataTestGenerated extends AbstractDiag
                     runTest("compiler/testData/diagnostics/tests/extensions/contextReceivers/outerClass.kt");
                 }
 
+                @TestMetadata("overloadPriority.kt")
+                public void testOverloadPriority() throws Exception {
+                    runTest("compiler/testData/diagnostics/tests/extensions/contextReceivers/overloadPriority.kt");
+                }
+
                 @TestMetadata("plusMatrix.kt")
                 public void testPlusMatrix() throws Exception {
                     runTest("compiler/testData/diagnostics/tests/extensions/contextReceivers/plusMatrix.kt");
