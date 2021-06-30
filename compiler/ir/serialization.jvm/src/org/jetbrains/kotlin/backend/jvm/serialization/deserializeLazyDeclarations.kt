@@ -9,10 +9,7 @@ import org.jetbrains.kotlin.backend.common.overrides.DefaultFakeOverrideClassFil
 import org.jetbrains.kotlin.backend.common.overrides.FakeOverrideBuilder
 import org.jetbrains.kotlin.backend.common.overrides.FakeOverrideDeclarationTable
 import org.jetbrains.kotlin.backend.common.overrides.FileLocalAwareLinker
-import org.jetbrains.kotlin.backend.common.serialization.DescriptorByIdSignatureFinder
-import org.jetbrains.kotlin.backend.common.serialization.IrDeclarationDeserializer
-import org.jetbrains.kotlin.backend.common.serialization.IrLibraryFile
-import org.jetbrains.kotlin.backend.common.serialization.IrSymbolDeserializer
+import org.jetbrains.kotlin.backend.common.serialization.*
 import org.jetbrains.kotlin.backend.common.serialization.encodings.BinarySymbolData
 import org.jetbrains.kotlin.backend.jvm.serialization.proto.JvmIr
 import org.jetbrains.kotlin.descriptors.*
@@ -53,12 +50,12 @@ fun deserializeClassFromByteArray(
         )
 
     // Only needed for local signature computation.
-    val irFile = IrFileImpl(NaiveSourceBasedFileEntryImpl(irProto.auxTables.filePathname), IrFileSymbolImpl(), irClass.packageFqName!!)
+    val dummyIrFile = IrFileImpl(NaiveSourceBasedFileEntryImpl("<unknown>"), IrFileSymbolImpl(), irClass.packageFqName!!)
 
     val symbolDeserializer = IrSymbolDeserializer(
         symbolTable,
         irLibraryFile,
-        fileSymbol = irFile.symbol,
+        fileSymbol = dummyIrFile.symbol,
         /* TODO */ actuals = emptyList(),
         enqueueLocalTopLevelDeclaration = {}, // just link to it in symbolTable
         handleExpectActualMapping = { _, _ -> TODO() },
@@ -108,12 +105,12 @@ fun deserializeIrFileFromByteArray(
         )
 
     // Only needed for local signature computation.
-    val irFile = IrFileImpl(NaiveSourceBasedFileEntryImpl(irProto.auxTables.filePathname), IrFileSymbolImpl(), facadeClass.packageFqName!!)
+    val dummyIrFile = IrFileImpl(NaiveSourceBasedFileEntryImpl("<unknown>"), IrFileSymbolImpl(), facadeClass.packageFqName!!)
 
     val symbolDeserializer = IrSymbolDeserializer(
         symbolTable,
         irLibraryFile,
-        fileSymbol = irFile.symbol,
+        fileSymbol = dummyIrFile.symbol,
         /* TODO */ actuals = emptyList(),
         enqueueLocalTopLevelDeclaration = {}, // just link to it in symbolTable
         handleExpectActualMapping = { _, _ -> TODO() },
