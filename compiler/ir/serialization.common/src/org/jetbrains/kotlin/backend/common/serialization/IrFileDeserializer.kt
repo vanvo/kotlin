@@ -158,7 +158,7 @@ class IrLibraryFileFromKlib(private val klib: IrLibrary, private val fileIndex: 
     override fun body(index: Int): ByteArray = klib.body(index, fileIndex)
 }
 
-internal fun IrLibraryFile.deserializeString(index: Int): String = WobblyTF8.decode(string(index))
+fun IrLibraryFile.deserializeString(index: Int): String = WobblyTF8.decode(string(index))
 
 internal fun IrLibraryFile.deserializeFqName(fqn: List<Int>): String =
     fqn.joinToString(".", transform = ::deserializeString)

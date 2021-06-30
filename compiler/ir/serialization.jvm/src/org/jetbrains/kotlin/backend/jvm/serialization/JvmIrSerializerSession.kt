@@ -48,11 +48,11 @@ class JvmIrSerializerSession(
 
     private fun serializeAuxTables(pathName: String): JvmIr.AuxTables {
         val proto = JvmIr.AuxTables.newBuilder()
+        proto.filePathname = serializeString(pathName)
         protoTypeArray.forEach { proto.addType(it.toByteString()) }
         protoIdSignatureArray.forEach { proto.addSignature(it.toByteString()) }
         protoStringArray.forEach { proto.addString(ByteString.copyFromUtf8(it)) }
         protoBodyArray.forEach { proto.addBody(ByteString.copyFrom(it.toByteArray())) }
-        proto.filePathname = pathName
         return proto.build()
     }
 }

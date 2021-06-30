@@ -188,7 +188,7 @@ open class IrFileSerializer(
 
     /* ------- Strings ---------------------------------------------------------- */
 
-    private fun serializeString(value: String): Int = protoStringMap.getOrPut(value) {
+    protected fun serializeString(value: String): Int = protoStringMap.getOrPut(value) {
         protoStringArray.add(value)
         protoStringArray.size - 1
     }
