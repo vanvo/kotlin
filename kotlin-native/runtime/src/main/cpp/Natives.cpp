@@ -44,7 +44,7 @@ KInt Kotlin_Any_hashCode(KConstRef thiz) {
 OBJ_GETTER(Kotlin_getStackTraceStrings, KConstRef stackTrace) {
     const KNativePtr* array = PrimitiveArrayAddressOfElementAt<KNativePtr>(stackTrace->array(), 0);
     size_t size = stackTrace->array()->count_;
-    auto stackTraceStrings = kotlin::GetStackTraceStrings(array, size);
+    auto stackTraceStrings = kotlin::CallWithThreadState<kotlin::ThreadState::kNative>(kotlin::GetStackTraceStrings, array, size);
     ObjHolder resultHolder;
     ObjHeader* strings = AllocArrayInstance(theArrayTypeInfo, stackTraceStrings.size(), resultHolder.slot());
 

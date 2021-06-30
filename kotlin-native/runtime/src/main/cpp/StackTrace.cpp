@@ -130,7 +130,7 @@ KStdVector<KStdString> kotlin::GetStackTraceStrings(void* const* stackTrace, siz
     for (size_t index = 0; index < stackTraceSize; ++index) {
         KNativePtr address = stackTrace[index];
         char symbol[512];
-        if (!CallWithThreadState<ThreadState::kNative>(AddressToSymbol, (const void*)address, symbol, sizeof(symbol))) {
+        if (!AddressToSymbol(address, symbol, sizeof(symbol))) {
             // Make empty string:
             symbol[0] = '\0';
         }
@@ -140,12 +140,12 @@ KStdVector<KStdString> kotlin::GetStackTraceStrings(void* const* stackTrace, siz
     }
 #else
     if (stackTraceSize > 0) {
-        char** symbols = CallWithThreadState<ThreadState::kNative>(backtrace_symbols, stackTrace, static_cast<int>(stackTraceSize));
+        char** symbols = backtrace_symbols(stackTrace, static_cast<int>(stackTraceSize));
         RuntimeCheck(symbols != nullptr, "Not enough memory to retrieve the stacktrace");
 
         for (size_t index = 0; index < stackTraceSize; ++index) {
             KNativePtr address = stackTrace[index];
-            auto sourceInfo = CallWithThreadState<ThreadState::kNative>(getSourceInfo, address);
+            auto sourceInfo = getSourceInfo(address);
             const char* symbol = symbols[index];
             const char* result;
             char line[1024];
@@ -183,7 +183,7 @@ void kotlin::PrintStackTraceStderr() {
     Kotlin_getCurrentStackTrace(stackTrace.slot());
     const KNativePtr* array = PrimitiveArrayAddressOfElementAt<KNativePtr>(stackTrace.obj()->array(), 0);
     size_t size = stackTrace.obj()->array()->count_;
-    auto stackTraceStrings = kotlin::GetStackTraceStrings(array, size);
+    auto stackTraceStrings = CallWithThreadState<ThreadState::kNative>(GetStackTraceStrings, array, size);
     for (auto& frame : stackTraceStrings) {
         konan::consoleErrorUtf8(frame.c_str(), frame.size());
         konan::consoleErrorf("\n");
