@@ -107,6 +107,7 @@ object FirExposedVisibilityDeclarationChecker : FirBasicDeclarationChecker() {
     }
 
     private fun checkFunction(declaration: FirFunction, reporter: DiagnosticReporter, context: CheckerContext) {
+        if (declaration is FirPropertyAccessor) return
         val functionVisibility = (declaration as FirMemberDeclaration).effectiveVisibility
 
         if (functionVisibility == EffectiveVisibility.Local) return
