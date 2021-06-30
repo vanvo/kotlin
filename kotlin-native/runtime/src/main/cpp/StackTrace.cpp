@@ -61,9 +61,6 @@ _Unwind_Reason_Code unwindCallback(struct _Unwind_Context* context, void* arg) {
 #else
     _Unwind_Ptr address = _Unwind_GetIP(context);
 #endif
-    // We run the unwinding process in the native thread state. But setting a next element
-    // requires writing to a Kotlin array which must be performed in the runnable thread state.
-    kotlin::ThreadStateGuard guard(kotlin::ThreadState::kRunnable);
     backtrace->setNextElement(address);
 
     return _URC_NO_REASON;
@@ -90,17 +87,17 @@ NO_INLINE KStdVector<void*> kotlin::GetCurrentStackTrace(int extraSkipFrames) no
     const int kSkipFrames = 1 + extraSkipFrames;
 #if USE_GCC_UNWIND
     int depth = 0;
-    CallWithThreadState<ThreadState::kNative>(_Unwind_Backtrace, depthCountCallback, static_cast<void*>(&depth));
+    _Unwind_Backtrace(depthCountCallback, static_cast<void*>(&depth));
     Backtrace result(depth, kSkipFrames);
     if (result.array.capacity() > 0) {
-        CallWithThreadState<ThreadState::kNative>(_Unwind_Backtrace, unwindCallback, static_cast<void*>(&result));
+        _Unwind_Backtrace(unwindCallback, static_cast<void*>(&result));
     }
     return std::move(result.array);
 #else
     const int maxSize = 32;
     void* buffer[maxSize];
 
-    int size = kotlin::CallWithThreadState<kotlin::ThreadState::kNative>(backtrace, buffer, maxSize);
+    int size = backtrace(buffer, maxSize);
     if (size < kSkipFrames) return {};
 
     KStdVector<void*> result;
@@ -172,7 +169,7 @@ void kotlin::DisallowSourceInfo() {
 NO_INLINE void kotlin::PrintStackTraceStderr() {
     // TODO: This is intended for runtime use. Try to avoid memory allocations and signal unsafe functions.
 
-    kotlin::ThreadStateGuard guard(kotlin::ThreadState::kRunnable, true);
+    kotlin::ThreadStateGuard guard(kotlin::ThreadState::kNative, true);
 
     // TODO: This might have to go into `GetCurrentStackTrace`, but this changes the generated stacktrace for
     //       `Throwable`.
@@ -184,7 +181,7 @@ NO_INLINE void kotlin::PrintStackTraceStderr() {
     constexpr int kSkipFrames = 1;
 #endif
     auto stackTrace = GetCurrentStackTrace(kSkipFrames);
-    auto stackTraceStrings = CallWithThreadState<ThreadState::kNative>(GetStackTraceStrings, static_cast<void* const*>(stackTrace.data()), stackTrace.size());
+    auto stackTraceStrings = GetStackTraceStrings(stackTrace.data(), stackTrace.size());
     for (auto& frame : stackTraceStrings) {
         konan::consoleErrorUtf8(frame.c_str(), frame.size());
         konan::consoleErrorf("\n");

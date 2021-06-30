@@ -16,12 +16,46 @@ using namespace kotlin;
 
 namespace {
 
+NO_INLINE KStdVector<void*> GetStackTrace1(int skipFrames) {
+    return GetCurrentStackTrace(skipFrames);
+}
+
+NO_INLINE KStdVector<void*> GetStackTrace2(int skipFrames) {
+    return GetStackTrace1(skipFrames);
+}
+
 NO_INLINE void AbortWithStackTrace() {
     PrintStackTraceStderr();
     konan::abort();
 }
 
 } // namespace
+
+TEST(StackTraceTest, StackTrace) {
+    // TODO: Consider incorporating extra skipping to `GetCurrentStackTrace` on windows.
+#if KONAN_WINDOWS
+    constexpr int kSkip = 1;
+#else
+    constexpr int kSkip = 0;
+#endif
+    auto stackTrace = GetStackTrace2(kSkip);
+    auto symbolicStackTrace = GetStackTraceStrings(stackTrace.data(), stackTrace.size());
+    ASSERT_GT(symbolicStackTrace.size(), 0ul);
+    EXPECT_THAT(symbolicStackTrace[0], testing::HasSubstr("GetStackTrace1"));
+}
+
+TEST(StackTraceTest, StackTraceWithSkip) {
+    // TODO: Consider incorporating extra skipping to `GetCurrentStackTrace` on windows.
+#if KONAN_WINDOWS
+    constexpr int kSkip = 2;
+#else
+    constexpr int kSkip = 1;
+#endif
+    auto stackTrace = GetStackTrace2(kSkip);
+    auto symbolicStackTrace = GetStackTraceStrings(stackTrace.data(), stackTrace.size());
+    ASSERT_GT(symbolicStackTrace.size(), 0ul);
+    EXPECT_THAT(symbolicStackTrace[0], testing::HasSubstr("GetStackTrace2"));
+}
 
 TEST(StackTraceDeathTest, PrintStackTrace) {
     EXPECT_DEATH(
