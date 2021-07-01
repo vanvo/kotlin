@@ -14,6 +14,8 @@ dependencies {
     compile(project(":compiler:fir:java"))
     compile(project(":compiler:fir:jvm"))
     compile(project(":compiler:backend.common.jvm"))
+    testRuntime(projectTests(":idea-frontend-fir"))
+    testRuntime(project(":idea-frontend-fir"))
     implementation(project(":compiler:ir.psi2ir"))
     implementation(project(":compiler:fir:entrypoint"))
 
