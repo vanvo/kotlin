@@ -20,15 +20,31 @@ import org.jetbrains.kotlin.backend.jvm.codegen.*
 import org.jetbrains.kotlin.codegen.AsmUtil
 import org.jetbrains.kotlin.ir.expressions.IrCall
 import org.jetbrains.kotlin.ir.expressions.IrFunctionAccessExpression
+import org.jetbrains.kotlin.ir.types.isArray
+import org.jetbrains.kotlin.ir.util.isPrimitiveArray
 import org.jetbrains.kotlin.resolve.jvm.AsmTypes
 import org.jetbrains.org.objectweb.asm.Opcodes
 
 object Clone : IntrinsicMethod() {
-    override fun invoke(expression: IrFunctionAccessExpression, codegen: ExpressionCodegen, data: BlockInfo) = with(codegen) {
-        val result = expression.dispatchReceiver!!.accept(this, data).materialized()
-        assert(!AsmUtil.isPrimitive(result.type)) { "clone() of primitive type" }
-        val opcode = if (expression is IrCall && expression.superQualifierSymbol != null) Opcodes.INVOKESPECIAL else Opcodes.INVOKEVIRTUAL
-        mv.visitMethodInsn(opcode, "java/lang/Object", "clone", "()Ljava/lang/Object;", false)
-        MaterialValue(codegen, AsmTypes.OBJECT_TYPE, context.irBuiltIns.anyNType)
-    }
+
+    override fun invoke(expression: IrFunctionAccessExpression, codegen: ExpressionCodegen, data: BlockInfo) =
+        with(codegen) {
+            val receiver = expression.dispatchReceiver!!.accept(this, data)
+            val irExpectedReceiverType = expression.symbol.owner.dispatchReceiverParameter!!.type
+            if (irExpectedReceiverType.isArray() || irExpectedReceiverType.isPrimitiveArray()) {
+                // Have to downcast to array type if required, otherwise it would cause
+                //  java.lang.VerifyError: Bad access to protected data in invokevirtual
+                // See KT-47499
+                val jvmExpectedReceiverType = codegen.typeMapper.mapType(irExpectedReceiverType)
+                receiver.materializeAt(jvmExpectedReceiverType, irExpectedReceiverType)
+            } else {
+                assert(!AsmUtil.isPrimitive(receiver.type)) { "clone() of primitive type" }
+                receiver.materialize()
+            }
+
+            val opcode =
+                if (expression is IrCall && expression.superQualifierSymbol != null) Opcodes.INVOKESPECIAL else Opcodes.INVOKEVIRTUAL
+            mv.visitMethodInsn(opcode, "java/lang/Object", "clone", "()Ljava/lang/Object;", false)
+            MaterialValue(codegen, AsmTypes.OBJECT_TYPE, context.irBuiltIns.anyNType)
+        }
 }
