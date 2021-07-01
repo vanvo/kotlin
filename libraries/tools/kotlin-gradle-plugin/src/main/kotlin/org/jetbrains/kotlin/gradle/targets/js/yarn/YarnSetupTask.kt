@@ -7,6 +7,8 @@ package org.jetbrains.kotlin.gradle.targets.js.yarn
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.file.ArchiveOperations
+import org.gradle.api.file.FileSystemOperations
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.*
 import org.jetbrains.kotlin.gradle.logging.kotlinInfo
@@ -17,14 +19,23 @@ import org.jetbrains.kotlin.gradle.utils.FileSystemOperationsCompat
 import org.jetbrains.kotlin.statistics.metrics.NumericalMetrics
 import java.io.File
 import java.net.URI
+import javax.inject.Inject
 
 @CacheableTask
 open class YarnSetupTask : DefaultTask() {
     @Transient
     private val settings = project.yarn
     private val env by lazy { settings.requireConfigured() }
-    private val fileSystemOperations = FileSystemOperationsCompat(project)
-    private val archiveOperations = ArchiveOperationsCompat(project)
+
+    private val shouldDownload = settings.download
+
+    @get:Inject
+    internal open val archiveOperations: ArchiveOperations
+        get() = error("Should be injected")
+
+    @get:Inject
+    internal open val fs: FileSystemOperations
+        get() = error("Should be injected")
 
     @Suppress("MemberVisibilityCanBePrivate")
     val downloadUrl
@@ -73,6 +84,12 @@ open class YarnSetupTask : DefaultTask() {
         dist
     }
 
+    init {
+        onlyIf {
+            shouldDownload
+        }
+    }
+
     @TaskAction
     fun setup() {
         logger.kotlinInfo("Using yarn distribution from '$yarnDist'")
@@ -82,7 +99,7 @@ open class YarnSetupTask : DefaultTask() {
 
     private fun extract(archive: File, destination: File) {
         val dirInTar = archive.name.removeSuffix(".tar.gz")
-        fileSystemOperations.copy {
+        fs.copy {
             it.from(archiveOperations.tarTree(archive))
             it.into(destination)
             it.includeEmptyDirs = false
