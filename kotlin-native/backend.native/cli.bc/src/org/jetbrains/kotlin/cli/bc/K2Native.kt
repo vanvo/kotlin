@@ -297,6 +297,15 @@ class K2Native : CLICompiler<K2NativeCompilerArguments>() {
                     configuration.report(ERROR, "-Xgc-aggressive is only supported for -memory-model experimental")
                 }
                 put(GARBAGE_COLLECTOR_AGRESSIVE, arguments.gcAggressive)
+                put(RUNTIME_ASSERTS_MODE, when (arguments.runtimeAssertsMode) {
+                    "ignore" -> RuntimeAssertsMode.IGNORE
+                    "log" -> RuntimeAssertsMode.LOG
+                    "panic" -> RuntimeAssertsMode.PANIC
+                    else -> {
+                        configuration.report(ERROR, "Unsupported runtime asserts mode ${arguments.runtimeAssertsMode}")
+                        RuntimeAssertsMode.IGNORE
+                    }
+                })
             }
         }
     }
