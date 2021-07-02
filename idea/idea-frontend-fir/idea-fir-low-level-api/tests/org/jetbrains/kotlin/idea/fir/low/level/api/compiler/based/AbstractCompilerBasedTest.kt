@@ -26,6 +26,7 @@ import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.declarations.SealedClassInheritorsProvider
 import org.jetbrains.kotlin.fir.deserialization.ModuleDataProvider
 import org.jetbrains.kotlin.fir.session.FirModuleInfoBasedModuleData
+import org.jetbrains.kotlin.idea.asJava.IDEKotlinAsJavaFirSupport
 import org.jetbrains.kotlin.idea.fir.low.level.api.*
 import org.jetbrains.kotlin.idea.fir.low.level.api.api.DiagnosticCheckerFilter
 import org.jetbrains.kotlin.idea.fir.low.level.api.api.FirModuleResolveStateConfigurator
@@ -112,9 +113,7 @@ abstract class AbstractCompilerBasedTest : AbstractKotlinCompilerTest() {
                 picoContainer.unregisterComponent(KotlinAsJavaSupport::class.qualifiedName)
                 picoContainer.registerComponentInstance(
                     KotlinAsJavaSupport::class.qualifiedName,
-                    Class.forName("org.jetbrains.kotlin.idea.fir.KotlinAsJavaFirSupportTestImpl")
-                        .getDeclaredConstructor(Project::class.java)
-                        .newInstance(project)
+                    IDEKotlinAsJavaFirSupport(project)
                 )
             }
             PsiElementFinder.EP.getPoint(project).registerExtension(JavaElementFinder(project))

@@ -11,6 +11,7 @@ import com.intellij.psi.PsiElementFinder
 import org.jetbrains.kotlin.asJava.KotlinAsJavaSupport
 import org.jetbrains.kotlin.asJava.finder.JavaElementFinder
 import org.jetbrains.kotlin.fir.session.FirModuleInfoBasedModuleData
+import org.jetbrains.kotlin.idea.asJava.IDEKotlinAsJavaFirSupport
 import org.jetbrains.kotlin.idea.fir.low.level.api.compiler.based.FirModuleResolveStateConfiguratorForSingleModuleTestImpl
 import org.jetbrains.kotlin.idea.fir.low.level.api.compiler.based.TestModuleInfo
 import org.jetbrains.kotlin.idea.fir.low.level.api.compiler.based.registerTestServices
@@ -79,9 +80,7 @@ abstract class AbstractLowLevelApiTest : TestWithDisposable() {
             picoContainer.unregisterComponent(KotlinAsJavaSupport::class.qualifiedName)
             picoContainer.registerComponentInstance(
                 KotlinAsJavaSupport::class.qualifiedName,
-                Class.forName("org.jetbrains.kotlin.idea.fir.KotlinAsJavaFirSupportTestImpl")
-                    .getDeclaredConstructor(Project::class.java)
-                    .newInstance(project)
+                IDEKotlinAsJavaFirSupport(project)
             )
         }
         PsiElementFinder.EP.getPoint(project).registerExtension(JavaElementFinder(project))

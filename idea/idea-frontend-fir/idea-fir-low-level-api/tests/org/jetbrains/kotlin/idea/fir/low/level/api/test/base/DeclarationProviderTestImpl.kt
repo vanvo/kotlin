@@ -59,6 +59,11 @@ internal class DeclarationProviderTestImpl(
             .filterIsInstance<KtNamedFunction>()
             .mapNotNullTo(mutableSetOf()) { it.nameAsName }
 
+    override fun getFacadeFilesInPackage(packageFqName: FqName): Collection<KtFile> =
+        filesByPackage(packageFqName)
+            .filter { file -> file.declarations.any { it is KtProperty || it is KtNamedFunction } }
+            .toSet()
+
     override fun getTopLevelProperties(callableId: CallableId): Collection<KtProperty> =
         filesByPackage(callableId.packageName)
             .flatMap { it.declarations }
