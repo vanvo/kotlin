@@ -329,9 +329,27 @@ object ExpectedActualResolver {
         if (b == null) return false
 
         val platformModuleTypeRefiner = platformModule.getKotlinTypeRefiner()
+
+        // type refinement is used for detecting actualization via type alias (if enabled)
+        // with it custom type checking logic is unnecessary
+        val typeSystemContext = if (platformModuleTypeRefiner is KotlinTypeRefiner.Default) {
+            object : ClassicTypeSystemContext {
+                override fun areEqualTypeConstructors(c1: TypeConstructorMarker, c2: TypeConstructorMarker): Boolean {
+                    require(c1 is TypeConstructor)
+                    require(c2 is TypeConstructor)
+                    return isExpectedClassAndActualTypeAlias(c1, c2, platformModule) ||
+                            isExpectedClassAndActualTypeAlias(c2, c1, platformModule) ||
+                            super.areEqualTypeConstructors(c1, c2)
+                }
+            }
+        } else {
+            SimpleClassicTypeSystemContext
+        }
+
         with(NewKotlinTypeCheckerImpl(platformModuleTypeRefiner)) {
             return ClassicTypeCheckerContext(
                 errorTypeEqualsToAnything = false,
+                typeSystemContext = typeSystemContext,
                 kotlinTypeRefiner = platformModuleTypeRefiner,
             ).equalTypes(a.unwrap(), b.unwrap())
         }
