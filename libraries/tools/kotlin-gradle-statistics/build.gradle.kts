@@ -16,7 +16,9 @@ sourceSets {
         if (kotlinBuildProperties.isJpsBuildEnabled) {
             none()
         } else {
-            projectDefault()
+            none()
+
+//            projectDefault()
         }
     }
 }
