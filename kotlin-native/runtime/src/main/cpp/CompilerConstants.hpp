@@ -44,6 +44,10 @@ ALWAYS_INLINE inline RuntimeAssertsMode runtimeAssertsMode() noexcept {
     return static_cast<RuntimeAssertsMode>(Kotlin_runtimeAssertsMode);
 }
 
+ALWAYS_INLINE inline bool assertsEnabled() noexcept {
+    return runtimeAssertsMode() != RuntimeAssertsMode::kIgnore;
+}
+
 } // namespace compiler
 } // namespace kotlin
 

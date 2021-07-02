@@ -20,55 +20,55 @@
 #include "Common.h"
 #include "CompilerConstants.hpp"
 
-// To avoid cluttering optimized code with asserts, they could be turned off.
-#define KONAN_ENABLE_ASSERT 1
-
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
 
-#if KONAN_ENABLE_ASSERT
 #define CURRENT_SOURCE_LOCATION __FILE__ ":" TOSTRING(__LINE__)
-#else
-// Do not generate location strings, when asserts are disabled to reduce code size.
-#define CURRENT_SOURCE_LOCATION nullptr
-#endif
 
-RUNTIME_NORETURN void RuntimeAssertFailed(const char* location, const char* format, ...) __attribute__((format(printf, 2, 3)));
-
+namespace kotlin {
 namespace internal {
 
+void RuntimeAssertFailedLog(const char* location, const char* format, ...) __attribute__((format(printf, 2, 3)));
+
+RUNTIME_NORETURN void RuntimeAssertFailedPanic(const char* location, const char* format, ...) __attribute__((format(printf, 2, 3)));
+
 inline RUNTIME_NORETURN void TODOImpl(const char* location) {
-    RuntimeAssertFailed(location, "Unimplemented");
+    RuntimeAssertFailedPanic(location, "Unimplemented");
 }
 
 // TODO: Support format string when `RuntimeAssertFailed` supports it.
 inline RUNTIME_NORETURN void TODOImpl(const char* location, const char* message) {
-    RuntimeAssertFailed(location, "%s", message);
+    RuntimeAssertFailedPanic(location, "%s", message);
 }
 
 } // namespace internal
+} // namespace kotlin
 
-#if KONAN_ENABLE_ASSERT
 // Use RuntimeAssert() in internal state checks, which could be ignored in production.
 #define RuntimeAssert(condition, format, ...) \
     do { \
-        if (::kotlin::compiler::shouldContainDebugInfo() && (!(condition))) { \
-            RuntimeAssertFailed(CURRENT_SOURCE_LOCATION, format, ##__VA_ARGS__); \
+        switch (::kotlin::compiler::runtimeAssertsMode()) { \
+            case ::kotlin::compiler::RuntimeAssertsMode::kIgnore: break; \
+            case ::kotlin::compiler::RuntimeAssertsMode::kLog: \
+                if (!(condition)) { \
+                    ::kotlin::internal::RuntimeAssertFailedLog(CURRENT_SOURCE_LOCATION, format, ##__VA_ARGS__); \
+                } \
+                break; \
+            case ::kotlin::compiler::RuntimeAssertsMode::kPanic: \
+                if (!(condition)) { \
+                    ::kotlin::internal::RuntimeAssertFailedPanic(CURRENT_SOURCE_LOCATION, format, ##__VA_ARGS__); \
+                } \
+                break; \
         } \
     } while (false)
-#else
-#define RuntimeAssert(condition, format, ...) \
-    do { \
-    } while (false)
-#endif
 
 // Use RuntimeCheck() in runtime checks that could fail due to external condition and shall lead
 // to program termination. Never compiled out.
-// TODO: Consider using `CURRENT_SOURCE_LOCATION` when `kotlin::compiler::shouldContainDebugInfo()` is `true`.
+// TODO: Consider using `CURRENT_SOURCE_LOCATION` when `kotlin::compiler::assertsEnabled()` is `true`.
 #define RuntimeCheck(condition, format, ...) \
     do { \
         if (!(condition)) { \
-            RuntimeAssertFailed(nullptr, format, ##__VA_ARGS__); \
+            ::kotlin::internal::RuntimeAssertFailedPanic(nullptr, format, ##__VA_ARGS__); \
         } \
     } while (false)
 
@@ -78,10 +78,10 @@ inline RUNTIME_NORETURN void TODOImpl(const char* location, const char* message)
     } while (false)
 
 // Use RuntimeFail() to unconditionally fail, signifying compiler/runtime bug.
-// TODO: Consider using `CURRENT_SOURCE_LOCATION` when `kotlin::compiler::shouldContainDebugInfo()` is `true`.
+// TODO: Consider using `CURRENT_SOURCE_LOCATION` when `kotlin::compiler::assertsEnabled()` is `true`.
 #define RuntimeFail(format, ...) \
     do { \
-        RuntimeAssertFailed(nullptr, format, ##__VA_ARGS__); \
+        ::kotlin::internal::RuntimeAssertFailedPanic(nullptr, format, ##__VA_ARGS__); \
     } while (false)
 
 #endif // RUNTIME_ASSERT_H
