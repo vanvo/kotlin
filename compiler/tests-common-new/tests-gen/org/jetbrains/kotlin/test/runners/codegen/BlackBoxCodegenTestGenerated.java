@@ -13193,6 +13193,12 @@ public class BlackBoxCodegenTestGenerated extends AbstractBlackBoxCodegenTest {
         }
 
         @Test
+        @TestMetadata("delegateToOpenProperty.kt")
+        public void testDelegateToOpenProperty() throws Exception {
+            runTest("compiler/testData/codegen/box/delegatedProperty/delegateToOpenProperty.kt");
+        }
+
+        @Test
         @TestMetadata("delegateWithPrivateSet.kt")
         public void testDelegateWithPrivateSet() throws Exception {
             runTest("compiler/testData/codegen/box/delegatedProperty/delegateWithPrivateSet.kt");
