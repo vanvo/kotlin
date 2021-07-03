@@ -22,7 +22,7 @@ repositories{
 val kotlinNativeEmbedded by configurations.creating
 val testPlugin by configurations.creating
 val testPluginRuntime by configurations.creating
-fun DependencyHandlerScope.kotlinNativeEmbaded(any: Any) = add(kotlinNativeEmbedded.name, any)
+fun DependencyHandlerScope.kotlinNativeEmbedded(any: Any) = add(kotlinNativeEmbedded.name, any)
 fun DependencyHandlerScope.testPlugin(any: Any) = add(testPlugin.name, any)
 
 fun DependencyHandlerScope.testPluginRuntime(any: Any) {
