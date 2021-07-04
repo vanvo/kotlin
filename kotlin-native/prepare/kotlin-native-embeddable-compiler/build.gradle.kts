@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.konan.target.HostManager
+import org.jetbrains.kotlin.konan.target.KonanTarget.MACOS_ARM64
 import org.jetbrains.kotlin.kotlinNativeDist
 
 plugins {
@@ -56,8 +57,10 @@ dependencies {
     testImplementation(project(":kotlin-test:kotlin-test-junit"))
     testPlugin(project(":kotlin-serialization"))
 
-    testPluginRuntime("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
-    testPluginRuntime("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.1")
+    if (HostManager.host != MACOS_ARM64) {
+        testPluginRuntime("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
+        testPluginRuntime("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.1")
+    }
 }
 
 val compiler = embeddableCompiler("kotlin-native-compiler-embeddable") {
@@ -76,6 +79,7 @@ kotlin.sourceSets["test"].kotlin.srcDir("tests/kotlin")
 
 
 projectTest {
+    enabled = HostManager.host != MACOS_ARM64
     dependsOn(runtimeJar)
     val testCompilerClasspathProvider = project.provider { runtimeJar.get().outputs.files.asPath }
     val runtimeJarPathProvider = project.provider { runtimeJar.get().outputs.files.asPath }
