@@ -227,8 +227,7 @@ class CallExpressionResolver(
             if (functionDescriptor is ConstructorDescriptor) {
                 val constructedClass = functionDescriptor.constructedClass
                 if (DescriptorUtils.isAnnotationClass(constructedClass) && !canInstantiateAnnotationClass(callExpression, context.trace)) {
-                    val supported = context.languageVersionSettings.supportsFeature(LanguageFeature.InstantiationOfAnnotationClasses)
-                    // todo: how to tell that this feature is ir-only?
+                    val supported = context.languageVersionSettings.supportsFeature(LanguageFeature.InstantiationOfAnnotationClasses) && constructedClass.declaredTypeParameters.isEmpty()
                     if (!supported) context.trace.report(ANNOTATION_CLASS_CONSTRUCTOR_CALL.on(callExpression))
                 }
                 if (DescriptorUtils.isEnumClass(constructedClass)) {
