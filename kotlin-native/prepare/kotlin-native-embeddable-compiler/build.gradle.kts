@@ -79,6 +79,9 @@ kotlin.sourceSets["test"].kotlin.srcDir("tests/kotlin")
 
 
 projectTest {
+    /**
+     * It's expected that test should be executed on CI, but currently this project under `kotlin.native.enabled`
+     */
     enabled = HostManager.host != MACOS_ARM64
     dependsOn(runtimeJar)
     val testCompilerClasspathProvider = project.provider { runtimeJar.get().outputs.files.asPath }
